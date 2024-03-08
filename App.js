@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import Start from './Components/Start';
 import AdminRegistration from './Components/AdminRegistration';
 import Login from './Components/Login';
@@ -11,9 +11,6 @@ import Support from './Components/Support';
 import Dashboard from './Components/Dashboard';
 import Home from './Components/Home';
 import EmployeeMenu from './Components/EmployeeMenu';
-import Employee from './Components/Employee';
-import Category from './Components/Category';
-import AddCategory from './Components/AddCategory';
 import Profile from './Components/Profile';
 import Attendance from './Components/Attendance';
 import Report from './Components/Report';
@@ -27,7 +24,7 @@ import Settings from './Components/Settings';
 import AddEmployee from './Components/AddEmployee';
 import EditEmployee from './Components/EditEmployee';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function DashboardTabs() {
@@ -50,7 +47,7 @@ function App() {
         <Stack.Screen name="EmployeeLogin" component={EmployeeLogin} />
         <Stack.Screen name="EmployeeDetail" component={EmployeeDetail} />
         <Stack.Screen name="Support" component={Support} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Dashboard" component={DashboardTabs} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Attendance" component={Attendance} />
         <Stack.Screen name="Report" component={Report} />
