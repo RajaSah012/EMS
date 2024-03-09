@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 const EmployeeMenu = () => {
   return (
     <Text>
-      EmployeeMenu
+      Employee Menu
     </Text>
   )
 }
