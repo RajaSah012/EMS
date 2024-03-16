@@ -1,12 +1,17 @@
-import React from 'react'
-import { Text } from 'react-native'
+import React from 'react';
+import { View, Text } from 'react-native';
+import DashboardHeader from './DashboardHeader';
 
 const Dashboard = () => {
-  return (
-    <Text>
-      Dashboard
-    </Text>
-  )
-}
+  // Dummy notifications count for demonstration
+  const notificationsCount = 0;
 
-export default Dashboard
+  return (
+    <View>
+      <DashboardHeader notifications={notificationsCount} />
+      
+    </View>
+  );
+};
+
+export default Dashboard;

@@ -3,8 +3,6 @@ import { StyleSheet } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 
@@ -30,18 +28,7 @@ import Settings from './Components/Settings';
 import AddEmployee from './Components/AddEmployee';
 import EditEmployee from './Components/EditEmployee';
 
-const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
-function DashboardTabs() {
-  return (
-    <Tab.Navigator>
-    <Tab.Screen name="Home" component={Home} />
-    <Tab.Screen name="EmployeeMenu" component={EmployeeMenu} />
-    {/* Add other tabs/screens as needed */}
-  </Tab.Navigator>
-  );
-}
 
 function App() {
   return (
@@ -54,7 +41,7 @@ function App() {
         <Drawer.Screen name="EmployeeDetail" component={EmployeeDetail} />
         <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
         <Drawer.Screen name="Support" component={Support} />
-        <Drawer.Screen name="Dashboard" component={DashboardTabs} />
+        <Drawer.Screen name="Dashboard" component={Dashboard} />
         <Drawer.Screen name="Profile" component={Profile} />
         <Drawer.Screen name="Attendance" component={Attendance} />
         <Drawer.Screen name="Report" component={Report} />
