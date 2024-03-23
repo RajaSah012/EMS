@@ -1,24 +1,23 @@
 import React from 'react';
-import { View, Text, SafeAreaView } from 'react-native'; // Import Text component
+import { View, SafeAreaView } from 'react-native';
 import DashboardHeader from './DashboardHeader';
-import ImageSlider from './ImageSlider'; // Import the ImageSlider component
+import ImageSlider from './ImageSlider';
+import SelfServiceCategory from './SelfServiceCategory';
+import ManagementCategory from './ManagementCategory';
 
 const Dashboard = () => {
-  // Dummy notifications count for demonstration
   const notificationsCount = 0;
-
-  // Dummy images for demonstration
-  
 
   return (
     <View style={{ flex: 1 }}>
-      <DashboardHeader notifications={notificationsCount} />
+      {/* <DashboardHeader notifications={notificationsCount} /> */}
       <SafeAreaView>
-				<ImageSlider />
-			</SafeAreaView>
+        <ImageSlider />
+        <SelfServiceCategory />
+        <ManagementCategory />
+      </SafeAreaView>
     </View>
   );
 };
-
 
 export default Dashboard;

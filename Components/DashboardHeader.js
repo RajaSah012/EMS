@@ -8,14 +8,14 @@ const DashboardHeader = ({ notifications }) => {
       containerStyle={styles.headerContainer}
       placement="left"
       leftContainerStyle={styles.leftContainer}
-      leftComponent={<Icon name="menu" onPress={() => {/* handle menu press */}} />}
+       leftComponent={<Icon name="menu" onPress={() => {/* handle menu press */}} />}
       centerComponent={
         <View style={styles.centerContainer}>
           <View style={styles.textContainer}>
-            <Text style={styles.dashboardText}>Dashboard</Text>
+            <Text style={styles.dashboardText}></Text>
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.officeText}>HEAD OFFICE.</Text>
+            <Text style={styles.officeText}>.</Text>
           </View>
         </View>
       }
