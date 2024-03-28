@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 const Attendance = () => {
   return (
     <Text>
-      Attendance
+      Attendance ab
     </Text>
   )
 }

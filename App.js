@@ -1,10 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import 'react-native-gesture-handler';
-import 'react-native-get-random-values';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import Start from './Components/Start';
 import AdminRegistration from './Components/AdminRegistration';
@@ -30,10 +28,29 @@ import EditEmployee from './Components/EditEmployee';
 
 const Drawer = createDrawerNavigator();
 
+const CustomHeader = ({ navigation }) => {
+  return (
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => navigation.navigate('LiveLocation')}>
+        <MaterialIcons name="location-on" size={24} color="white" style={styles.icon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
+        <MaterialIcons name="notifications" size={24} color="white" style={styles.icon} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Dashboard">
+      <Drawer.Navigator
+        initialRouteName="Dashboard"
+        screenOptions={({ navigation }) => ({
+          headerStyle: { backgroundColor: 'skyblue' },
+          headerTintColor: 'white',
+          headerRight: () => <CustomHeader navigation={navigation} />,
+        })}>
         <Drawer.Screen name="Start" component={Start} />
         <Drawer.Screen name="AdminRegistration" component={AdminRegistration} />
         <Drawer.Screen name="Login" component={Login} />
@@ -60,17 +77,12 @@ function App() {
 }
 
 const styles = StyleSheet.create({
-  // Define your styles here using the StyleSheet component
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff', // Example background color
+  header: {
+    flexDirection: 'row',
+    marginRight: 10,
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333333', // Example text color
+  icon: {
+    marginLeft: 20,
   },
 });
 

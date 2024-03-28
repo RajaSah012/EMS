@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
+const NUM_COLUMNS = 4; // Number of options per row
 
 const OptionItem = ({ iconName, text }) => {
   return (
@@ -18,18 +19,14 @@ const ManagementCategory = () => {
     <View style={styles.container}>
       <Text style={styles.category}>Management</Text>
       <View style={styles.optionsContainer}>
-        <View style={styles.optionsRow}>
-          <OptionItem iconName="tasks" text="Task Management" />
-          <OptionItem iconName="user" text="Request For Me" />
-          <OptionItem iconName="users" text="My Team" />
-          <OptionItem iconName="money" text="Loan" />
-        </View>
-        <View style={styles.optionsRow}>
-          <OptionItem iconName="money" text="Advance" />
-          <OptionItem iconName="users" text="Recruitment" />
-          <OptionItem iconName="money" text="My Taxation" />
-          <OptionItem iconName="money" text="Your Option Here" />
-        </View>
+        <OptionItem iconName="tasks" text="Task Management" />
+        <OptionItem iconName="user" text="Request For Me" />
+        <OptionItem iconName="users" text="My Team" />
+        <OptionItem iconName="money" text="Loan" />
+        <OptionItem iconName="money" text="Advance" />
+        <OptionItem iconName="users" text="Recruitment" />
+        <OptionItem iconName="money" text="My Taxation" />
+        <OptionItem iconName="money" text="Your Option Here" />
       </View>
     </View>
   );
@@ -45,26 +42,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionsContainer: {
-    flexDirection: 'column',
-  },
-  optionsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    width: width - 20,
   },
   optionItem: {
     alignItems: 'center',
-    width: '25%', // Four options per row
-    maxWidth: width / 4 - 20, // Adjust as needed for proper spacing
+    marginBottom: 10,
+    width: (width - 40) / NUM_COLUMNS,
+    backgroundColor: 'lightblue',
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   icon: {
-    fontSize: 24,
-    marginBottom: 10,
+    fontSize: 24, // Adjust icon size as needed
     color: '#333',
   },
   optionText: {
     textAlign: 'center',
     fontSize: 14,
+    marginTop: 5,
   },
 });
 
