@@ -15,7 +15,6 @@ import Home from './Components/Home';
 import EmployeeMenu from './Components/EmployeeMenu';
 import Profile from './Components/Profile';
 import Attendance from './Components/Attendance';
-import Report from './Components/Report';
 import Notification from './Components/Notification';
 import CalculateSalary from './Components/CalculateSalary';
 import AddPayment from './Components/AddPayment';
@@ -25,7 +24,22 @@ import Document from './Components/Document';
 import Settings from './Components/Settings';
 import AddEmployee from './Components/AddEmployee';
 import EditEmployee from './Components/EditEmployee';
-
+import MarkAttendance from './Components/MarkAttendance';
+import MyAttendance from './Components/MyAttendance';
+import OutDoorDuty from './Components/OutDoorDuty';
+import Reimburse from './Components/Reimburse';
+import Apply from './Components/Apply';
+import Holiday from './Components/Holiday';
+import WeekOff from './Components/WeekOff';
+import Payslip from './Components/Payslip';
+import TaskManagement from './Components/TaskManagement';
+import RequestForMe from './Components/RequestForMe';
+import MyTeam from './Components/MyTeam';
+import Loan from './Components/Loan';
+import Advance from './Components/Advance';
+import Recruitment from './Components/Recruitment';
+import MyTaxation from './Components/MyTaxation';
+import Report from './Components/Report';
 const Drawer = createDrawerNavigator();
 
 const CustomHeader = ({ navigation }) => {
@@ -61,7 +75,6 @@ function App() {
         <Drawer.Screen name="Dashboard" component={Dashboard} />
         <Drawer.Screen name="Profile" component={Profile} />
         <Drawer.Screen name="Attendance" component={Attendance} />
-        <Drawer.Screen name="Report" component={Report} />
         <Drawer.Screen name="Notification" component={Notification} />
         <Drawer.Screen name="CalculateSalary" component={CalculateSalary} />
         <Drawer.Screen name="AddPayment" component={AddPayment} />
@@ -71,6 +84,23 @@ function App() {
         <Drawer.Screen name="Settings" component={Settings} />
         <Drawer.Screen name="AddEmployee" component={AddEmployee} />
         <Drawer.Screen name="EditEmployee" component={EditEmployee} />
+        <Drawer.Screen name="MarkAttendance" component={MarkAttendance} />
+        <Drawer.Screen name="MyAttendance" component={MyAttendance} />
+        <Drawer.Screen name="OutDoorDuty" component={OutDoorDuty} />
+        <Drawer.Screen name="Reimburse" component={Reimburse} />
+        <Drawer.Screen name="Apply" component={Apply} />
+        <Drawer.Screen name="Holiday" component={Holiday} />
+        <Drawer.Screen name="WeekOff" component={WeekOff} />
+        <Drawer.Screen name="Payslip" component={Payslip} />
+        <Drawer.Screen name="TaskManagement" component={TaskManagement}/>
+        <Drawer.Screen name="RequestForMe" component={RequestForMe}/>
+        <Drawer.Screen name="MyTeam" component={MyTeam}/>
+        <Drawer.Screen name="Loan" component={Loan}/>
+        <Drawer.Screen name="Advance" component={Advance}/>
+        <Drawer.Screen name="Recruitment" component={Recruitment}/>
+        <Drawer.Screen name="MyTaxation" component={MyTaxation}/>
+        <Drawer.Screen name="Report" component={Report}/>
+
       </Drawer.Navigator>
     </NavigationContainer>
   );

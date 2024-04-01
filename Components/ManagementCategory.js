@@ -1,16 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const NUM_COLUMNS = 4; // Number of options per row
 
-const OptionItem = ({ iconName, text }) => {
+const OptionItem = ({ iconName, text, navigateTo }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate(navigateTo);
+  };
+
   return (
-    <View style={styles.optionItem}>
-      <FontAwesome name={iconName} style={styles.icon} />
-      <Text style={styles.optionText}>{text}</Text>
-    </View>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={[styles.optionItem, {backgroundColor: 'lightblue'}]}>
+        <FontAwesome name={iconName} style={styles.icon} />
+        <Text style={styles.optionText}>{text}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -19,14 +28,14 @@ const ManagementCategory = () => {
     <View style={styles.container}>
       <Text style={styles.category}>Management</Text>
       <View style={styles.optionsContainer}>
-        <OptionItem iconName="tasks" text="Task Management" />
-        <OptionItem iconName="user" text="Request For Me" />
-        <OptionItem iconName="users" text="My Team" />
-        <OptionItem iconName="money" text="Loan" />
-        <OptionItem iconName="money" text="Advance" />
-        <OptionItem iconName="users" text="Recruitment" />
-        <OptionItem iconName="money" text="My Taxation" />
-        <OptionItem iconName="money" text="Your Option Here" />
+        <OptionItem iconName="tasks" text="Task Management" navigateTo="TaskManagement" />
+        <OptionItem iconName="user" text="Request For Me" navigateTo="RequestForMe" />
+        <OptionItem iconName="users" text="My Team" navigateTo="MyTeam" />
+        <OptionItem iconName="money" text="Loan" navigateTo="Loan" />
+        <OptionItem iconName="money" text="Advance" navigateTo="Advance" />
+        <OptionItem iconName="users" text="Recruitment" navigateTo="Recruitment" />
+        <OptionItem iconName="money" text="My Taxation" navigateTo="MyTaxation" />
+        <OptionItem iconName="file-text" text="Report" navigateTo="Report" />
       </View>
     </View>
   );
