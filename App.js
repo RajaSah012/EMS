@@ -5,8 +5,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import Start from './Components/Start';
-import AdminRegistration from './Components/AdminRegistration';
+import Welcome from './Components/Welcome';
+import Registration from './Components/Registration';
 import Login from './Components/Login';
+import AddCategory from './Components/AddCategory';
 import EmployeeLogin from './Components/EmployeeLogin';
 import EmployeeDetail from './Components/EmployeeDetail';
 import Support from './Components/Support';
@@ -59,15 +61,17 @@ function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName="Dashboard"
+        initialRouteName="Welcome"
         screenOptions={({ navigation }) => ({
           headerStyle: { backgroundColor: 'skyblue' },
           headerTintColor: 'white',
           headerRight: () => <CustomHeader navigation={navigation} />,
         })}>
         <Drawer.Screen name="Start" component={Start} />
-        <Drawer.Screen name="AdminRegistration" component={AdminRegistration} />
+        <Drawer.Screen name="Welcome" component={Welcome} />
+        <Drawer.Screen name="Registration" component={Registration} />
         <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="AddCategory" component={AddCategory} />
         <Drawer.Screen name="EmployeeLogin" component={EmployeeLogin} />
         <Drawer.Screen name="EmployeeDetail" component={EmployeeDetail} />
         <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
