@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, Pressable } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, Pressable , Alert} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
@@ -9,11 +9,18 @@ import Button from '../constants/Button';
 const Registration = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSignUp = () => {
+        // Basic name validation
+        if (!name) {
+            console.log("Please enter your name");
+            return;
+        }
+
         // Basic email format validation
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
             console.log("Please enter a valid email address");
@@ -39,9 +46,28 @@ const Registration = ({ navigation }) => {
         }
 
         // If all validations pass, proceed with sign-up logic
+        console.log("Name:", name);
         console.log("Email:", email);
         console.log("Phone Number:", phoneNumber);
         console.log("Password:", password);
+       // for after registration success field become empty
+        setName('');
+        setEmail('');
+        setPhoneNumber('');
+        setPassword('');
+        setIsChecked(false);
+
+        // after registration go back login page
+       // navigation.navigate('Login');
+        // Show registration success message
+        Alert.alert(
+            "Registration Successful",
+            "Your account has been successfully registered.",
+            [
+                { text: "OK", onPress: () => navigation.navigate('Login') }
+            ],
+            { cancelable: false }
+        );
         // Add your sign-up logic here
     };
 
@@ -63,6 +89,35 @@ const Registration = ({ navigation }) => {
                             fontSize: 16,
                             color: COLORS.black
                         }}>Connect with your friend today!</Text>
+                    </View>
+
+                    <View style={{ marginBottom: 12 }}>
+                        <Text style={{
+                            fontSize: 16,
+                            fontWeight: 400,
+                            marginVertical: 8
+                        }}>Name</Text>
+
+                        <View style={{
+                            width: "100%",
+                            height: 48,
+                            borderColor: COLORS.black,
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingLeft: 22
+                        }}>
+                            <TextInput
+                                placeholder='Enter your name'
+                                placeholderTextColor={COLORS.black}
+                                style={{
+                                    width: "100%"
+                                }}
+                                onChangeText={text => setName(text)}
+                                value={name}
+                            />
+                        </View>
                     </View>
 
                     <View style={{ marginBottom: 12 }}>

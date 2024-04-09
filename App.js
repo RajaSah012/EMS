@@ -9,6 +9,7 @@ import Welcome from './Components/Welcome';
 import Registration from './Components/Registration';
 import Login from './Components/Login';
 import AddCategory from './Components/AddCategory';
+import Category from './Components/Category';
 import EmployeeLogin from './Components/EmployeeLogin';
 import EmployeeDetail from './Components/EmployeeDetail';
 import Support from './Components/Support';
@@ -24,6 +25,7 @@ import PayEmployees from './Components/PayEmployees';
 import LiveLocation from './Components/LiveLocation';
 import Document from './Components/Document';
 import Settings from './Components/Settings';
+import Employee from './Components/Employee';
 import AddEmployee from './Components/AddEmployee';
 import EditEmployee from './Components/EditEmployee';
 import MarkAttendance from './Components/MarkAttendance';
@@ -72,6 +74,7 @@ function App() {
         <Drawer.Screen name="Registration" component={Registration} />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="AddCategory" component={AddCategory} />
+        <Drawer.Screen name="Category" component={Category} />
         <Drawer.Screen name="EmployeeLogin" component={EmployeeLogin} />
         <Drawer.Screen name="EmployeeDetail" component={EmployeeDetail} />
         <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
@@ -86,6 +89,7 @@ function App() {
         <Drawer.Screen name="LiveLocation" component={LiveLocation} />
         <Drawer.Screen name="Document" component={Document} />
         <Drawer.Screen name="Settings" component={Settings} />
+        <Drawer.Screen name="Employee" component={Employee} />
         <Drawer.Screen name="AddEmployee" component={AddEmployee} />
         <Drawer.Screen name="EditEmployee" component={EditEmployee} />
         <Drawer.Screen name="MarkAttendance" component={MarkAttendance} />
