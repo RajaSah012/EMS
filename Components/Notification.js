@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import axios from 'axios';
-import { Picker } from '@react-native-picker/picker'; // Import Picker from @react-native-picker/picker
+import { Picker } from '@react-native-picker/picker';
+
+const { width } = Dimensions.get('window');
+const TABLE_COLUMN_WIDTH = width * 0.2;
 
 const Notification = () => {
   const [admins, setAdmins] = useState([]);
@@ -46,14 +49,14 @@ const Notification = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Notifications</Text>
       </View>
-      <ScrollView style={styles.content}>
+      <View style={styles.content}>
         <View style={styles.filterContainer}>
           <View style={styles.filterItem}>
-            <Picker style={{ flex: 1 }}>
+            <Picker style={styles.picker}>
               <Picker.Item label="All Notifications" value="" />
               {category.map((c) => (
                 <Picker.Item key={c.id} label={c.name} value={c.id} />
@@ -62,7 +65,7 @@ const Notification = () => {
           </View>
 
           <View style={styles.filterItem}>
-            <Picker style={{ flex: 1 }}>
+            <Picker style={styles.picker}>
               <Picker.Item label="All Branches" value="" />
               {admins.map((a) => (
                 <Picker.Item key={a.id} label={a.name} value={a.id} />
@@ -71,7 +74,7 @@ const Notification = () => {
           </View>
 
           <View style={styles.filterItem}>
-            <Picker style={{ flex: 1 }}>
+            <Picker style={styles.picker}>
               <Picker.Item label="All Departments" value="" />
               {category.map((c) => (
                 <Picker.Item key={c.id} label={c.name} value={c.id} />
@@ -80,7 +83,7 @@ const Notification = () => {
           </View>
 
           <TextInput
-            style={[styles.filterItem, { flex: 1 }]}
+            style={[styles.filterItem, styles.input]}
             placeholder="All Employees"
             onChangeText={handleFilter}
           />
@@ -88,27 +91,30 @@ const Notification = () => {
 
         <View style={styles.table}>
           <View style={styles.tableRow}>
-            <Text style={styles.tableHeader}>EMPLOYEE NAME</Text>
-            <Text style={styles.tableHeader}>BRANCH</Text>
-            <Text style={styles.tableHeader}>DEPARTMENT</Text>
-            <Text style={styles.tableHeader}>APP USING STATUS</Text>
-            <Text style={styles.tableHeader}>LAST STATUS</Text>
+            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>EMPLOYEE NAME</Text>
+            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>BRANCH</Text>
+            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>DEPARTMENT</Text>
+            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>APP USING STATUS</Text>
+            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>LAST STATUS</Text>
           </View>
           {records.map((e) => (
             <View key={e.id} style={styles.tableRow}>
-              <Text style={styles.tableData}>{e.name}</Text>
-              {/* Render branch, department, app status, and last status similarly */}
+              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.name}</Text>
+              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.branch}</Text>
+              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.department}</Text>
+              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>Not Logged In</Text>
+              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.lastStatus}</Text>
             </View>
           ))}
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
   },
   header: {
@@ -121,7 +127,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   content: {
-    flex: 1,
     padding: 10,
   },
   filterContainer: {
@@ -136,6 +141,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    height: 40,
+  },
+  picker: {
+    flex: 1,
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 5,
   },
   table: {
     flex: 1,
@@ -147,13 +160,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   tableHeader: {
-    flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   tableData: {
-    flex: 1,
     textAlign: 'center',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 });
 
