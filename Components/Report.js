@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 import { CSV } from 'react-native-csv';
 import { MaterialIcons } from '@expo/vector-icons';
+import RNPickerSelect from 'react-native-picker-select';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Report = () => {
-  const [date, setDate] = useState();
+  const [date, setDate] = useState(new Date());
   const [admins, setAdmins] = useState([]);
   const [category, setCategory] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [records, setRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
-    AdminRecords();
+    fetchAdminRecords();
+    fetchCategory();
+    fetchEmployee();
   }, []);
 
-  const AdminRecords = () => {
+  const fetchAdminRecords = () => {
     axios.get('http://localhost:3000/auth/admin_records')
       .then(result => {
         if (result.data.Status) {
@@ -33,11 +30,13 @@ const Report = () => {
           alert(result.data.Error)
         }
       })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/auth/category")
+  const fetchCategory = () => {
+    axios.get("http://localhost:3000/auth/category")
       .then((result) => {
         if (result.data.Status) {
           setCategory(result.data.Result);
@@ -46,11 +45,10 @@ const Report = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/auth/employee")
+  const fetchEmployee = () => {
+    axios.get("http://localhost:3000/auth/employee")
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);
@@ -61,7 +59,7 @@ const Report = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }
 
   const handleFilter = (text) => {
     const newData = employee.filter((item) => {
@@ -70,16 +68,6 @@ const Report = () => {
     });
     setFilteredRecords(newData);
   }
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.recordContainer} onPress={() => downloadCSV(item)}>
-      <Text style={styles.recordTitle}>{item.name} Daily Attendance Report</Text>
-      <Text style={styles.recordDetail}>Branch: {admins.map((a) => a.name)}</Text>
-      <Text style={styles.recordDetail}>Month: Jan 2024</Text>
-      <Text style={styles.recordDetail}>Format: XLSX</Text>
-      <Text style={styles.recordDetail}>Generated On: 02-01-2024</Text>
-    </TouchableOpacity>
-  );
 
   const downloadCSV = (item) => {
     if (records.length > 0 && records[0].hasOwnProperty('name')) {
@@ -107,6 +95,12 @@ const Report = () => {
       console.log('Records array is empty or the first element does not have a name property');
     }
   }
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  };
 
   return (
     <View style={styles.container}>
@@ -136,38 +130,52 @@ const Report = () => {
         <View style={styles.row}>
           <View style={styles.column}>
             <Text style={styles.label}>Report Type</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Select Report Type"
+            <RNPickerSelect
+              style={{ inputAndroid: styles.input }}
+              placeholder={{ label: 'Select Report Type', value: null }}
+              onValueChange={(value) => console.log(value)}
+              items={admins.map((a) => ({ label: a.name, value: a.id }))}
             />
           </View>
           <View style={styles.column}>
             <Text style={styles.label}>Select Branch</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="All Branches"
+            <RNPickerSelect
+              style={{ inputAndroid: styles.input }}
+              placeholder={{ label: 'Select Branch', value: null }}
+              onValueChange={(value) => console.log(value)}
+              items={admins.map((a) => ({ label: a.name, value: a.id }))}
             />
           </View>
           <View style={styles.column}>
             <Text style={styles.label}>Select Department</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="All Departments"
+            <RNPickerSelect
+              style={{ inputAndroid: styles.input }}
+              placeholder={{ label: 'Select Department', value: null }}
+              onValueChange={(value) => console.log(value)}
+              items={category.map((c) => ({ label: c.name, value: c.id }))}
             />
           </View>
           <View style={styles.column}>
             <Text style={styles.label}>Date</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Select Date"
-              onChangeText={(text) => setDate(text)}
-            />
+            <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
+              <Text>{date.toDateString()}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
+            )}
           </View>
           <View style={styles.column}>
             <Text style={styles.label}>Format</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="XLSX"
+            <RNPickerSelect
+              style={{ inputAndroid: styles.input }}
+              placeholder={{ label: 'Select Format', value: null }}
+              onValueChange={(value) => console.log(value)}
+              items={[{ label: 'XLSX', value: 'xlsx' }]}
             />
           </View>
         </View>
@@ -180,7 +188,17 @@ const Report = () => {
       </View>
       <FlatList
         data={filteredRecords}
-        renderItem={renderItem}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.recordContainer} onPress={() => downloadCSV(item)}>
+            <Text style={styles.recordTitle}>{item.name} Daily Attendance Report</Text>
+            {admins.length > 0 && (
+              <Text style={styles.recordDetail}>Branch: {admins.map((a) => a.name)}</Text>
+            )}
+            <Text style={styles.recordDetail}>Month: Jan 2024</Text>
+            <Text style={styles.recordDetail}>Format: XLSX</Text>
+            <Text style={styles.recordDetail}>Generated On: 02-01-2024</Text>
+          </TouchableOpacity>
+        )}
         keyExtractor={(item) => item.id.toString()}
       />
     </View>
@@ -246,6 +264,14 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   generateButton: {
     backgroundColor: '#007bff',

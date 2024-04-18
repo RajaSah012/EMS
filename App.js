@@ -43,7 +43,9 @@ import Loan from './Components/Loan';
 import Advance from './Components/Advance';
 import Recruitment from './Components/Recruitment';
 import MyTaxation from './Components/MyTaxation';
+import DailyReport from './Components/DailyReport';
 import Report from './Components/Report';
+import ReportFilter from './Components/ReportFilter';
 const Drawer = createDrawerNavigator();
 
 const CustomHeader = ({ navigation }) => {
@@ -107,7 +109,9 @@ function App() {
         <Drawer.Screen name="Advance" component={Advance}/>
         <Drawer.Screen name="Recruitment" component={Recruitment}/>
         <Drawer.Screen name="MyTaxation" component={MyTaxation}/>
+        <Drawer.Screen name="DailyReport" component={DailyReport}/>
         <Drawer.Screen name="Report" component={Report}/>
+        <Drawer.Screen name=" ReportFilter" component={ ReportFilter}/>
 
       </Drawer.Navigator>
     </NavigationContainer>
