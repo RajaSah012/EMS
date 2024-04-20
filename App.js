@@ -8,13 +8,14 @@ import Start from './Components/Start';
 import Welcome from './Components/Welcome';
 import Registration from './Components/Registration';
 import Login from './Components/Login';
+import Home from './Components/Home';
+
 import AddCategory from './Components/AddCategory';
 import Category from './Components/Category';
 import EmployeeLogin from './Components/EmployeeLogin';
 import EmployeeDetail from './Components/EmployeeDetail';
 import Support from './Components/Support';
 import Dashboard from './Components/Dashboard';
-import Home from './Components/Home';
 import EmployeeMenu from './Components/EmployeeMenu';
 import Profile from './Components/Profile';
 import Attendance from './Components/Attendance';
@@ -75,6 +76,7 @@ function App() {
         <Drawer.Screen name="Welcome" component={Welcome} />
         <Drawer.Screen name="Registration" component={Registration} />
         <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="AddCategory" component={AddCategory} />
         <Drawer.Screen name="Category" component={Category} />
         <Drawer.Screen name="EmployeeLogin" component={EmployeeLogin} />
