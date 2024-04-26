@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import * as Linking from 'expo-linking';
 import axios from 'axios';
 
 const Category = () => {
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/auth/category')
-      .then(response => {
-        if (response.data.Status) {
-          setCategories(response.data.Result);
+      .then(result => {
+        if (result.data.Status) {
+          setCategory(result.data.Result);
         } else {
-          alert(response.data.Error);
+          alert(result.data.Error);
         }
       })
-      .catch(error => console.log(error));
+      .catch(err => console.log(err));
   }, []);
 
   return (
@@ -22,22 +23,18 @@ const Category = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Category List</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>Add Category</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.categoryList}>
-        <FlatList
-          data={categories}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.categoryItem}>
-              <Text>{item.name}</Text>
-            </View>
-          )}
-        />
-      </View>
+      <TouchableOpacity style={styles.addButton} onPress={() => Linking.openURL('/dashboard/add_category')}>
+        <Text style={styles.addButtonText}>Add Category</Text>
+      </TouchableOpacity>
+      <FlatList
+        data={category}
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <Text style={styles.listItemText}>{item.name}</Text>
+          </View>
+        )}
+        keyExtractor={item => item.id}
+      />
     </View>
   );
 };
@@ -45,38 +42,35 @@ const Category = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
   },
   header: {
-    padding: 10,
-    alignItems: 'center',
     backgroundColor: '#f0f0f0',
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  addButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: 'green',
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  categoryList: {
-    flex: 1,
-    marginTop: 10,
-  },
-  categoryItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  addButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  addButtonText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  listItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  listItemText: {
+    fontSize: 16,
   },
 });
 

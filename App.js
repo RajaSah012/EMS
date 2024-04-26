@@ -9,7 +9,6 @@ import Welcome from './Components/Welcome';
 import Registration from './Components/Registration';
 import Login from './Components/Login';
 import Home from './Components/Home';
-
 import AddCategory from './Components/AddCategory';
 import Category from './Components/Category';
 import EmployeeLogin from './Components/EmployeeLogin';

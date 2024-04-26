@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import DatePicker from 'react-native-datepicker';
 
 const Home = () => {
   const [adminTotal, setAdminTotal] = useState(0);
-  const [employeeTotal, setemployeeTotal] = useState(0);
+  const [employeeTotal, setEmployeeTotal] = useState(0);
   const [salaryTotal, setSalaryTotal] = useState(0);
   const [admins, setAdmins] = useState([]);
   const [category, setCategory] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [calDate, setCalDate] = useState(new Date());
+  const [time, setTime] = useState('');
 
   useEffect(() => {
     adminCount();
@@ -22,7 +23,7 @@ const Home = () => {
 
   const AdminRecords = () => {
     axios.get('http://localhost:3000/auth/admin_records')
-      .then(result => {
+     .then(result => {
         if (result.data.Status) {
           setAdmins(result.data.Result)
         } else {
@@ -30,25 +31,28 @@ const Home = () => {
         }
       })
   }
+
   const adminCount = () => {
     axios.get('http://localhost:3000/auth/admin_count')
-      .then(result => {
+     .then(result => {
         if (result.data.Status) {
           setAdminTotal(result.data.Result[0].admin)
         }
       })
   }
+
   const employeeCount = () => {
     axios.get('http://localhost:3000/auth/employee_count')
-      .then(result => {
+     .then(result => {
         if (result.data.Status) {
-          setemployeeTotal(result.data.Result[0].employee)
+          setEmployeeTotal(result.data.Result[0].employee)
         }
       })
   }
+
   const salaryCount = () => {
     axios.get('http://localhost:3000/auth/salary_count')
-      .then(result => {
+     .then(result => {
         if (result.data.Status) {
           setSalaryTotal(result.data.Result[0].salaryOFEmp)
         } else {
@@ -59,41 +63,37 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/auth/employee")
-      .then((result) => {
+     .get("http://localhost:3000/auth/employee")
+     .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);
         } else {
           alert(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
+     .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/auth/category")
-      .then((result) => {
+     .get("http://localhost:3000/auth/category")
+     .then((result) => {
         if (result.data.Status) {
           setCategory(result.data.Result);
         } else {
           alert(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
+     .catch((err) => console.log(err));
   }, []);
 
-  const [date, setDate] = useState(new Date())
   const handleDate = (dt) => {
-    setDate(dt)
+    setCalDate(dt)
   }
 
-  let time = new Date().toLocaleTimeString();
-  const [ctime, setCtime] = useState(time);
-
   const updateTime = () => {
-    time = new Date().toLocaleTimeString();
-    setCtime(time);
+    const currentTime = new Date().toLocaleTimeString();
+    setTime(currentTime);
   }
   setInterval(updateTime, 1000);
 
@@ -108,7 +108,7 @@ const Home = () => {
           onPress={() => console.log('Current Employees')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
-              <View style={[styles.iconHome, styles.bgPurpleLight]}>
+              <View style={styles.iconHome}>
                 <Text style={styles.iconHomeText}>PE</Text>
               </View>
               <Text style={styles.dashFont}>Current Employees</Text>
@@ -132,7 +132,7 @@ const Home = () => {
           onPress={() => console.log('Present')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
-              <View style={[styles.iconPre, styles.bgBlueLight]}>
+              <View style={styles.iconPre}>
                 <Text style={styles.iconPreText}>PR</Text>
               </View>
               <Text style={styles.dashFont}>Present</Text>
@@ -156,7 +156,7 @@ const Home = () => {
           onPress={() => console.log('Leaves')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
-              <View style={[styles.iconLeav, styles.bgGreenLight]}>
+              <View style={styles.iconLeav}>
                 <Text style={styles.iconLeavText}>LV</Text>
               </View>
               <Text style={styles.dashFont}>Leaves</Text>
@@ -180,7 +180,7 @@ const Home = () => {
           onPress={() => console.log('Payments')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
-              <View style={[styles.iconPay, styles.bgOrangeLight]}>
+              <View style={styles.iconPay}>
                 <Text style={styles.iconPayText}>PY</Text>
               </View>
               <Text style={styles.dashFont}>Payments</Text>
@@ -206,7 +206,7 @@ const Home = () => {
           onPress={() => console.log('Reimbursements')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
-              <View style={[styles.iconRei, styles.bgPinkLight]}>
+              <View style={styles.iconRei}>
                 <Text style={styles.iconReiText}>RE</Text>
               </View>
               <Text style={styles.dashFont}>Reimbursements</Text>
@@ -230,7 +230,7 @@ const Home = () => {
           onPress={() => console.log('AR')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
-              <View style={[styles.iconHome, styles.bgYellowLight]}>
+              <View style={styles.iconHome}>
                 <Text style={styles.iconHomeText}>AR</Text>
               </View>
               <Text style={styles.dashFont}>AR</Text>
@@ -254,7 +254,7 @@ const Home = () => {
           onPress={() => console.log('OD')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
-              <View style={[styles.iconOd, styles.bgRedLight]}>
+              <View style={styles.iconOd}>
                 <Text style={styles.iconOdText}>OD</Text>
               </View>
               <Text style={styles.dashFont}>OD</Text>
@@ -278,7 +278,7 @@ const Home = () => {
           onPress={() => console.log('Task')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
-              <View style={[styles.iconTask, styles.bgTealLight]}>
+              <View style={styles.iconTask}>
                 <Text style={styles.iconTaskText}>TS</Text>
               </View>
               <Text style={styles.dashFont}>Task</Text>
@@ -301,9 +301,9 @@ const Home = () => {
       <View style={styles.dashContan}>
         <View style={styles.row}>
           <View style={styles.colSm5}>
-            <View style={styles.dash4}>
+            <View style={[styles.dash4, styles.bgPurple]}>
               <View style={styles.dash6}>
-                <Text style={styles.dashFont}>Monthly Manpower Status ({date.getMonth() + 1} {date.getFullYear()})</Text>
+                <Text style={styles.dashFont}>Monthly Manpower Status ({calDate.getMonth() + 1} {calDate.getFullYear()})</Text>
               </View>
               <View style={styles.borderBottom}>
                 <Text style={styles.dashFont}>Opening Employees: {employeeTotal}</Text>
@@ -326,42 +326,46 @@ const Home = () => {
             </View>
           </View>
           <View style={styles.colSm7}>
-            <View style={styles.dash5}>
+            <View style={[styles.dash5, styles.bgBlue]}>
               <View style={styles.dash6}>
                 <Text style={styles.dashFont}>Leave Request</Text>
               </View>
               <View style={styles.tableSizeArgs}>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.tableHeaderText}>Code</Text>
-                  <Text style={styles.tableHeaderText}>Full Name</Text>
-                  <Text style={styles.tableHeaderText}>Reason</Text>
-                  <Text style={styles.tableHeaderText}>Applied From</Text>
-                  <Text style={styles.tableHeaderText}>Applied To</Text>
-                  <Text style={styles.tableHeaderText}>Status</Text>
-                </View>
-                <View style={styles.tableBody}>
-                  {employee.map((e) => (
-                    <View style={styles.tableRow}>
-                      <Text style={styles.tableRowText}>{e.id}</Text>
-                      <View style={styles.fullNameContainer}>
-                        <View style={styles.imageContainer}>
-                          <Image
-                            source={{ uri: `http://localhost:3000/Images/` + e.image }}
-                            style={styles.homeLeaveImage}
-                          />
-                        </View>
-                        <View style={styles.fullNameTextContainer}>
-                          <Text style={styles.fullNameText}>{e.name}</Text>
-                          <Text style={styles.designationText}>{e.designation}General Manager</Text>
-                        </View>
-                      </View>
-                      <Text style={styles.tableRowText}>{e.reason}</Text>
-                      <Text style={styles.tableRowText}>{e.from_date}</Text>
-                      <Text style={styles.tableRowText}>{e.to_date}</Text>
-                      <Text style={styles.tableRowText}>{e.status}</Text>
+                <ScrollView horizontal={true}>
+                  <View style={styles.tableHeader}>
+                    <View style={styles.tableHeaderContent}>
+                      <Text style={styles.tableHeaderText}>Code</Text>
+                      <Text style={styles.tableHeaderText}>Full Name</Text>
+                      <Text style={styles.tableHeaderText}>Reason</Text>
+                      <Text style={styles.tableHeaderText}>Applied From</Text>
+                      <Text style={styles.tableHeaderText}>Applied To</Text>
+                      <Text style={styles.tableHeaderText}>Status</Text>
                     </View>
-                  ))}
-                </View>
+                  </View>
+                  <ScrollView style={styles.tableBody}>
+                    {employee.map((e) => (
+                      <View style={styles.tableRow}>
+                        <Text style={styles.tableRowText}>{e.id}</Text>
+                        <View style={styles.fullNameContainer}>
+                          <View style={styles.imageContainer}>
+                            <Image
+                              source={{ uri: `http://localhost:3000/Images/` + e.image }}
+                              style={styles.homeLeaveImage}
+                            />
+                          </View>
+                          <View style={styles.fullNameTextContainer}>
+                            <Text style={styles.fullNameText}>{e.name}</Text>
+                            <Text style={styles.designationText}>{e.designation}General Manager</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.tableRowText}>{e.reason}</Text>
+                        <Text style={styles.tableRowText}>{e.from_date}</Text>
+                        <Text style={styles.tableRowText}>{e.to_date}</Text>
+                       <Text style={styles.tableRowText}>{e.status}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </ScrollView>
               </View>
               <View style={styles.dashFontBorderTop}>
                 <TouchableOpacity
@@ -375,11 +379,14 @@ const Home = () => {
       </View>
       <View style={styles.dashContan}>
         <View style={styles.row}>
-          <View style={styles.colSm4}>
+          <View style={[styles.colSm4, styles.bgGreen]}>
             <View style={styles.dash7}>
               <View style={styles.dash6}>
                 <Text style={styles.dashFont}>Calendar</Text>
-                <Text style={styles.dashFont1}>{calDate.toDateString()}, {time}</Text>
+              </View>
+              <View style={styles.dash6}>
+                <Text style={styles.dashFont1}>{calDate.toDateString()}</Text>
+                <Text style={styles.dashFont1}>{time}</Text>
               </View>
               <View style={styles.calendr}>
                 <Calendar
@@ -389,40 +396,37 @@ const Home = () => {
               </View>
             </View>
           </View>
-          <View style={styles.colSm8}>
+          <View style={[styles.colSm8, styles.bgOrange]}>
             <View style={styles.dash7}>
               <View style={styles.dash6}>
                 <Text style={styles.dashFont}>Task List</Text>
               </View>
               <View style={styles.tableSizeArgs1}>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.tableHeaderText}>Code</Text>
-                  <Text style={styles.tableHeaderText}>Name</Text>
-                  <Text style={styles.tableHeaderText}>Assigned By</Text>
-                  <Text style={styles.tableHeaderText}>Duration</Text>
-                  <Text style={styles.tableHeaderText}>Status</Text>
-                </View>
-                <View style={styles.tableBody}>
-                  {employee.map((e) => (
-                    <View style={styles.tableRow}>
-                      <Text style={styles.tableRowText}>{e.id}</Text>
-                      <View style={styles.fullNameContainer}>
-                        <View style={styles.fullNameTextContainer}>
-                          <Text style={styles.fullNameText}>{e.name}</Text>
-                          <Text style={styles.designationText}>{e.task_name}Task : Testing</Text>
-                        </View>
-                      </View>
-                      <Text style={styles.tableRowText}>{e.assigned_by}</Text>
-                      <Text style={styles.tableRowText}>{e.duration}</Text>
-                      <Text style={styles.tableRowText}>{e.status}</Text>
+                <ScrollView horizontal={true}>
+                  <View style={styles.tableHeader}>
+                    <View style={styles.tableHeaderContent}>
+                      <Text style={styles.tableHeaderText}>Code</Text>
+                      <Text style={styles.tableHeaderText}>Name</Text>
+                      <Text style={styles.tableHeaderText}>Assigned By</Text>
+                      <Text style={styles.tableHeaderText}>Status</Text>
                     </View>
-                  ))}
-                </View>
+                  </View>
+                  <ScrollView style={styles.tableBody}>
+                    {employee.map((t) => (
+                      <View style={styles.tableRow}>
+                        <Text style={styles.tableRowText}>{t.id}</Text>
+                        <Text style={styles.tableRowText}>{t.name}</Text>
+                        <Text style={styles.tableRowText}>{t.assigned_by}</Text>
+                        <Text style={styles.tableRowText}>{t.status}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </ScrollView>
               </View>
               <View style={styles.dashFontBorderTop}>
                 <TouchableOpacity
-                  onPress={() => console.log('View Leave Requests')}>
-                  <Text style={styles.navLink}>View Leave Requests</Text>
+                  onPress={() => console.log('View Task List')}>
+                  <Text style={styles.navLink}>View Task List</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -465,7 +469,7 @@ const styles = StyleSheet.create({
   },
   bgBlue: {
     backgroundColor: '#3498db',
-  },
+ },
   bgBlueLight: {
     backgroundColor: '#5dade2',
   },
@@ -505,7 +509,6 @@ const styles = StyleSheet.create({
   bgTealLight: {
     backgroundColor: '#20b2aa',
   },
-
 
   dash1: {
     borderRadius: 5,
@@ -610,8 +613,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconTaskText: {
-    fontSize: 16,
+  iconTaskText: {fontSize: 16,
     fontWeight: 'bold',
   },
   colSm5: {
@@ -624,13 +626,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   dash6: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
   dashFont: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#fff',
   },
   borderBottom: {
@@ -657,12 +659,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+  tableHeaderContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   tableHeaderText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+    marginLeft: 10,
   },
-  tableBody: {},
+  tableBody: {
+    maxHeight: 200,
+    overflow: 'scroll',
+  },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -672,6 +683,7 @@ const styles = StyleSheet.create({
   tableRowText: {
     fontSize: 16,
     color: '#fff',
+    marginLeft: 10,
   },
   fullNameContainer: {
     flexDirection: 'row',
@@ -685,7 +697,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
-  fullNameTextContainer: {},
+  fullNameTextContainer: {
+  },
   fullNameText: {
     fontSize: 16,
     fontWeight: 'bold',
