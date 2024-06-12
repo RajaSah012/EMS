@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import Start from './Components/Start';
 import Welcome from './Components/Welcome';
-import Registration from './Components/Registration';
+import AdminRegistration from './Components/AdminRegistration';
 import Login from './Components/Login';
 import Home from './Components/Home';
 import AddCategory from './Components/AddCategory';
@@ -46,6 +46,7 @@ import MyTaxation from './Components/MyTaxation';
 import DailyReport from './Components/DailyReport';
 import Report from './Components/Report';
 import ReportFilter from './Components/ReportFilter';
+
 const Drawer = createDrawerNavigator();
 
 const CustomHeader = ({ navigation }) => {
@@ -65,7 +66,7 @@ function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="Start"
         screenOptions={({ navigation }) => ({
           headerStyle: { backgroundColor: 'skyblue' },
           headerTintColor: 'white',
@@ -73,14 +74,17 @@ function App() {
         })}>
         <Drawer.Screen name="Start" component={Start} />
         <Drawer.Screen name="Welcome" component={Welcome} />
-        <Drawer.Screen name="Registration" component={Registration} />
-        <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="AdminRegistration" component={AdminRegistration} />
+        <Drawer.Screen name="AdminLogin" component={Login} />
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="AddCategory" component={AddCategory} />
         <Drawer.Screen name="Category" component={Category} />
         <Drawer.Screen name="EmployeeLogin" component={EmployeeLogin} />
-        <Drawer.Screen name="EmployeeDetail" component={EmployeeDetail} />
-        <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
+        <Drawer.Screen 
+          name="EmployeeDetail" 
+          component={EmployeeDetail} 
+          initialParams={{ id: null }} 
+        />
         <Drawer.Screen name="Support" component={Support} />
         <Drawer.Screen name="Dashboard" component={Dashboard} />
         <Drawer.Screen name="Profile" component={Profile} />
@@ -93,8 +97,13 @@ function App() {
         <Drawer.Screen name="Document" component={Document} />
         <Drawer.Screen name="Settings" component={Settings} />
         <Drawer.Screen name="Employee" component={Employee} />
+        <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
         <Drawer.Screen name="AddEmployee" component={AddEmployee} />
-        <Drawer.Screen name="EditEmployee" component={EditEmployee} />
+        <Drawer.Screen 
+          name="EditEmployee" 
+          component={EditEmployee} 
+          initialParams={{ id: null }} 
+        />
         <Drawer.Screen name="MarkAttendance" component={MarkAttendance} />
         <Drawer.Screen name="MyAttendance" component={MyAttendance} />
         <Drawer.Screen name="OutDoorDuty" component={OutDoorDuty} />
@@ -112,8 +121,7 @@ function App() {
         <Drawer.Screen name="MyTaxation" component={MyTaxation}/>
         <Drawer.Screen name="DailyReport" component={DailyReport}/>
         <Drawer.Screen name="Report" component={Report}/>
-        <Drawer.Screen name=" ReportFilter" component={ ReportFilter}/>
-
+        <Drawer.Screen name="ReportFilter" component={ReportFilter}/>
       </Drawer.Navigator>
     </NavigationContainer>
   );

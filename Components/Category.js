@@ -1,40 +1,132 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import * as Linking from 'expo-linking';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
 import axios from 'axios';
+import { IconButton, Card, Appbar } from 'react-native-paper';
 
-const Category = () => {
-  const [category, setCategory] = useState([]);
+const Category = ({ navigation }) => {
+  const [categories, setCategories] = useState([]);
+  const [editCategoryId, setEditCategoryId] = useState(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/auth/category')
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [editCategoryId]);
+
+  const fetchCategories = () => {
+    axios.get('https://emsproject-production.up.railway.app/api/category/')
       .then(result => {
-        if (result.data.Status) {
-          setCategory(result.data.Result);
+        if (result.data) {
+          setCategories(result.data);
         } else {
-          alert(result.data.Error);
+          Alert.alert("Error", result.data.Error);
         }
       })
       .catch(err => console.log(err));
-  }, []);
+  };
+
+  const handleEdit = (id, name) => {
+    setEditCategoryId(id);
+    setNewCategoryName(name);
+  };
+
+  const handleSave = (id) => {
+    axios.put(`https://emsproject-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName })
+      .then(result => {
+        if (result.data) {
+          fetchCategories();
+          setEditCategoryId(null);
+          setNewCategoryName('');
+        } else {
+          Alert.alert("Error", result.data.Error);
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      'Confirm Deletion',
+      'Are you sure you want to delete this category?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            axios.delete(`https://emsproject-production.up.railway.app/api/category/${id}`)
+              .then(result => {
+                if (result.data) {
+                  fetchCategories();
+                } else {
+                  Alert.alert("Error", result.data.Error);
+                }
+              })
+              .catch(err => console.log(err));
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  
+
+  const renderCategory = (category) => {
+    return (
+      <Card key={category.categoryId} style={styles.card}>
+        <Card.Title
+          title={
+            <View style={styles.categoryContainer}>
+              {editCategoryId === category.categoryId ? (
+                <TextInput
+                  style={styles.input}
+                  value={newCategoryName}
+                  onChangeText={setNewCategoryName}
+                  ref={inputRef}
+                  onBlur={() => handleSave(category.categoryId)}
+                  placeholder="Enter category name"
+                  placeholderTextColor="grey"
+                />
+              ) : (
+                <Text>{category.categoryName}</Text>
+              )}
+            </View>
+          }
+          right={(props) => (
+            <View style={styles.actions}>
+              {editCategoryId === category.categoryId ? (
+                <IconButton icon="content-save" onPress={() => handleSave(category.categoryId)} />
+              ) : (
+                <>
+                  <IconButton icon="pencil" onPress={() => handleEdit(category.categoryId, category.categoryName)} />
+                  <IconButton icon="delete" color="red" onPress={() => handleDelete(category.categoryId)} />
+                </>
+              )}
+            </View>
+          )}
+        />
+      </Card>
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Category List</Text>
-      </View>
-      <TouchableOpacity style={styles.addButton} onPress={() => Linking.openURL('/dashboard/add_category')}>
-        <Text style={styles.addButtonText}>Add Category</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={category}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Text style={styles.listItemText}>{item.name}</Text>
-          </View>
-        )}
-        keyExtractor={item => item.id}
-      />
+      <Appbar.Header>
+        <Appbar.Content title="Category List" />
+      </Appbar.Header>
+      <ScrollView style={styles.tableContainer}>
+        {categories.map(renderCategory)}
+      </ScrollView>
     </View>
   );
 };
@@ -42,35 +134,28 @@ const Category = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
-  header: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  addButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
+  tableContainer: {
+    flex: 1,
     marginTop: 20,
+    paddingHorizontal: 16,
   },
-  addButtonText: {
-    fontSize: 16,
-    color: '#fff',
+  card: {
+    marginVertical: 8,
   },
-  listItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  actions: {
+    flexDirection: "row",
   },
-  listItemText: {
-    fontSize: 16,
+  input: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+    color: 'black', // Ensure text color is visible against the background
+    minWidth: 200,
   },
 });
 

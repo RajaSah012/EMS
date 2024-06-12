@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
@@ -15,98 +15,125 @@ const EditEmployee = ({ route, navigation }) => {
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/auth/category')
+    axios.get('https://emsproject-production.up.railway.app/api/category/')
       .then(result => {
-        if (result.data.Status) {
-          setCategory(result.data.Result);
-        } else {
-          alert(result.data.Error)
-        }
-      }).catch(err => console.log(err))
-
-    axios.get(`http://localhost:3000/auth/employee/${id}`)
-      .then(result => {
-        const employeeData = result.data.Result[0];
-        setEmployee({
-          name: employeeData.name,
-          email: employeeData.email,
-          address: employeeData.address,
-          salary: employeeData.salary,
-          category_id: employeeData.category_id,
-        })
-      }).catch(err => console.log(err))
-  }, [id])
-
-  const handleSubmit = () => {
-    axios.put(`http://localhost:3000/auth/edit_employee/${id}`, employee)
-      .then(result => {
-        if (result.data.Status) {
-          navigation.navigate('EmployeeList');
+        if (result.data) {
+          setCategory(result.data);
         } else {
           alert(result.data.Error);
         }
       }).catch(err => console.log(err));
-  }
+
+    axios.get(`https://emsproject-production.up.railway.app/api/employee/${id}`)
+      .then(result => {
+        setEmployee({
+          ...employee,
+          name: result.data.name,
+          email: result.data.email,
+          address: result.address,
+          salary: result.data.salary,
+          category_id: result.data.category_id,
+        });
+      }).catch(err => console.log(err));
+  }, []);
+
+  const handleSubmit = () => {
+    axios.put(`https://emsproject-production.up.railway.app/api/employee/${id}`, employee)
+      .then(result => {
+        if (result.data) {
+          navigation.navigate('Employee');
+        } else {
+          alert(result.data);
+        }
+      }).catch(err => console.log(err));
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Edit Employee</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Name"
-        value={employee.name}
-        onChangeText={(text) => setEmployee({ ...employee, name: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Email"
-        value={employee.email}
-        onChangeText={(text) => setEmployee({ ...employee, email: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Salary"
-        value={employee.salary}
-        onChangeText={(text) => setEmployee({ ...employee, salary: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Address"
-        value={employee.address}
-        onChangeText={(text) => setEmployee({ ...employee, address: text })}
-      />
-      <Picker
-        selectedValue={employee.category_id}
-        onValueChange={(itemValue) =>
-          setEmployee({ ...employee, category_id: itemValue })
-        }>
-        {category.map((c) => (
-          <Picker.Item key={c.id} label={c.name} value={c.id} />
-        ))}
-      </Picker>
-      <Button title="Edit Employee" onPress={handleSubmit} />
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>Edit Employee</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Name"
+          value={employee.name}
+          onChangeText={(text) => setEmployee({ ...employee, name: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Email"
+          value={employee.email}
+          onChangeText={(text) => setEmployee({ ...employee, email: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Salary"
+          value={employee.salary}
+          onChangeText={(text) => setEmployee({ ...employee, salary: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Address"
+          value={employee.address}
+          onChangeText={(text) => setEmployee({ ...employee, address: text })}
+        />
+        <Picker
+          selectedValue={employee.category_id}
+          onValueChange={(itemValue) => setEmployee({ ...employee, category_id: itemValue })}
+          style={styles.input}
+        >
+          {category.map((c) => {
+            return <Picker.Item key={c.categoryId} label={c.categoryName} value={c.categoryId} />;
+          })}
+        </Picker>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.buttonText}>Edit Employee</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f0f0f0',
     padding: 20,
   },
-  heading: {
+  formContainer: {
+    width: '100%',
+    maxWidth: 400,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    elevation: 2,
+  },
+  title: {
     fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
     borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
     marginBottom: 10,
-    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: 'blue',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
 

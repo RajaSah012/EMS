@@ -1,81 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Alert, FlatList, StyleSheet } from "react-native";
+import { Button, Card, Text, FAB, IconButton, Appbar } from "react-native-paper";
+import axios from "axios";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const Employee = () => {
   const [employee, setEmployee] = useState([]);
   const navigation = useNavigation();
 
-  useEffect(() => {
+  const fetchEmployees = () => {
     axios
-      .get('http://localhost:3000/auth/employee')
-      .then((response) => {
-        const data = response.data;
-        if (data.Status) {
-          setEmployee(data.Result);
+      .get("https://emsproject-production.up.railway.app/api/employee/")
+      .then((result) => {
+        if (result.data) {
+          setEmployee(result.data);
         } else {
-          Alert.alert('Error', data.Error);
+          Alert.alert(result.data.Error);
         }
       })
-      .catch((error) => console.log(error));
-  }, []);
+      .catch((err) => console.log(err));
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchEmployees();
+    }, [])
+  );
 
   const handleDelete = (id) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this employee?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Delete", onPress: () => confirmDelete(id) }
+      ]
+    );
+  };
+  
+  const confirmDelete = (id) => {
     axios
-      .delete(`http://localhost:3000/auth/delete_employee/${id}`)
-      .then((response) => {
-        const result = response.data;
-        if (result.Status) {
-          // Reload or update the employee list
-          // Implement your logic here
+      .delete(`https://emsproject-production.up.railway.app/api/employee/${id}`)
+      .then((result) => {
+        if (result.data) {
+          setEmployee(employee.filter((emp) => emp.employeeId !== id));
         } else {
-          Alert.alert('Error', result.Error);
+          Alert.alert(result.data.Error);
         }
-      })
-      .catch((error) => console.log(error));
+      });
   };
-
-  const navigateToAddEmployee = () => {
-    navigation.navigate('AddEmployee'); // Replace 'AddEmployee' with your screen name
-  };
+  
+  const renderItem = ({ item }) => (
+    <Card style={styles.card}>
+      <Card.Title
+        title={item.name}
+        subtitle={`ID: ${item.employeeId}`}
+        right={(props) => (
+          <View style={styles.actions}>
+            <IconButton {...props} icon="pencil" onPress={() => navigation.navigate('EditEmployee', { id: item.employeeId })} />
+            <IconButton {...props} icon="delete" color="red" onPress={() => handleDelete(item.employeeId)} />
+          </View>
+        )}
+      />
+      <Card.Content>
+        <Text>Email: {item.email}</Text>
+        <Text>Address: {item.address}</Text>
+        <Text>Salary: {item.salary}</Text>
+      </Card.Content>
+    </Card>
+  );
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.addButton} onPress={navigateToAddEmployee}>
-          <Text style={styles.buttonText}>Add Employee</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.buttonText}>Add Multiple Employee</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.employeeList}>
-        {employee.map((e) => (
-          <View key={e.id} style={styles.employeeItem}>
-            <Text style={styles.field}>Name: {e.name}</Text>
-            {e.image ? (
-              <Image source={{ uri: `http://localhost:3000/Images/${e.image}` }} style={styles.employeeImage} />
-            ) : (
-              <View style={styles.defaultImage}>
-                <Text>No Image</Text>
-              </View>
-            )}
-            <Text style={styles.field}>Email: {e.email}</Text>
-            <Text style={styles.field}>Address: {e.address}</Text>
-            <Text style={styles.field}>Salary: {e.salary}</Text>
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.editButton}>
-                <Text>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(e.id)}>
-                <Text>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </View>
+      <Appbar.Header>
+        <Appbar.Content title="Employee Management" />
+      </Appbar.Header>
+      <FlatList
+        data={employee}
+        keyExtractor={(item) => item.employeeId.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
+      />
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => navigation.navigate('AddEmployee')}
+      />
     </View>
   );
 };
@@ -83,63 +97,22 @@ const Employee = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 20,
+  list: {
+    paddingHorizontal: 16,
+    paddingBottom: 80,
   },
-  addButton: {
-    backgroundColor: 'green',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 5,
+  card: {
+    marginVertical: 8,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  actions: {
+    flexDirection: "row",
   },
-  employeeList: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  employeeItem: {
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-  },
-  employeeImage: {
-    width: 100,
-    height: 100,
-  },
-  defaultImage: {
-    width: 100,
-    height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ccc',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  editButton: {
-    backgroundColor: 'blue',
-    padding: 5,
-    borderRadius: 5,
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    padding: 5,
-    borderRadius: 5,
-  },
-  field: {
-    marginBottom: 5,
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
 

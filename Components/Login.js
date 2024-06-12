@@ -1,206 +1,193 @@
-import { View, Text, Image , Pressable, TextInput, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from "react-native-safe-area-context";
-import COLORS from '../constants/colors';
-import { Ionicons } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox"
-import Button from '../constants/Button';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Dimensions, Platform } from 'react-native';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-const Login = ({ navigation }) => {
-    const [isPasswordShown, setIsPasswordShown] = useState(false);
-    const [isChecked, setIsChecked] = useState(false);
-    
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={{ flex: 1, marginHorizontal: 22 }}>
-                    <View style={{ marginVertical: 22 }}>
-                        <Text style={{
-                            fontSize: 22,
-                            fontWeight: 'bold',
-                            marginVertical: 12,
-                            color: COLORS.black
-                        }}>
-                            Hi Welcome Back ! 👋
-                        </Text>
+const { width, height } = Dimensions.get('window');
 
-                        <Text style={{
-                            fontSize: 16,
-                            color: COLORS.black
-                        }}>Hello again you have been missed!</Text>
-                    </View>
+const Login = () => {
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
+  const navigation = useNavigation();
 
-                    <View style={{ marginBottom: 12 }}>
-                        <Text style={{
-                            fontSize: 16,
-                            fontWeight: 400,
-                            marginVertical: 8
-                        }}>Email address</Text>
+  const handleSubmit = async () => {
+    if (isChecked) {
+      try {
+        const response = await axios.post('http://localhost:3000/auth/adminlogin', values);
+        if (response.data.loginStatus) {
+          navigation.navigate('Dashboard');
+        } else {
+          setError(response.data.Error);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      setError('Please agree to the terms and conditions');
+    }
+  };
 
-                        <View style={{
-                            width: "100%",
-                            height: 48,
-                            borderColor: COLORS.black,
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingLeft: 22
-                        }}>
-                            <TextInput
-                                placeholder='Enter your email address'
-                                placeholderTextColor={COLORS.black}
-                                keyboardType='email-address'
-                                style={{
-                                    width: "100%"
-                                }}
-                            />
-                        </View>
-                    </View>
+  const handleCheckboxClick = () => {
+    setIsChecked(!isChecked);
+  };
 
-                    <View style={{ marginBottom: 12 }}>
-                        <Text style={{
-                            fontSize: 16,
-                            fontWeight: 400,
-                            marginVertical: 8
-                        }}>Password</Text>
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('../Images/EMS.png')} style={styles.logo} />
+        <Text style={styles.title}>Employee Management System</Text>
+      </View>
+      <TouchableOpacity style={styles.registrationButton} onPress={() => navigation.navigate('AdminRegistration')}>
+        <Text style={styles.registrationButtonText}>Registration</Text>
+      </TouchableOpacity>
+      <View style={styles.formContainer}>
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        <Text style={styles.formTitle}>Login Page</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Email"
+          value={values.email}
+          onChangeText={(text) => setValues({ ...values, email: text })}
+          autoCompleteType="email"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          secureTextEntry={true}
+          value={values.password}
+          onChangeText={(text) => setValues({ ...values, password: text })}
+          textContentType="password"
+        />
+        <TouchableOpacity style={styles.checkbox} onPress={handleCheckboxClick}>
+          <View style={styles.checkboxInner}>
+            {isChecked && <Text style={styles.checkboxSymbol}>✓</Text>}
+          </View>
+          <Text style={styles.checkboxLabel}>I Agree to the Terms & Conditions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+          <Text style={styles.loginButtonText}>Login</Text>
+        </TouchableOpacity>
+        <View style={styles.termsContainer}>
+          <TouchableOpacity>
+            <Text style={styles.termsText}>You agree with our terms and conditions</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 
-                        <View style={{
-                            width: "100%",
-                            height: 48,
-                            borderColor: COLORS.black,
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingLeft: 22
-                        }}>
-                            <TextInput
-                                placeholder='Enter your password'
-                                placeholderTextColor={COLORS.black}
-                                secureTextEntry={isPasswordShown}
-                                style={{
-                                    width: "100%"
-                                }}
-                            />
-
-                            <TouchableOpacity
-                                onPress={() => setIsPasswordShown(!isPasswordShown)}
-                                style={{
-                                    position: "absolute",
-                                    right: 12
-                                }}
-                            >
-                                {
-                                    isPasswordShown == true ? (
-                                        <Ionicons name="eye-off" size={24} color={COLORS.black} />
-                                    ) : (
-                                        <Ionicons name="eye" size={24} color={COLORS.black} />
-                                    )
-                                }
-
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        marginVertical: 6
-                    }}>
-                        <Checkbox
-                            style={{ marginRight: 8 }}
-                            value={isChecked}
-                            onValueChange={setIsChecked}
-                            color={isChecked ? COLORS.primary : undefined}
-                        />
-
-                        <Text>Remenber Me</Text>
-                    </View>
-
-                    <Button
-                        title="Login"
-                        filled
-                        style={{
-                            marginTop: 18,
-                            marginBottom: 4,
-                        }}
-                    />
-
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                        <Text style={{ fontSize: 14 }}>Or Login with</Text>
-                        <View
-                            style={{
-                                flex: 1,
-                                height: 1,
-                                backgroundColor: COLORS.grey,
-                                marginHorizontal: 10
-                            }}
-                        />
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center'
-                    }}>
-                        
-
-                        <TouchableOpacity
-                            onPress={() => console.log("Pressed")}
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                height: 52,
-                                borderWidth: 1,
-                                borderColor: COLORS.grey,
-                                marginRight: 4,
-                                borderRadius: 10
-                            }}
-                        >
-                            <Image
-                                source={require("../assets/google.png")}
-                                style={{
-                                    height: 36,
-                                    width: 36,
-                                    marginRight: 8
-                                }}
-                                resizeMode='contain'
-                            />
-
-                            <Text>Google</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        marginVertical: 22
-                    }}>
-                        <Text style={{ fontSize: 16, color: COLORS.black }}>Don't have an account ? </Text>
-                        <Pressable
-                            onPress={() => navigation.navigate("Registration")}
-                        >
-                            <Text style={{
-                                fontSize: 16,
-                                color: COLORS.primary,
-                                fontWeight: "bold",
-                                marginLeft: 6
-                            }}>Register</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    )
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+  },
+  header: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 10,
+  },
+  registrationButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  registrationButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  formContainer: {
+    width: '80%',
+    paddingVertical: 30,
+    justifyContent: 'center',
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+  },
+  loginButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  checkbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  checkboxInner: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxSymbol: {
+    fontSize: 16,
+    color: '#4CAF50',
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: '#555',
+  },
+  termsContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  termsText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#f00',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+});
 
 export default Login;

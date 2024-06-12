@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
 const AddEmployee = () => {
@@ -12,104 +12,106 @@ const AddEmployee = () => {
     salary: '',
     address: '',
     category_id: '',
-    image: null,
   });
-  const [selectedImageUri, setSelectedImageUri] = useState(null);
-  const [category, setCategory] = useState([]);
+  const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
-    (async () => {
-      const result = await axios.get('http://localhost:3000/auth/category');
-      if (result.data.Status) {
-        setCategory(result.data.Result);
-      } else {
-        Alert.alert('Error', result.data.Error);
-      }
-    })();
+    axios.get('https://emsproject-production.up.railway.app/api/category/')
+      .then(result => {
+        if (result.data) {
+          setCategories(result.data);
+        } else {
+          Alert.alert('Error', result.data.Error);
+        }
+      })
+      .catch(err => console.log(err));
   }, []);
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append('name', employee.name);
-    formData.append('email', employee.email);
-    formData.append('password', employee.password);
-    formData.append('address', employee.address);
-    formData.append('salary', employee.salary);
-    formData.append('image', employee.image);
-    formData.append('category_id', employee.category_id);
+  const handleInputChange = (name, value) => {
+    setEmployee(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
-    try {
-      const result = await axios.post('http://localhost:3000/auth/add_employee', formData);
-      if (result.data.Status) {
-        Alert.alert('Success', 'Employee added successfully');
-        navigation.navigate('Employee'); // Navigate to Employee screen
-      } else {
-        Alert.alert('Error', result.data.Error);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const handleSubmit = () => {
+    axios.post('https://emsproject-production.up.railway.app/api/employee/', employee, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(result => {
+        if (result.data) {
+          // Clear the fields after adding an employee
+          setEmployee({
+            name: '',
+            email: '',
+            password: '',
+            salary: '',
+            address: '',
+            category_id: '',
+          });
+          navigation.navigate('Employee'); // Assuming you have an Employee screen
+        } else {
+          Alert.alert('Error', result.data.Error);
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
- const pickImage = async () => {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    Alert.alert('Permission denied', 'Please grant media library permission to select an image.');
-    return;
-  }
-
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
-
-  if (!result.cancelled) {
-    setSelectedImageUri(result.uri);
-    setEmployee(prevState => ({ ...prevState, image: result.uri }));
-  }
-};
-
+  const updateCategory = (categoryId) => {
+    setEmployee(prevState => ({
+      ...prevState,
+      category_id: categoryId
+    }));
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Add Employee</Text>
+      <Text style={styles.header}>Add Employee</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
-        onChangeText={(text) => setEmployee({ ...employee, name: text })}
+        placeholder="Enter Name"
+        value={employee.name}
+        onChangeText={(value) => handleInputChange('name', value)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        onChangeText={(text) => setEmployee({ ...employee, email: text })}
+        placeholder="Enter Email"
+        value={employee.email}
+        onChangeText={(value) => handleInputChange('email', value)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
-        onChangeText={(text) => setEmployee({ ...employee, password: text })}
+        placeholder="Enter Password"
+        secureTextEntry
+        value={employee.password}
+        onChangeText={(value) => handleInputChange('password', value)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Salary"
-        onChangeText={(text) => setEmployee({ ...employee, salary: text })}
+        placeholder="Enter Salary"
+        value={employee.salary}
+        onChangeText={(value) => handleInputChange('salary', value)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Address"
-        onChangeText={(text) => setEmployee({ ...employee, address: text })}
+        placeholder="Enter Address"
+        value={employee.address}
+        onChangeText={(value) => handleInputChange('address', value)}
       />
-      <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
-        <Text style={styles.imagePickerText}>Select Image</Text>
-      </TouchableOpacity>
-      {selectedImageUri && (
-        <Image source={{ uri: selectedImageUri }} style={styles.image} />
-      )}
-      <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
-        <Text style={styles.addButtonText}>Add Employee</Text>
-      </TouchableOpacity>
+      <Picker
+        selectedValue={employee.category_id}
+        style={styles.input}
+        onValueChange={(itemValue) => updateCategory(itemValue)}
+      >
+        <Picker.Item label="Select Category" value="" />
+        {categories.map((c) => (
+          <Picker.Item key={c.categoryId ? c.categoryId.toString() : ''} label={c.categoryName} value={c.categoryId ? c.categoryId.toString() : ''} />
+        ))}
+      </Picker>
+      <Button title="Add Employee" onPress={handleSubmit} />
     </View>
   );
 };
@@ -117,47 +119,20 @@ const AddEmployee = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  heading: {
+  header: {
     fontSize: 24,
+    textAlign: 'center',
     marginBottom: 20,
   },
   input: {
-    width: '80%',
     height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-  },
-  imagePickerButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  imagePickerText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginVertical: 10,
   },
 });
 

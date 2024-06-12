@@ -27,7 +27,8 @@ const Attendance = () => {
     }, []);
 
     const AdminRecords = () => {
-        axios.get('http://localhost:3000/auth/admin_records')
+        axios
+        .get('https://emsproject-production.up.railway.app/api/employee/')
             .then(result => {
                 if (result.data.Status) {
                     setAdmins(result.data.Result);
@@ -38,7 +39,7 @@ const Attendance = () => {
     };
 
     const fetchCategories = () => {
-        axios.get('http://localhost:3000/auth/category')
+        axios.get('https://emsproject-production.up.railway.app/api/category/')
             .then(result => {
                 if (result.data.Status) {
                     setCategory(result.data.Result);
@@ -50,7 +51,8 @@ const Attendance = () => {
     };
 
     const fetchEmployees = () => {
-        axios.get('http://localhost:3000/auth/employee')
+        axios
+      .get('https://emsproject-production.up.railway.app/api/employee/')
             .then(result => {
                 if (result.data.Status) {
                     setEmployee(result.data.Result);
@@ -254,10 +256,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
+        minWidth: 100, // Ensure minimum width to fit the text
     },
     exportButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+        fontSize: 14, // Adjust font size for better visibility
+        textAlign: 'center', // Center the text
     },
     summaryContainer: {
         flexDirection: 'row',
