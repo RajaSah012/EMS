@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import axios from 'axios';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import DatePicker from 'react-native-datepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const [adminTotal, setAdminTotal] = useState(0);
+  const [m, setM] = useState(0)
+  const [f, setF] = useState(0)
+  const [t, setT] = useState(0)
+  const [o, setO] = useState(0)
+  const [c, setC] = useState(0)
+  const [ti, setTi] = useState(0)
+  const [to, setTo] = useState(0)
+  const [e, setE] = useState(0)
+  const [n, setN] = useState(0)
   const [employeeTotal, setEmployeeTotal] = useState(0);
   const [salaryTotal, setSalaryTotal] = useState(0);
   const [admins, setAdmins] = useState([]);
   const [category, setCategory] = useState([]);
   const [employee, setEmployee] = useState([]);
-  const [calDate, setCalDate] = useState(new Date());
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -19,42 +26,224 @@ const Home = () => {
     employeeCount();
     salaryCount();
     AdminRecords();
+    GenderM();
+    GenderF();
+    GenderT();
+    OpeningEmployees();
+    TransferredInEmployees();
+    TransferredOutEmployees();
+    NewJoinedEmployee();
+    ExitedEmployees();
+    ClosedEmployees();
   }, []);
 
-  const AdminRecords = () => {
-    axios.get('http://localhost:3000/auth/admin_records')
-     .then(result => {
-        if (result.data.Status) {
-          setAdmins(result.data.Result)
+  const AdminRecords = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/auth/getUsers",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+      .then(result => {
+        if (result.data) {
+          setAdmins(result.data)
         } else {
           alert(result.data.Error)
         }
       })
   }
-
-  const adminCount = () => {
-    axios.get('http://localhost:3000/auth/admin_count')
-     .then(result => {
-        if (result.data.Status) {
-          setAdminTotal(result.data.Result[0].admin)
+  const OpeningEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countc", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setO(result.data)
+        } else {
+          alert("o")
+        }
+      })
+  }
+  const TransferredInEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countti", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setTi(result.data)
+        } else {
+          alert("ti")
+        }
+      })
+  }
+  const TransferredOutEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countto", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setTo(result.data)
+        } else {
+          alert("to")
+        }
+      })
+  }
+  const NewJoinedEmployee = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countn", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setN(result.data)
+        } else {
+          alert("n")
+        }
+      })
+  }
+  const ExitedEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countexit", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setE(result.data)
+        } else {
+          alert("exit")
+        }
+      })
+  }
+  const ClosedEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countex", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setC(result.data)
+        } else {
+          alert("close")
         }
       })
   }
 
-  const employeeCount = () => {
-    axios.get('http://localhost:3000/auth/employee_count')
-     .then(result => {
-        if (result.data.Status) {
-          setEmployeeTotal(result.data.Result[0].employee)
+  const GenderM = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countm", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setM(result.data)
+        } else {
+          alert("m")
+        }
+      })
+  }
+  const GenderF = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countf", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setF(result.data)
+        } else {
+          alert("f")
+        }
+      })
+  }
+  const GenderT = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/countt", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(result => {
+        if (result.data) {
+          setT(result.data)
+        } else {
+          alert("t")
         }
       })
   }
 
-  const salaryCount = () => {
-    axios.get('http://localhost:3000/auth/salary_count')
-     .then(result => {
-        if (result.data.Status) {
-          setSalaryTotal(result.data.Result[0].salaryOFEmp)
+  const adminCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/auth/count",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+      .then(result => {
+        if (result.data) {
+          setAdminTotal(result.data)
+        }
+      })
+  }
+
+  const employeeCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/count",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+      .then(result => {
+        if (result.data) {
+          setEmployeeTotal(result.data)
+        }
+      })
+  }
+
+  const salaryCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios
+      .get("https://emsproject-production.up.railway.app/api/employee/total",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+      .then(result => {
+        if (result.data) {
+          setSalaryTotal(result.data)
         } else {
           alert(result.data.Error)
         }
@@ -62,34 +251,48 @@ const Home = () => {
   }
 
   useEffect(() => {
-    axios
-     .get("http://localhost:3000/auth/employee")
-     .then((result) => {
-        if (result.data.Status) {
-          setEmployee(result.data.Result);
-        } else {
-          alert(result.data.Error);
-        }
-      })
-     .catch((err) => console.log(err));
+    const fetchData = async () => {
+      const token = await AsyncStorage.getItem('token');
+      axios
+        .get("https://emsproject-production.up.railway.app/api/employee/",
+          {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          })
+        .then((result) => {
+          if (result.data) {
+            setEmployee(result.data);
+          } else {
+            alert(result.data.Error);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
-    axios
-     .get("http://localhost:3000/auth/category")
-     .then((result) => {
-        if (result.data.Status) {
-          setCategory(result.data.Result);
-        } else {
-          alert(result.data.Error);
+    const fetchData = async () => {
+      const token = await AsyncStorage.getItem('token');
+      console.log("Fetched Token:", token); // Logging the token
+
+      axios.get('https://emsproject-production.up.railway.app/api/category/', {
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
       })
-     .catch((err) => console.log(err));
+        .then((result) => {
+          if (result.data) {
+            setCategory(result.data);
+          } else {
+            alert(result.data.Error);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+    fetchData();
   }, []);
-
-  const handleDate = (dt) => {
-    setCalDate(dt)
-  }
 
   const updateTime = () => {
     const currentTime = new Date().toLocaleTimeString();
@@ -104,8 +307,8 @@ const Home = () => {
       </View>
       <View style={styles.row}>
         <TouchableOpacity
-          style={[styles.col, styles.bgPurple]}
-          onPress={() => console.log('Current Employees')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('CurrentEmployee')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
               <View style={styles.iconHome}>
@@ -117,19 +320,19 @@ const Home = () => {
               <Text style={styles.dashFont1Text}>{employeeTotal}</Text>
             </View>
             <View style={styles.borderBottom}>
-              <Text style={styles.dashFont}>Male: {employeeTotal}</Text>
+              <Text style={styles.dashFont}>Male: {m}</Text>
             </View>
             <View style={styles.borderBottom}>
-              <Text style={styles.dashFont}>Female: {employeeTotal}</Text>
+              <Text style={styles.dashFont}>Female: {f}</Text>
             </View>
             <View style={styles.borderBottom}>
-              <Text style={styles.dashFont}>Trans: {employeeTotal}</Text>
+              <Text style={styles.dashFont}>Trans: {t}</Text>
             </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.col, styles.bgBlue]}
-          onPress={() => console.log('Present')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('DailyRepoart')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
               <View style={styles.iconPre}>
@@ -152,8 +355,8 @@ const Home = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.col, styles.bgGreen]}
-          onPress={() => console.log('Leaves')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('LeaveList')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
               <View style={styles.iconLeav}>
@@ -176,8 +379,8 @@ const Home = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.col, styles.bgOrange]}
-          onPress={() => console.log('Payments')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('GeneratePayslip')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
               <View style={styles.iconPay}>
@@ -202,8 +405,8 @@ const Home = () => {
       </View>
       <View style={styles.row}>
         <TouchableOpacity
-          style={[styles.col, styles.bgPink]}
-          onPress={() => console.log('Reimbursements')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('List Reimbursement')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
               <View style={styles.iconRei}>
@@ -226,8 +429,8 @@ const Home = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.col, styles.bgYellow]}
-          onPress={() => console.log('AR')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('AttendanceRegularization')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
               <View style={styles.iconHome}>
@@ -250,8 +453,8 @@ const Home = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.col, styles.bgRed]}
-          onPress={() => console.log('OD')}>
+          style={[styles.col, styles.bgTeal]}
+          onPress={() => navigation.navigate('OdList')}>
           <View style={styles.dash1}>
             <View style={styles.dash2}>
               <View style={styles.iconOd}>
@@ -275,7 +478,7 @@ const Home = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.col, styles.bgTeal]}
-          onPress={() => console.log('Task')}>
+          onPress={() => navigation.navigate('TaskList')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
               <View style={styles.iconTask}>
@@ -301,70 +504,61 @@ const Home = () => {
       <View style={styles.dashContan}>
         <View style={styles.row}>
           <View style={styles.colSm5}>
-            <View style={[styles.dash4, styles.bgPurple]}>
+            <View style={[styles.dash4, styles.bgTeal]}>
               <View style={styles.dash6}>
-                <Text style={styles.dashFont}>Monthly Manpower Status ({calDate.getMonth() + 1} {calDate.getFullYear()})</Text>
+                <Text style={styles.dashFont}>Monthly Manpower Status</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>Opening Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>Opening Employees: {o}</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>Transferred In Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>Transferred In Employees: {ti}</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>New Joined Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>New Joined Employees: {n}</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>Transferred Out Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>Transferred Out Employees: {to}</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>Exited Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>Exited Employees: {e}</Text>
               </View>
               <View style={styles.borderBottom}>
-                <Text style={styles.dashFont}>Closing Employees: {employeeTotal}</Text>
+                <Text style={styles.dashFont}>Closing Employees: {c}</Text>
               </View>
             </View>
           </View>
           <View style={styles.colSm7}>
-            <View style={[styles.dash5, styles.bgBlue]}>
+            <View style={[styles.dash5, styles.bgTeal]}>
               <View style={styles.dash6}>
                 <Text style={styles.dashFont}>Leave Request</Text>
               </View>
               <View style={styles.tableSizeArgs}>
                 <ScrollView horizontal={true}>
-                  <View style={styles.tableHeader}>
-                    <View style={styles.tableHeaderContent}>
-                      <Text style={styles.tableHeaderText}>Code</Text>
-                      <Text style={styles.tableHeaderText}>Full Name</Text>
-                      <Text style={styles.tableHeaderText}>Reason</Text>
-                      <Text style={styles.tableHeaderText}>Applied From</Text>
-                      <Text style={styles.tableHeaderText}>Applied To</Text>
-                      <Text style={styles.tableHeaderText}>Status</Text>
-                    </View>
-                  </View>
-                  <ScrollView style={styles.tableBody}>
-                    {employee.map((e) => (
-                      <View style={styles.tableRow}>
-                        <Text style={styles.tableRowText}>{e.id}</Text>
-                        <View style={styles.fullNameContainer}>
-                          <View style={styles.imageContainer}>
-                            <Image
-                              source={{ uri: `http://localhost:3000/Images/` + e.image }}
-                              style={styles.homeLeaveImage}
-                            />
-                          </View>
-                          <View style={styles.fullNameTextContainer}>
-                            <Text style={styles.fullNameText}>{e.name}</Text>
-                            <Text style={styles.designationText}>{e.designation}General Manager</Text>
-                          </View>
-                        </View>
-                        <Text style={styles.tableRowText}>{e.reason}</Text>
-                        <Text style={styles.tableRowText}>{e.from_date}</Text>
-                        <Text style={styles.tableRowText}>{e.to_date}</Text>
-                       <Text style={styles.tableRowText}>{e.status}</Text>
+                  <View>
+                    <View style={styles.tableHeader}>
+                      <View style={styles.tableHeaderContent}>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Code</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Full Name</Text>
+                        <Text style={[styles.tableHeaderText, { width: 120 }]}>Reason</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Applied From</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Applied To</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Status</Text>
                       </View>
-                    ))}
-                  </ScrollView>
+                    </View>
+                    <ScrollView style={styles.tableBody}>
+                      {employee.map((employee) => (
+                        <View key={employee.employeeId} style={styles.tableRow}>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.employeeId}</Text>
+                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.name}</Text>
+                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.fname}</Text>
+                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.email}</Text>
+                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.dob}</Text>
+                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.status}</Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
                 </ScrollView>
               </View>
               <View style={styles.dashFontBorderTop}>
@@ -379,24 +573,7 @@ const Home = () => {
       </View>
       <View style={styles.dashContan}>
         <View style={styles.row}>
-          <View style={[styles.colSm4, styles.bgGreen]}>
-            <View style={styles.dash7}>
-              <View style={styles.dash6}>
-                <Text style={styles.dashFont}>Calendar</Text>
-              </View>
-              <View style={styles.dash6}>
-                <Text style={styles.dashFont1}>{calDate.toDateString()}</Text>
-                <Text style={styles.dashFont1}>{time}</Text>
-              </View>
-              <View style={styles.calendr}>
-                <Calendar
-                  style={styles.calendr1}
-                  onDayPress={(day) => console.log(day)}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={[styles.colSm8, styles.bgOrange]}>
+          <View style={[styles.colSm4, styles.bgTeal]}>
             <View style={styles.dash7}>
               <View style={styles.dash6}>
                 <Text style={styles.dashFont}>Task List</Text>
@@ -413,11 +590,13 @@ const Home = () => {
                   </View>
                   <ScrollView style={styles.tableBody}>
                     {employee.map((t) => (
-                      <View style={styles.tableRow}>
-                        <Text style={styles.tableRowText}>{t.id}</Text>
-                        <Text style={styles.tableRowText}>{t.name}</Text>
-                        <Text style={styles.tableRowText}>{t.assigned_by}</Text>
-                        <Text style={styles.tableRowText}>{t.status}</Text>
+                      <View key={t.employeeId}>
+                        <View style={styles.tableRow}>
+                          <Text style={styles.tableRowText}>{t.employeeId}</Text>
+                          <Text style={styles.tableRowText}>{t.name}</Text>
+                          <Text style={styles.tableRowText}>{t.fname}</Text>
+                          <Text style={styles.tableRowText}>{t.status}</Text>
+                        </View>
                       </View>
                     ))}
                   </ScrollView>
@@ -461,55 +640,9 @@ const styles = StyleSheet.create({
     width: '48%',
     marginBottom: 10,
   },
-  bgPurple: {
-    backgroundColor: '#8e44ad',
-  },
-  bgPurpleLight: {
-    backgroundColor: '#9b59b6',
-  },
-  bgBlue: {
-    backgroundColor: '#3498db',
- },
-  bgBlueLight: {
-    backgroundColor: '#5dade2',
-  },
-  bgGreen: {
-    backgroundColor: '#27ae60',
-  },
-  bgGreenLight: {
-    backgroundColor: '#2ecc71',
-  },
-  bgOrange: {
-    backgroundColor: '#d35400',
-  },
-  bgOrangeLight: {
-    backgroundColor: '#e67e22',
-  },
-  bgPink: {
-    backgroundColor: '#FFC0CB',
-  },
-  bgPinkLight: {
-    backgroundColor: '#FFB6C1',
-  },
-  bgYellow: {
-    backgroundColor: '#FFFF00',
-  },
-  bgYellowLight: {
-    backgroundColor: '#FFFFE0',
-  },
-  bgRed: {
-    backgroundColor: '#FF0000',
-  },
-  bgRedLight: {
-    backgroundColor: '#FFC0CB',
-  },
   bgTeal: {
-    backgroundColor: '#008080',
+    backgroundColor: "#1799",
   },
-  bgTealLight: {
-    backgroundColor: '#20b2aa',
-  },
-
   dash1: {
     borderRadius: 5,
     padding: 10,
@@ -613,7 +746,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconTaskText: {fontSize: 16,
+  iconTaskText: {
+    fontSize: 16,
     fontWeight: 'bold',
   },
   colSm5: {
@@ -697,8 +831,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
-  fullNameTextContainer: {
-  },
+  fullNameTextContainer: {},
   fullNameText: {
     fontSize: 16,
     fontWeight: 'bold',

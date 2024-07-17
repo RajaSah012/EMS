@@ -104,32 +104,27 @@ const Report = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Company Reports</Text>
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.menuContainer}>
-        <TouchableOpacity style={styles.menuItem}>
-          <MaterialIcons name="insert-chart" size={24} color="black" />
-          <Text style={styles.menuText}>Attendance</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <MaterialIcons name="payment" size={24} color="black" />
-          <Text style={styles.menuText}>Payment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <MaterialIcons name="note" size={24} color="black" />
-          <Text style={styles.menuText}>Notes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <MaterialIcons name="people" size={24} color="black" />
-          <Text style={styles.menuText}>Employee List</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      <Text style={styles.header}>Company Reports</Text>
       <View style={styles.tabContainer}>
-        <Text style={styles.tabTitle}>Generate Report</Text>
-        <View style={styles.row}>
-          <View style={styles.column}>
-            <Text style={styles.label}>Report Type</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll}>
+          <TouchableOpacity style={[styles.tab, styles.activeTab]}>
+            <Text style={styles.tabText}>Attendance</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tab}>
+            <Text style={styles.tabText}>Payment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tab}>
+            <Text style={styles.tabText}>Notes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.tab}>
+            <Text style={styles.tabText}>Employee List</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+      <View style={styles.filterContainer}>
+        <View style={styles.filterRow}>
+          <View style={styles.filterColumn}>
+            <Text style={styles.filterLabel}>Report Type</Text>
             <RNPickerSelect
               style={{ inputAndroid: styles.input }}
               placeholder={{ label: 'Select Report Type', value: null }}
@@ -137,26 +132,28 @@ const Report = () => {
               items={admins.map((a) => ({ label: a.name, value: a.id }))}
             />
           </View>
-          <View style={styles.column}>
-            <Text style={styles.label}>Select Branch</Text>
+          <View style={styles.filterColumn}>
+            <Text style={styles.filterLabel}>Select Branch</Text>
             <RNPickerSelect
               style={{ inputAndroid: styles.input }}
-              placeholder={{ label: 'Select Branch', value: null }}
+              placeholder={{ label: 'All Branches', value: null }}
               onValueChange={(value) => console.log(value)}
               items={admins.map((a) => ({ label: a.name, value: a.id }))}
             />
           </View>
-          <View style={styles.column}>
-            <Text style={styles.label}>Select Department</Text>
+        </View>
+        <View style={styles.filterRow}>
+          <View style={styles.filterColumn}>
+            <Text style={styles.filterLabel}>Select Department</Text>
             <RNPickerSelect
               style={{ inputAndroid: styles.input }}
-              placeholder={{ label: 'Select Department', value: null }}
+              placeholder={{ label: 'All Departments', value: null }}
               onValueChange={(value) => console.log(value)}
               items={category.map((c) => ({ label: c.name, value: c.id }))}
             />
           </View>
-          <View style={styles.column}>
-            <Text style={styles.label}>Date</Text>
+          <View style={styles.filterColumn}>
+            <Text style={styles.filterLabel}>Date</Text>
             <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
               <Text>{date.toDateString()}</Text>
             </TouchableOpacity>
@@ -169,11 +166,13 @@ const Report = () => {
               />
             )}
           </View>
-          <View style={styles.column}>
-            <Text style={styles.label}>Format</Text>
+        </View>
+        <View style={styles.filterRow}>
+          <View style={styles.filterColumn}>
+            <Text style={styles.filterLabel}>Format</Text>
             <RNPickerSelect
               style={{ inputAndroid: styles.input }}
-              placeholder={{ label: 'Select Format', value: null }}
+              placeholder={{ label: 'XLSX', value: null }}
               onValueChange={(value) => console.log(value)}
               items={[{ label: 'XLSX', value: 'xlsx' }]}
             />
@@ -186,21 +185,24 @@ const Report = () => {
           Some reports might take time to generate. Once these are done, you can download all the reports generated from the list below.
         </Text>
       </View>
-      <FlatList
-        data={filteredRecords}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.recordContainer} onPress={() => downloadCSV(item)}>
-            <Text style={styles.recordTitle}>{item.name} Daily Attendance Report</Text>
-            {admins.length > 0 && (
-              <Text style={styles.recordDetail}>Branch: {admins.map((a) => a.name)}</Text>
-            )}
-            <Text style={styles.recordDetail}>Month: Jan 2024</Text>
-            <Text style={styles.recordDetail}>Format: XLSX</Text>
-            <Text style={styles.recordDetail}>Generated On: 02-01-2024</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      <View style={styles.recentReportsContainer}>
+        <Text style={styles.recentReportsTitle}>Recent Reports</Text>
+        <FlatList
+          data={filteredRecords}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.recordContainer} onPress={() => downloadCSV(item)}>
+              <Text style={styles.recordTitle}>{item.name} Daily Attendance Report</Text>
+              {admins.length > 0 && (
+                <Text style={styles.recordDetail}>Branch: {admins.map((a) => a.name)}</Text>
+              )}
+              <Text style={styles.recordDetail}>Month: Jan 2024</Text>
+              <Text style={styles.recordDetail}>Format: XLSX</Text>
+              <Text style={styles.recordDetail}>Generated On: 02-01-2024</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      </View>
     </View>
   );
 };
@@ -209,65 +211,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    backgroundColor: '#F8E9E9',
   },
-  titleContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
+  header: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  menuContainer: {
-    marginBottom: 20,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    backgroundColor: '#f2f2f2',
-    marginRight: 10,
-  },
-  menuText: {
-    fontSize: 16,
-    marginLeft: 5,
+    textAlign: 'center',
+    marginVertical: 20,
   },
   tabContainer: {
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#f2f2f2',
     marginBottom: 20,
   },
-  tabTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  row: {
+  tabScroll: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 10,
   },
-  column: {
-    width: '48%',
-    marginBottom: 10,
+  tab: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#E9E3E3',
+    borderRadius: 5,
+    marginRight: 10,
   },
-  label: {
+  activeTab: {
+    backgroundColor: '#FF9F9F',
+  },
+  tabText: {
+    fontSize: 16,
+  },
+  filterContainer: {
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  filterColumn: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  filterLabel: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#CCC',
     borderRadius: 5,
     padding: 10,
   },
   dateInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#CCC',
     borderRadius: 5,
     padding: 10,
     justifyContent: 'center',
@@ -278,10 +277,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 10,
   },
   generateButtonText: {
-    color: '#fff',
+    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -289,12 +287,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 10,
+    textAlign: 'center',
+  },
+  recentReportsContainer: {
+    backgroundColor: '#FFFFFF',
+    padding: 15,
+    borderRadius: 5,
+  },
+  recentReportsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   recordContainer: {
     padding: 15,
-    marginBottom: 10,
     borderRadius: 5,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F2F2F2',
+    marginBottom: 10,
   },
   recordTitle: {
     fontSize: 18,

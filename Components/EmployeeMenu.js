@@ -32,7 +32,7 @@ const EmployeeMenu = () => {
       </View>
       <View style={styles.empMenu}>
         <View style={styles.imageContainer}>
-          <Image source={require('../Images/emp-bg.png')} style={styles.image} />
+          <Image source={require('../assets/Images/emp-bg.png')} style={styles.image} />
         </View>
         <Text style={styles.addStaffHeader}>Add your Staff</Text>
         <Text style={styles.addStaffText}>Add your staff to get started.</Text>

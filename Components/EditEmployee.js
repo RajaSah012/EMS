@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
@@ -26,19 +26,22 @@ const EditEmployee = ({ route, navigation }) => {
 
     axios.get(`https://emsproject-production.up.railway.app/api/employee/${id}`)
       .then(result => {
+        const data = result.data;
         setEmployee({
-          ...employee,
-          name: result.data.name,
-          email: result.data.email,
-          address: result.address,
-          salary: result.data.salary,
-          category_id: result.data.category_id,
+          name: data.name || "",
+          email: data.email || "",
+          address: data.address || "",
+          salary: data.salary !== undefined ? data.salary.toString() : "",
+          category_id: data.category_id !== undefined ? data.category_id.toString() : "",
         });
       }).catch(err => console.log(err));
-  }, []);
+  }, [id]);
 
   const handleSubmit = () => {
-    axios.put(`https://emsproject-production.up.railway.app/api/employee/${id}`, employee)
+    axios.put(`https://emsproject-production.up.railway.app/api/employee/${id}`, {
+      ...employee,
+      salary: parseFloat(employee.salary), // Convert salary back to number before sending to API
+    })
       .then(result => {
         if (result.data) {
           navigation.navigate('Employee');
@@ -82,7 +85,7 @@ const EditEmployee = ({ route, navigation }) => {
           style={styles.input}
         >
           {category.map((c) => {
-            return <Picker.Item key={c.categoryId} label={c.categoryName} value={c.categoryId} />;
+            return <Picker.Item key={c.categoryId} label={c.categoryName} value={c.categoryId.toString()} />;
           })}
         </Picker>
         <TouchableOpacity

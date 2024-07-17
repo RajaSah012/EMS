@@ -7,7 +7,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const AdminRegistration = () => {
   const [registration, setRegistration] = useState({
     name: '',
-    phoneNumber: '',
+    roles: '',
     email: '',
     password: '',
     agree: false,
@@ -24,17 +24,21 @@ const AdminRegistration = () => {
     try {
       const formData = {
         name: registration.name,
-        phoneNumber: registration.phoneNumber,
+        roles: registration.roles,
         email: registration.email,
         password: registration.password,
       };
 
-      const response = await axios.post('https://emsproject-production.up.railway.app/api/user/', formData);
+      const response = await axios.post('https://emsproject-production.up.railway.app/auth/addUser', formData, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
       if (response.data) {
         // Clear all fields after successful submission
         setRegistration({
           name: '',
-          phoneNumber: '',
+          roles: '',
           email: '',
           password: '',
           agree: false,
@@ -65,9 +69,9 @@ const AdminRegistration = () => {
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Mobile"
-          value={registration.phoneNumber}
-          onChangeText={(text) => setRegistration({ ...registration, phoneNumber: text })}
+          placeholder="Enter Role"
+          value={registration.roles}
+          onChangeText={(text) => setRegistration({ ...registration, roles: text })}
         />
         <TextInput
           style={styles.input}

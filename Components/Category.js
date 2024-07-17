@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
 import axios from 'axios';
 import { IconButton, Card, Appbar } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Category = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -19,8 +20,16 @@ const Category = ({ navigation }) => {
     }
   }, [editCategoryId]);
 
-  const fetchCategories = () => {
-    axios.get('https://emsproject-production.up.railway.app/api/category/')
+  const fetchCategories = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log("Fetched Token:", token); // Logging the token
+
+      axios.get('https://emsproject-production.up.railway.app/api/category/', {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then(result => {
         if (result.data) {
           setCategories(result.data);
@@ -29,6 +38,9 @@ const Category = ({ navigation }) => {
         }
       })
       .catch(err => console.log(err));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleEdit = (id, name) => {
@@ -36,8 +48,16 @@ const Category = ({ navigation }) => {
     setNewCategoryName(name);
   };
 
-  const handleSave = (id) => {
-    axios.put(`https://emsproject-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName })
+  const handleSave = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log("Fetched Token:", token); // Logging the token
+
+      axios.put(`https://emsproject-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName }, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then(result => {
         if (result.data) {
           fetchCategories();
@@ -48,21 +68,32 @@ const Category = ({ navigation }) => {
         }
       })
       .catch(err => console.log(err));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleDelete = (id) => {
-    Alert.alert(
-      'Confirm Deletion',
-      'Are you sure you want to delete this category?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          onPress: () => {
-            axios.delete(`https://emsproject-production.up.railway.app/api/category/${id}`)
+  const handleDelete = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log("Fetched Token:", token); // Logging the token
+
+      Alert.alert(
+        'Confirm Deletion',
+        'Are you sure you want to delete this category?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            onPress: () => {
+              axios.delete(`https://emsproject-production.up.railway.app/api/category/${id}`, {
+                headers: {
+                  "Authorization": `Bearer ${token}`
+                }
+              })
               .then(result => {
                 if (result.data) {
                   fetchCategories();
@@ -71,14 +102,16 @@ const Category = ({ navigation }) => {
                 }
               })
               .catch(err => console.log(err));
+            },
+            style: 'destructive',
           },
-          style: 'destructive',
-        },
-      ],
-      { cancelable: false }
-    );
+        ],
+        { cancelable: false }
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
-  
 
   const renderCategory = (category) => {
     return (
@@ -117,7 +150,6 @@ const Category = ({ navigation }) => {
       </Card>
     );
   };
-  
 
   return (
     <View style={styles.container}>
@@ -154,7 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     backgroundColor: 'white',
-    color: 'black', // Ensure text color is visible against the background
+    color: 'black',
     minWidth: 200,
   },
 });

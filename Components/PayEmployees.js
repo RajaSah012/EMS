@@ -5,7 +5,7 @@ const PayEmployees = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={require('../Images/pay-emp-bg.png')} style={styles.image} />
+        <Image source={require('../assets/Images/pay-emp-bg.png')} style={styles.image} />
       </View>
       <View style={styles.textContainer}>
        <Text style={styles.title}>Pay your employees using EMS in simple steps</Text>

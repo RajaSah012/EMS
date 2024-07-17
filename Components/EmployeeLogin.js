@@ -1,145 +1,150 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Dimensions, Platform } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const EmployeeLogin = ({ navigation }) => {
+const { width, height } = Dimensions.get('window');
+
+const EmployeeLogin = () => {
   const [values, setValues] = useState({
-    email: '',
+    userName: '',
     password: ''
   });
   const [error, setError] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const navigation = useNavigation();
+  axios.defaults.withCredentials = true;
 
-  const handleSubmit = () => {
-    if (isChecked) {
-      axios.post('http://localhost:3000/employee/employee_login', values)
-        .then(result => {
-          if (result.data.loginStatus) {
-            navigation.navigate('EmployeeDetails', { id: result.data.id });
-          } else {
-            setError(result.data.Error);
-          }
-        })
-        .catch(err => console.log(err));
-    } else {
-      setError('Please agree to the terms and conditions');
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('https://emsproject-production.up.railway.app/auth/login', values);
+      if (response.data) {
+        await AsyncStorage.setItem("token", response.data);
+        navigation.navigate('Employee');
+      } else {
+        setError(response.data.Error);
+      }
+    } catch (err) {
+      console.log(err);
+      setError('An error occurred during login. Please try again.');
     }
-  }
-
-  const handleCheckboxClick = () => {
-    setIsChecked(!isChecked);
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('../Images/EMS.png')} style={styles.logo} />
-        <Text style={styles.headerText}>Employee Management System</Text>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
+     {/* <Image source={require('../assets/Images/base.png')} style={styles.logo} /> */}
+
+
+        <Text style={styles.title}>Employee Management System</Text>
+        
       </View>
       <View style={styles.formContainer}>
-        <Text style={styles.errorText}>{error && error}</Text>
-        <Text style={styles.title}>Login</Text>
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        <Text style={styles.formTitle}>Employee Login Page</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          onChangeText={email => setValues({ ...values, email })}
-          value={values.email}
-          autoCompleteType="email"
+          placeholder="Enter Username"
+          value={values.userName}
+          onChangeText={(text) => setValues({ ...values, userName: text })}
+          autoCompleteType="username"
+          textContentType="username"
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
-          onChangeText={password => setValues({ ...values, password })}
-          value={values.password}
+          placeholder="Enter Password"
           secureTextEntry={true}
+          value={values.password}
+          onChangeText={(text) => setValues({ ...values, password: text })}
+          textContentType="password"
         />
-        <TouchableOpacity style={styles.checkbox} onPress={handleCheckboxClick}>
-          <View style={styles.checkboxInner}>
-            {isChecked && <Text style={styles.checkboxSymbol}>✓</Text>}
-          </View>
-          <Text style={styles.checkboxLabel}>I Agree to the Terms & Conditions</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Log In</Text>
+          <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
+        <View style={styles.checkboxContainer}>
+          <TextInput type="checkbox" name="tick" id="tick" style={styles.checkbox} />
+          <Text style={styles.checkboxLabel}>You agree with our terms and conditions</Text>
+        </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
-    justifyContent: 'center',
-    padding: 20,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
   header: {
+    width: '100%',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingHorizontal: 10,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  registerButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  formContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  errorText: {
-    color: 'red',
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
     marginBottom: 10,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  registrationButton: {
+    backgroundColor: '#6c757d',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  registrationButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  formContainer: {
+    width: '80%',
+    paddingVertical: 30,
+    justifyContent: 'center',
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    borderWidth: 1,
+    height: 40,
     borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
     borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
+    backgroundColor: '#fff',
   },
   loginButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
+    backgroundColor: '#198754',
+    paddingVertical: 12,
     borderRadius: 5,
     alignItems: 'center',
   },
-  checkbox: {
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
   },
-  checkboxInner: {
+  checkbox: {
     width: 20,
     height: 20,
     borderWidth: 1,
@@ -148,13 +153,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxSymbol: {
-    fontSize: 16,
-    color: '#4CAF50',
-  },
   checkboxLabel: {
     fontSize: 16,
     color: '#555',
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#f00',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 

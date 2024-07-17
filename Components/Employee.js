@@ -3,14 +3,23 @@ import { View, Alert, FlatList, StyleSheet } from "react-native";
 import { Button, Card, Text, FAB, IconButton, Appbar } from "react-native-paper";
 import axios from "axios";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Employee = () => {
   const [employee, setEmployee] = useState([]);
   const navigation = useNavigation();
 
-  const fetchEmployees = () => {
+  const fetchEmployees = async ()=> {
+    const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://emsproject-production.up.railway.app/api/employee/")
+      .get("https://emsproject-production.up.railway.app/api/employee/",
+         {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+        
+      
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);
