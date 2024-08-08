@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
@@ -13,6 +13,7 @@ const Attendance = () => {
   const [category, setCategory] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [records, setRecords] = useState([]);
+  const [status, setStatus] = useState('Select');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -83,17 +84,6 @@ const Attendance = () => {
     setRecords(employee.filter(f => f.name.toLowerCase().includes(text.toLowerCase())));
   };
 
-  let time = new Date().toLocaleTimeString();
-  const [ctime, setCtime] = useState(time);
-
-  const updateTime = () => {
-    time = new Date().toLocaleTimeString();
-    setCtime(time);
-  };
-  setInterval(updateTime, 1000);
-
-  const [status, setStatus] = useState('Select');
-
   const status_1 = [
     { option1: 'Select' },
     { option1: 'Present' },
@@ -114,7 +104,6 @@ const Attendance = () => {
   const handlePunch = async (employeeId, name) => {
     const token = await AsyncStorage.getItem('token');
     
-    // Determine current status based on state
     const currentStatus = status === 'Punch In' ? 'Punch Out' : 'Punch In';
   
     if (currentStatus === 'Punch In') {
@@ -127,8 +116,8 @@ const Attendance = () => {
         })
         .then(result => {
           if (result.data.Status) {
-            setStatus('Punch Out'); // Update status after successful punch in
-            navigation.navigate('/dashboard/attendence');
+            setStatus('Punch Out'); 
+            navigation.navigate('/attendance');
           } else {
             alert(result.data.Error);
           }
@@ -143,8 +132,8 @@ const Attendance = () => {
         })
         .then(result => {
           if (result.data.Status) {
-            setStatus('Punch In'); // Update status after successful punch out
-            navigation.navigate('/dashboard/attendence');
+            setStatus('Punch In'); 
+            navigation.navigate('/attendance');
           } else {
             alert(result.data.Error);
           }
@@ -241,12 +230,18 @@ const Attendance = () => {
         />
         <Button title="Search" onPress={() => console.log('Search')} />
       </View>
+      <Button title="Export Attendance" onPress={generateCSV} /> 
 
-      <FlatList
-        data={records}
-        keyExtractor={(item) => item.employeeId.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.tableRow}>
+      <ScrollView style={styles.tableContainer}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderText}>Emp Id</Text>
+          <Text style={styles.tableHeaderText}>Image</Text>
+          <Text style={styles.tableHeaderText}>Name</Text>
+          <Text style={styles.tableHeaderText}>Status</Text>
+          <Text style={styles.tableHeaderText}>Punch</Text>
+        </View>
+        {records.map((item) => (
+          <View key={item.employeeId} style={styles.tableRow}>
             <Text style={styles.tableCell}>{item.employeeId}</Text>
             <Image source={{ uri: `http://localhost:3000/Images/` + item.image }} style={styles.employeeImage} />
             <Text style={styles.tableCell}>{item.name}</Text>
@@ -266,8 +261,8 @@ const Attendance = () => {
               <Text>Punch In</Text>
             </TouchableOpacity>
           </View>
-        )}
-      />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -276,6 +271,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f8f9fa',
   },
   filterContainer: {
     flexDirection: 'row',
@@ -283,14 +279,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   picker: {
-    width: '30%',
+    flex: 1,
     height: 40,
+    marginHorizontal: 4,
+    backgroundColor: '#fff',
   },
   dateInput: {
-    width: '30%',
+    flex: 1,
     height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
+    marginHorizontal: 4,
+    backgroundColor: '#fff',
     paddingHorizontal: 8,
   },
   buttonContainer: {
@@ -300,18 +298,22 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: 16,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
   },
   statBox: {
     alignItems: 'center',
   },
   statText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 14,
+    color: '#6c757d',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -320,31 +322,49 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
+    backgroundColor: '#fff',
     paddingHorizontal: 8,
+  },
+  tableContainer: {
+    marginTop: 16,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#007bff',
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  tableHeaderText: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#fff',
   },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 8,
-    borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+    borderBottomColor: '#dee2e6',
   },
   tableCell: {
-    width: '20%',
+    flex: 1,
     textAlign: 'center',
   },
   employeeImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   punchButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#007bff',
+    paddingVertical: 8,
+    borderRadius: 8,
   },
 });
 

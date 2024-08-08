@@ -5,6 +5,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import * as Camera from 'expo-camera';
 import { Text } from 'react-native-paper';
 
 // Import your components here
@@ -67,7 +68,7 @@ import TaskListFilter from './Components/TaskListFilter';
 import CompanyDetails from './Components/CompanyDetails';
 import Branches from './Components/Branches';
 import AddBranch from './Components/AddBranch';
-
+import EmpDashboard from './Components/EmpDashboard';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -260,7 +261,7 @@ const MainDrawer = () => {
       <Drawer.Screen name="Advance" component={Advance} />
       <Drawer.Screen name="Recruitment" component={Recruitment} />
       <Drawer.Screen name="MyTaxation" component={MyTaxation} />
-      <Drawer.Screen name="DailyRepoart" component={DailyRepoart} />
+      <Drawer.Screen name="DailyReport" component={DailyRepoart} />
       <Drawer.Screen name="Report" component={Report} />
       <Drawer.Screen name="ReportFilter" component={ReportFilter} />
       <Drawer.Screen name="GeneratePayslip" component={GeneratePayslip} />
@@ -273,6 +274,7 @@ const MainDrawer = () => {
       <Drawer.Screen name="OdList" component={OdList} />
       <Drawer.Screen name="TaskList" component={TaskList} />
       <Drawer.Screen name="TaskListFilter" component={TaskListFilter} />
+      <Drawer.Screen name="EmpDashboard" component={EmpDashboard} />
     </Drawer.Navigator>
   );
 };
@@ -280,9 +282,21 @@ const MainDrawer = () => {
 function App() {
   useEffect(() => {
     const requestPermissions = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      let { status: locationStatus } = await Location.requestForegroundPermissionsAsync();
+      if (locationStatus !== 'granted') {
         Alert.alert('Permission to access location was denied');
+        return;
+      }
+
+      let { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
+      if (cameraStatus !== 'granted') {
+        Alert.alert('Permission to access camera was denied');
+        return;
+      }
+
+      let { status: backgroundLocationStatus } = await Location.requestBackgroundPermissionsAsync();
+      if (backgroundLocationStatus !== 'granted') {
+        Alert.alert('Permission to access background location was denied');
         return;
       }
     };
@@ -320,7 +334,7 @@ function App() {
         <Stack.Screen
           name="AddBranch"
           component={AddBranch}
-          options={{ title: 'AddBranch' }}
+          options={{ title: 'Add Branch' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
