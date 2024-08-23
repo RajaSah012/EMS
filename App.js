@@ -69,6 +69,11 @@ import CompanyDetails from './Components/CompanyDetails';
 import Branches from './Components/Branches';
 import AddBranch from './Components/AddBranch';
 import EmpDashboard from './Components/EmpDashboard';
+import RequestLeave from './Components/RequestLeave';
+import EmpViewAttendance from './Components/EmpViewAttendance';
+import EmpDocument from './Components/EmpDocument';
+import EmpHolidayList from './Components/EmpHolidayList';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -275,6 +280,11 @@ const MainDrawer = () => {
       <Drawer.Screen name="TaskList" component={TaskList} />
       <Drawer.Screen name="TaskListFilter" component={TaskListFilter} />
       <Drawer.Screen name="EmpDashboard" component={EmpDashboard} />
+      <Drawer.Screen name="RequestLeave" component={RequestLeave} />
+      <Drawer.Screen name="ViewAttendance" component={EmpViewAttendance} />
+      <Drawer.Screen name="My Document" component={EmpDocument} />
+      <Drawer.Screen name="HolidayList" component={EmpHolidayList} />
+    
     </Drawer.Navigator>
   );
 };

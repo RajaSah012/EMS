@@ -121,7 +121,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
 
           const storedEmployeeId = await AsyncStorage.getItem('employeeId');
           if (storedEmployeeId) {
-            const response = await axios.post('YOUR_BACKEND_URL/location', {
+            const response = await axios.post('http://localhost:8080/attendance/location', {
               latitude: locationResult.coords.latitude,
               longitude: locationResult.coords.longitude,
               timestamp: new Date().toISOString(),
@@ -193,7 +193,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
             pictureUri: data.uri,
             employeeId: storedEmployeeId,
           });
-          const response = await axios.post('YOUR_BACKEND_URL/punchin', {
+          const response = await axios.post('http://localhost:8080/attendance/punchIn', {
             time: punchInTime,
             location: currentLocation,
             pictureUri: data.uri,
@@ -237,7 +237,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
       employeeId: storedEmployeeId,
     });
     try {
-      const response = await axios.post('YOUR_BACKEND_URL/punchout', {
+      const response = await axios.post(`http://localhost:8080/attendance/punchOut/${employeeId}`, {
         time: punchOutTime,
         location: currentLocation,
         employeeId: storedEmployeeId,
@@ -315,7 +315,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       const { latitude, longitude } = location.coords;
       const storedEmployeeId = await AsyncStorage.getItem('employeeId');
       if (storedEmployeeId) {
-        const response = await axios.post('YOUR_BACKEND_URL/location', {
+        const response = await axios.post('http://localhost:8080/attendance/location', {
           latitude,
           longitude,
           timestamp: new Date().toISOString(),
@@ -381,6 +381,6 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#ccc',
   },
-});
+})
 
 export default MarkAttendance;

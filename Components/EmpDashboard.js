@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  BarChart,
   LineChart,
-  AreaChart,
-  Grid,
-} from 'react-native-svg-charts';
-import * as shape from 'd3-shape';
+  BarChart,
+  PieChart,
+  ProgressChart,
+} from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 const EmpDashboard = () => {
   const [data, setData] = useState([
@@ -120,6 +121,15 @@ const EmpDashboard = () => {
       });
   };
 
+  const chartConfig = {
+    backgroundGradientFrom: '#fffbf5',
+    backgroundGradientTo: '#f9f9f9',
+    color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
+    strokeWidth: 2,
+    barPercentage: 0.5,
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Employee Dashboard</Text>
@@ -127,69 +137,79 @@ const EmpDashboard = () => {
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Attendance Report</Text>
         <BarChart
-          style={styles.chart}
-          data={data.map(item => item.Jan_24)}
-          svg={{ fill: 'blue' }}
-          contentInset={{ top: 10, bottom: 10 }}
-        >
-          <Grid />
-        </BarChart>
+          data={{
+            labels: ['Ram', 'Saroj', 'Mohit', 'Deepak', 'Raushan', 'Raja', 'Dhirendra'],
+            datasets: [
+              {
+                data: data.map(item => item.Jan_24),
+              },
+            ],
+          }}
+          width={screenWidth - 20}
+          height={220}
+          chartConfig={chartConfig}
+          verticalLabelRotation={30}
+        />
       </View>
 
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Salary Report</Text>
         <LineChart
-          style={styles.chart}
-          data={data.map(item => item.Jan_24)}
-          svg={{ stroke: 'purple' }}
-          contentInset={{ top: 10, bottom: 10 }}
-          curve={shape.curveNatural}
-        >
-          <Grid />
-        </LineChart>
+          data={{
+            labels: ['Ram', 'Saroj', 'Mohit', 'Deepak', 'Raushan', 'Raja', 'Dhirendra'],
+            datasets: [
+              {
+                data: data.map(item => item.Feb_24),
+              },
+            ],
+          }}
+          width={screenWidth - 20}
+          height={220}
+          chartConfig={chartConfig}
+        />
       </View>
 
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>Task Report</Text>
-        <AreaChart
-          style={styles.chart}
-          data={data.map(item => item.Jan_24)}
-          svg={{ fill: 'green', stroke: 'green' }}
-          contentInset={{ top: 10, bottom: 10 }}
-          curve={shape.curveNatural}
-        >
-          <Grid />
-        </AreaChart>
+        <ProgressChart
+          data={{
+            labels: ['Task 1', 'Task 2', 'Task 3', 'Task 4'],
+            data: [0.4, 0.6, 0.8, 1],
+          }}
+          width={screenWidth - 20}
+          height={220}
+          chartConfig={chartConfig}
+        />
       </View>
 
       <View style={styles.cardContainer}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Current Month Attendance</Text>
-          <Text>Present: {m}</Text>
-          <Text>Absent: {f}</Text>
-          <Text>Late: {t}</Text>
-          <Text>Half Day: {t}</Text>
+          <Text style={styles.cardText}>Present: {m}</Text>
+          <Text style={styles.cardText}>Absent: {f}</Text>
+          <Text style={styles.cardText}>Late: {t}</Text>
+          <Text style={styles.cardText}>Half Day: {t}</Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Last Month Salary</Text>
-          <Text>Full Salary: {m}</Text>
-          <Text>Paid Salary: {f}</Text>
-          <Text>Deducted Salary: {t}</Text>
-          <Text>Advance Salary: {t}</Text>
+          <Text style={styles.cardText}>Full Salary: {m}</Text>
+          <Text style={styles.cardText}>Paid Salary: {f}</Text>
+          <Text style={styles.cardText}>Deducted Salary: {t}</Text>
+          <Text style={styles.cardText}>Advance Salary: {t}</Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Current Month Tasks</Text>
-          <Text>Overdue Task: {m}</Text>
-          <Text>Today's Task: {f}</Text>
-          <Text>This week's Due: {t}</Text>
-          <Text>Pending Task: {t}</Text>
+          <Text style={styles.cardText}>Overdue Task: {m}</Text>
+          <Text style={styles.cardText}>Today's Task: {f}</Text>
+          <Text style={styles.cardText}>This week's Due: {t}</Text>
+          <Text style={styles.cardText}>Pending Task: {t}</Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Current Month Holiday</Text>
           {employee.map((e, index) => (
             <View key={index} style={styles.row}>
-              <Text>Sr. No.: {e.id}</Text>
-              <Text>Name of Holiday: {e.reason}</Text>
+              <Text style={styles.cardText}>Sr. No.: {e.id}</Text>
+              <Text style={styles.cardText}>Name of Holiday: {e.reason}</Text>
             </View>
           ))}
         </View>
@@ -202,23 +222,31 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 10,
+    backgroundColor: '#f9f9f9',
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    color: '#2196F3',
   },
   chartContainer: {
     marginBottom: 20,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   chartTitle: {
-    fontSize: 18,
+    fontSize: 20,
     textAlign: 'center',
     marginBottom: 10,
-  },
-  chart: {
-    height: 200,
+    color: '#2196F3',
   },
   cardContainer: {
     flexDirection: 'row',
@@ -227,15 +255,26 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '48%',
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 5,
+    padding: 15,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#2196F3',
+  },
+  cardText: {
+    fontSize: 16,
     marginBottom: 5,
+    color: '#333',
   },
   row: {
     flexDirection: 'row',
