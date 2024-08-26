@@ -1,120 +1,125 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import { Card, Paragraph } from 'react-native-paper';
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const EmpholidayList = () => {
-  const [events, setEvents] = useState([]);
-  const [holidayName, setHolidayName] = useState('');
-  const [holidayDate, setHolidayDate] = useState('');
+  const [events, setEvents] = useState({});
+  const [loading, setLoading] = useState(true);
+  const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/holidays');
-        const formattedEvents = response.data.map(record => ({
-          title: record.name,
-          date: format(new Date(record.date), 'yyyy-MM-dd'),
-        }));
-        setEvents(formattedEvents);
+        const response = await axios.get('http://localhost:8080/holidays'); // Replace with your API endpoint
+        const fetchedEvents = response.data.reduce((acc, record) => {
+          const formattedDate = format(new Date(record.date), 'yyyy-MM-dd');
+          acc[formattedDate] = {
+            marked: true,
+            dotColor: '#FF5733',
+            activeOpacity: 0,
+            disableTouchEvent: true,
+          };
+          return acc;
+        }, {});
+        setEvents(fetchedEvents);
       } catch (error) {
         console.error('Error fetching holidays', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchEvents();
   }, []);
 
-  const addHoliday = async () => {
-    try {
-      const formattedDate = format(new Date(holidayDate), 'yyyy-MM-dd');
-      const response = await axios.post('http://localhost:8080/holidays', {
-        name: holidayName,
-        date: formattedDate,
-      });
-      setEvents([...events, {
-        title: response.data.name,
-        date: response.data.date,
-      }]);
-      setHolidayName('');
-      setHolidayDate('');
-    } catch (error) {
-      console.error('Error adding holiday', error);
-    }
-  };
+  if (loading) {
+    return (
+      <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#FF5733" />
+        <Text style={styles.loaderText}>Loading Holidays...</Text>
+      </LinearGradient>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Calendar
-        markedDates={events.reduce((acc, event) => {
-          acc[event.date] = { marked: true, dotColor: 'red' };
-          return acc;
-        }, {})}
-        theme={{
-          calendarBackground: 'white',
-          textSectionTitleColor: '#b6c1cd',
-          selectedDayBackgroundColor: '#00adf5',
-          selectedDayTextColor: '#ffffff',
-          todayTextColor: '#00adf5',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#d9e1e8',
-          dotColor: '#00adf5',
-          selectedDotColor: '#ffffff',
-          arrowColor: 'orange',
-        }}
-      />
-      <Card style={styles.card}>
-        <Card.Content>
-          <TextInput
-            style={styles.input}
-            value={holidayName}
-            onChangeText={setHolidayName}
-            placeholder="Holiday Name"
-          />
-          <TextInput
-            style={styles.input}
-            value={holidayDate}
-            onChangeText={setHolidayDate}
-            placeholder="Holiday Date"
-            keyboardType="numeric"
-          />
-          <Button title="Add Holiday" onPress={addHoliday} />
-        </Card.Content>
-      </Card>
-      <FlatList
-        data={events}
-        keyExtractor={(item) => item.date}
-        renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Paragraph>{item.title}</Paragraph>
-              <Paragraph>{item.date}</Paragraph>
-            </Card.Content>
-          </Card>
-        )}
-      />
-    </View>
+    <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradient}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Holiday Calendar</Text>
+        <Calendar
+          style={[styles.calendar, { width: screenWidth - 50 }]}
+          markedDates={events}
+          theme={calendarTheme}
+          enableSwipeMonths={true}
+        />
+      </View>
+    </LinearGradient>
   );
 };
 
+const calendarTheme = {
+  backgroundColor: 'transparent',
+  calendarBackground: 'transparent',
+  textSectionTitleColor: '#ff6347',
+  selectedDayBackgroundColor: '#ff69b4',
+  selectedDayTextColor: '#ffffff',
+  todayTextColor: '#ff6347',
+  dayTextColor: '#2d4150',
+  textDisabledColor: '#d9e1e8',
+  dotColor: '#ff6347',
+  selectedDotColor: '#ffffff',
+  arrowColor: '#ff6347',
+  monthTextColor: '#ff69b4',
+  indicatorColor: '#ff69b4',
+  textDayFontFamily: 'monospace',
+  textMonthFontFamily: 'monospace',
+  textDayHeaderFontFamily: 'monospace',
+  textDayFontWeight: '300',
+  textMonthFontWeight: 'bold',
+  textDayHeaderFontWeight: '300',
+  textDayFontSize: 16,
+  textMonthFontSize: 20,
+  textDayHeaderFontSize: 14,
+};
+
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f5f5f5',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    backgroundColor: 'white',
+  calendar: {
+    borderRadius: 15,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    backgroundColor: '#FFFFFF',
+    padding: 10,
   },
-  card: {
-    marginBottom: 10,
-    backgroundColor: 'white',
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#2C3E50',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  loaderContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 20,
+    color: '#2C3E50',
   },
 });
 

@@ -73,6 +73,8 @@ import RequestLeave from './Components/RequestLeave';
 import EmpViewAttendance from './Components/EmpViewAttendance';
 import EmpDocument from './Components/EmpDocument';
 import EmpHolidayList from './Components/EmpHolidayList';
+import EmpTask from './Components/EmpTask';
+
 
 
 const Drawer = createDrawerNavigator();
@@ -251,7 +253,7 @@ const MainDrawer = () => {
       <Drawer.Screen name="Employee" component={Employee} />
       <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
       <Drawer.Screen name="AddEmployee" component={AddEmployee} />
-      <Drawer.Screen name="MarkAttendance" component={MarkAttendance} />
+      
       <Drawer.Screen name="MyAttendance" component={MyAttendance} />
       <Drawer.Screen name="OutDoorDuty" component={OutDoorDuty} />
       <Drawer.Screen name="Reimburse" component={Reimburse} />
@@ -280,10 +282,12 @@ const MainDrawer = () => {
       <Drawer.Screen name="TaskList" component={TaskList} />
       <Drawer.Screen name="TaskListFilter" component={TaskListFilter} />
       <Drawer.Screen name="EmpDashboard" component={EmpDashboard} />
+      <Drawer.Screen name="MarkAttendance" component={MarkAttendance} />
       <Drawer.Screen name="RequestLeave" component={RequestLeave} />
       <Drawer.Screen name="ViewAttendance" component={EmpViewAttendance} />
       <Drawer.Screen name="My Document" component={EmpDocument} />
       <Drawer.Screen name="HolidayList" component={EmpHolidayList} />
+      <Drawer.Screen name="Task" component={EmpTask} />
     
     </Drawer.Navigator>
   );
