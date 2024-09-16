@@ -1,33 +1,36 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Alert, FlatList, StyleSheet } from "react-native";
+import { View, Alert, FlatList, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { Button, Card, Text, FAB, IconButton, Appbar } from "react-native-paper";
 import axios from "axios";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Employee = () => {
   const [employee, setEmployee] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
   const navigation = useNavigation();
 
-  const fetchEmployees = async ()=> {
+  const fetchEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://emsproject-production.up.railway.app/api/employee/",
-         {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        
-      
+      .get("https://mohitbyproject-production.up.railway.app/api/employee/", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);
         } else {
           Alert.alert(result.data.Error);
         }
+        setLoading(false); // Stop loading
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoading(false); // Stop loading
+      });
   };
 
   useFocusEffect(
@@ -50,19 +53,28 @@ const Employee = () => {
       ]
     );
   };
-  
-  const confirmDelete = (id) => {
+
+  const confirmDelete = async (id) => {
+    const token = await AsyncStorage.getItem('token');
     axios
-      .delete(`https://emsproject-production.up.railway.app/api/employee/${id}`)
+      .delete(`https://mohitbyproject-production.up.railway.app/api/employee/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then((result) => {
         if (result.data) {
           setEmployee(employee.filter((emp) => emp.employeeId !== id));
         } else {
           Alert.alert(result.data.Error);
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        Alert.alert("Failed to delete employee. Please try again.");
       });
   };
-  
+
   const renderItem = ({ item }) => (
     <Card style={styles.card}>
       <Card.Title
@@ -76,17 +88,36 @@ const Employee = () => {
         )}
       />
       <Card.Content>
-        <Text>Email: {item.email}</Text>
-        <Text>Address: {item.address}</Text>
-        <Text>Salary: {item.salary}</Text>
+        <View style={styles.content}>
+          <Image
+            source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}` }}
+            style={styles.image}
+          />
+          <View style={styles.details}>
+            <Text style={styles.text}>Email: {item.email}</Text>
+            <Text style={styles.text}>Address: {item.address}</Text>
+            <Text style={styles.text}>Salary: {item.salary}</Text>
+          </View>
+        </View>
       </Card.Content>
     </Card>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#00C6FF" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Appbar.Header>
-        <Appbar.Content title="Employee Management" />
+    <LinearGradient
+      colors={['#FFDEE9', '#B5FFFC']}
+      style={styles.container}
+    >
+      <Appbar.Header style={styles.appbar}>
+        <Appbar.Content title="Employee Management" titleStyle={styles.appbarTitle} />
       </Appbar.Header>
       <FlatList
         data={employee}
@@ -97,9 +128,10 @@ const Employee = () => {
       <FAB
         style={styles.fab}
         icon="plus"
+        color="white"
         onPress={() => navigation.navigate('AddEmployee')}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -107,12 +139,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  appbar: {
+    backgroundColor: 'transparent',
+    elevation: 0,
+  },
+  appbarTitle: {
+    color: '#444',
+    fontWeight: 'bold',
+  },
   list: {
     paddingHorizontal: 16,
     paddingBottom: 80,
   },
   card: {
     marginVertical: 8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 16,
+  },
+  details: {
+    flex: 1,
+  },
+  text: {
+    color: '#333',
+    fontSize: 16,
+    marginBottom: 4,
   },
   actions: {
     flexDirection: "row",
@@ -122,6 +187,12 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+    backgroundColor: '#00C6FF',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

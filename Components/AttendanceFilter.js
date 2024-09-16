@@ -13,7 +13,7 @@ const AttendanceFilter = ({ onClose, setOpenReportFilterSearchText, setFilterbyD
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/auth/employee')
+      .get('https://mohitbyproject-production.up.railway.app/api/employee/')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

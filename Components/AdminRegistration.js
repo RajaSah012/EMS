@@ -29,7 +29,7 @@ const AdminRegistration = () => {
         password: registration.password,
       };
 
-      const response = await axios.post('https://emsproject-production.up.railway.app/auth/addUser', formData, {
+      const response = await axios.post('https://mohitbyproject-production.up.railway.app/api/user/', formData, {
         headers: {
             'Content-Type': 'application/json',
         },

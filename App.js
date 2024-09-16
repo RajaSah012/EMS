@@ -34,20 +34,16 @@ import Employee from './Components/Employee';
 import AddEmployee from './Components/AddEmployee';
 import EditEmployee from './Components/EditEmployee';
 import MarkAttendance from './Components/MarkAttendance';
-import MyAttendance from './Components/MyAttendance';
-import OutDoorDuty from './Components/OutDoorDuty';
-import Reimburse from './Components/Reimburse';
-import Apply from './Components/Apply';
-import Holiday from './Components/Holiday';
-import WeekOff from './Components/WeekOff';
-import Payslip from './Components/Payslip';
-import TaskManagement from './Components/TaskManagement';
-import RequestForMe from './Components/RequestForMe';
-import MyTeam from './Components/MyTeam';
-import Loan from './Components/Loan';
-import Advance from './Components/Advance';
-import Recruitment from './Components/Recruitment';
-import MyTaxation from './Components/MyTaxation';
+
+
+
+
+
+
+
+
+
+
 import DailyRepoart from './Components/DailyRepoart';
 import Report from './Components/Report';
 import ReportFilter from './Components/ReportFilter';
@@ -74,6 +70,9 @@ import EmpViewAttendance from './Components/EmpViewAttendance';
 import EmpDocument from './Components/EmpDocument';
 import EmpHolidayList from './Components/EmpHolidayList';
 import EmpTask from './Components/EmpTask';
+import AddTask from './Components/AddTask';
+import AssignTask from './Components/AssignTask';
+
 
 
 
@@ -254,20 +253,18 @@ const MainDrawer = () => {
       <Drawer.Screen name="EmployeeMenu" component={EmployeeMenu} />
       <Drawer.Screen name="AddEmployee" component={AddEmployee} />
       
-      <Drawer.Screen name="MyAttendance" component={MyAttendance} />
-      <Drawer.Screen name="OutDoorDuty" component={OutDoorDuty} />
-      <Drawer.Screen name="Reimburse" component={Reimburse} />
-      <Drawer.Screen name="Apply" component={Apply} />
-      <Drawer.Screen name="Holiday" component={Holiday} />
-      <Drawer.Screen name="WeekOff" component={WeekOff} />
-      <Drawer.Screen name="Payslip" component={Payslip} />
-      <Drawer.Screen name="TaskManagement" component={TaskManagement} />
-      <Drawer.Screen name="RequestForMe" component={RequestForMe} />
-      <Drawer.Screen name="MyTeam" component={MyTeam} />
-      <Drawer.Screen name="Loan" component={Loan} />
-      <Drawer.Screen name="Advance" component={Advance} />
-      <Drawer.Screen name="Recruitment" component={Recruitment} />
-      <Drawer.Screen name="MyTaxation" component={MyTaxation} />
+      
+      
+      
+      
+      
+      
+      
+      
+      
+     
+     
+      
       <Drawer.Screen name="DailyReport" component={DailyRepoart} />
       <Drawer.Screen name="Report" component={Report} />
       <Drawer.Screen name="ReportFilter" component={ReportFilter} />
@@ -288,7 +285,10 @@ const MainDrawer = () => {
       <Drawer.Screen name="My Document" component={EmpDocument} />
       <Drawer.Screen name="HolidayList" component={EmpHolidayList} />
       <Drawer.Screen name="Task" component={EmpTask} />
-    
+      <Drawer.Screen name="AddTask" component={AddTask} />
+     
+      
+
     </Drawer.Navigator>
   );
 };
@@ -350,6 +350,12 @@ function App() {
           component={AddBranch}
           options={{ title: 'Add Branch' }}
         />
+      <Stack.Screen
+          name="AssignTask"
+          component={AssignTask}
+          options={{ title: 'AssignTask' }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

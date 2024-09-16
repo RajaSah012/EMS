@@ -9,6 +9,7 @@ const TaskList = () => {
     const [date, setDate] = useState(new Date());
     const [employee, setEmployee] = useState([]);
     const [employeeCopy, setEmployeeCopy] = useState([]);
+    const [task, setTask] = useState([]);
     const [openReportFilter, setOpenReportFilter] = useState(false);
     const [openReportFilterSearchText, setOpenReportFilterSearchText] = useState('');
     const [filterbyDepartment, setFilterbyDepartment] = useState('');
@@ -18,20 +19,31 @@ const TaskList = () => {
     useEffect(() => {
         const fetchData = async () => {
             const token = await AsyncStorage.getItem('token');
-            axios.get("https://emsproject-production.up.railway.app/api/employee/", {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                .then((result) => {
-                    if (result.data) {
-                        setEmployee(result.data);
-                        setEmployeeCopy(result.data);
-                    } else {
-                        alert(result.data.Error);
+            try {
+                const employeeResult = await axios.get("https://mohitbyproject-production.up.railway.app/api/employee/", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
                     }
-                })
-                .catch((err) => console.log(err));
+                });
+
+                if (employeeResult.data) {
+                    setEmployee(employeeResult.data);
+                    setEmployeeCopy(employeeResult.data);
+                }
+
+                const taskResult = await axios.get("https://mohitbyproject-production.up.railway.app/api/tasks", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (taskResult.data) {
+                    console.log('Task Data:', taskResult.data);
+                    setTask(taskResult.data);
+                }
+            } catch (err) {
+                console.log(err);
+            }
         };
 
         fetchData();
@@ -53,6 +65,30 @@ const TaskList = () => {
         setEmployee(employeeCopy.filter(f => f.shift == filterbyShift));
     }, [filterbyShift]);
 
+    // Improved formatDate function with error handling and validation
+    const formatDate = (dateArray, options = {}) => {
+        try {
+            // Check if dateArray is an array with 3 elements: year, month, and day
+            if (!Array.isArray(dateArray) || dateArray.length !== 3) {
+                console.log("Invalid date format:", dateArray);
+                return "N/A";
+            }
+            const [year, month, day] = dateArray;
+            // Create a date object
+            const date = new Date(year, month - 1, day);
+            // Check if the date is valid
+            if (isNaN(date.getTime())) {
+                console.log("Invalid date value:", dateArray);
+                return "N/A";
+            }
+            // Format the date
+            return new Intl.DateTimeFormat('en-GB', options).format(date);
+        } catch (error) {
+            console.log('Date formatting error:', error);
+            return "N/A";
+        }
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
@@ -65,26 +101,28 @@ const TaskList = () => {
                 </View>
             </View>
             <ScrollView horizontal={true}>
-            <ScrollView horizontal>
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
                         <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
                         <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Employee Name</Text>
                         <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Task Id</Text>
                         <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Task Name</Text>
+                        <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Assign Date</Text>
+                        <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Completed Date</Text>
                         <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Task Status</Text>
                     </View>
-                    {employee.map((item) => (
-                        <View key={item.employeeId} style={styles.tableRow}>
-                            <Text style={styles.tableCell}>{item.employeeId}</Text>
-                            <Text style={styles.tableCell}>{item.name}</Text>
-                            <Text style={styles.tableCell}>{item.taskId}</Text>
-                            <Text style={styles.tableCell}>{item.taskName}</Text>
-                            <Text style={styles.tableCell}>{item.status}</Text>
+                    {task.map((e) => (
+                        <View key={e.taskId} style={styles.tableRow}>
+                            <Text style={styles.tableCell}>{e.employeeId}</Text>
+                            <Text style={styles.tableCell}>{e.name}</Text>
+                            <Text style={styles.tableCell}>{e.taskId}</Text>
+                            <Text style={styles.tableCell}>{e.taskName}</Text>
+                            <Text style={styles.tableCell}>{formatDate(e.assign, { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
+                            <Text style={styles.tableCell}>{e.assign ? formatDate(e.assign, { day: 'numeric', month: 'short', year: 'numeric',hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,}) : "N/A"}</Text>
+                            <Text style={styles.tableCell}>{e.status}</Text>
                         </View>
                     ))}
                 </View>
-            </ScrollView>
             </ScrollView>
             {openReportFilter && (
                 <TaskListFilter

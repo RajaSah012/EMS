@@ -25,7 +25,7 @@ const Category = ({ navigation }) => {
       const token = await AsyncStorage.getItem('token');
       console.log("Fetched Token:", token); // Logging the token
 
-      axios.get('https://emsproject-production.up.railway.app/api/category/', {
+      axios.get('https://mohitbyproject-production.up.railway.app/api/category/', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -53,7 +53,7 @@ const Category = ({ navigation }) => {
       const token = await AsyncStorage.getItem('token');
       console.log("Fetched Token:", token); // Logging the token
 
-      axios.put(`https://emsproject-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName }, {
+      axios.put(`https://mohitbyproject-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName }, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -89,7 +89,7 @@ const Category = ({ navigation }) => {
           {
             text: 'Delete',
             onPress: () => {
-              axios.delete(`https://emsproject-production.up.railway.app/api/category/${id}`, {
+              axios.delete(`https://mohitbyproject-production.up.railway.app/api/category/${id}`, {
                 headers: {
                   "Authorization": `Bearer ${token}`
                 }

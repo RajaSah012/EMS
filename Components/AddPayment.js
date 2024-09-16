@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import { DataTable } from 'react-native-paper';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from 'axios';
-import moment from 'moment';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const AddPayment = () => {
   const [admins, setAdmins] = useState([]);
@@ -12,14 +11,18 @@ const AddPayment = () => {
   const [records, setRecords] = useState([]);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('All Branches');
-  const [selectedWageType, setSelectedWageType] = useState('Monthly');
+  const [wageType, setWageType] = useState('Monthly');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchAdminRecords();
     fetchEmployeeRecords();
   }, []);
+
+  useEffect(() => {
+    handleSearch(searchQuery);
+  }, [searchQuery, employee]);
 
   const fetchAdminRecords = () => {
     axios.get('http://localhost:3000/auth/admin_records')
@@ -29,138 +32,141 @@ const AddPayment = () => {
         } else {
           alert(result.data.Error);
         }
-      })
-      .catch(error => {
-        console.log(error);
       });
   };
 
   const fetchEmployeeRecords = () => {
-    axios.get('http://localhost:3000/auth/employee')
+    axios.get('https://mohitbyproject-production.up.railway.app/api/employee/')
       .then(result => {
-        if (result.data.Status) {
-          setEmployee(result.data.Result);
-          setRecords(result.data.Result);
+        if (result.data) {
+          setEmployee(result.data);
+          setRecords(result.data);
         } else {
           alert(result.data.Error);
         }
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(err => console.log(err));
   };
 
-  const handleFilter = (text) => {
-    setSearchText(text);
-    const newData = employee.filter(row => {
-      return row.name.toLowerCase().includes(text.toLowerCase());
-    });
-    setRecords(newData);
+  const handleSearch = (query) => {
+    setRecords(
+      employee.filter(f =>
+        f.name.toLowerCase().includes(query.toLowerCase())
+      )
+    );
   };
 
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setDate(currentDate);
+  const onChangeDate = (event, selectedDate) => {
     setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
   };
 
-  const renderDatePicker = () => {
-    return (
-      <DateTimePicker
-        value={date}
-        mode="date"
-        display="default"
-        onChange={handleDateChange}
-      />
-    );
-  };
-
-  const renderTableHeader = () => {
-    return (
-      <DataTable.Header style={styles.tableHeader}>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>EMP ID</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>NAME</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>JOINING DATE</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>CTC / MONTH</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>PAYABLE AMOUNT</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>PAID AMOUNT</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>REMAINING AMOUNT</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>YTD BALANCE</DataTable.Title>
-        <DataTable.Title style={[styles.tableHeaderTitle, styles.tableCell]}>CALCULATION STATUS</DataTable.Title>
-      </DataTable.Header>
-    );
-  };
-
-  const renderTableData = ({ item }) => {
-    return (
-      <DataTable.Row>
-        <DataTable.Cell style={styles.tableCell}>{item.id}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.name}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{moment(item.joining_date).format('MM/DD/YYYY')}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.salary * 12}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.salary}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.paid_amount}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.remaining_amount}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.ytd_blance}</DataTable.Cell>
-        <DataTable.Cell style={styles.tableCell}>{item.calculation_status}</DataTable.Cell>
-      </DataTable.Row>
-    );
+  const formatDate = (dateArray, options = {}) => {
+    try {
+      if (!Array.isArray(dateArray) || dateArray.length !== 3) {
+        console.log("Invalid date format:", dateArray);
+        return "N/A";
+      }
+      const [year, month, day] = dateArray;
+      const date = new Date(year, month - 1, day);
+      if (isNaN(date.getTime())) {
+        console.log("Invalid date value:", dateArray);
+        return "N/A";
+      }
+      return new Intl.DateTimeFormat('en-GB', options).format(date);
+    } catch (error) {
+      console.log('Date formatting error:', error);
+      return "N/A";
+    }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.inputContainer}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Payroll Month</Text>
+        <View style={styles.headerButtons}>
+          <Text style={styles.dateText}>{date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</Text>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <Icon name="calendar" size={24} color="#007bff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onChangeDate}
+          maximumDate={new Date()}
+        />
+      )}
+
+      <View style={styles.inputGroup}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search Employee"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
+      <View style={styles.inputGroup}>
         <Text style={styles.label}>Branch</Text>
         <Picker
-          style={styles.input}
           selectedValue={selectedBranch}
-          onValueChange={(itemValue, itemIndex) => setSelectedBranch(itemValue)}
+          onValueChange={(itemValue) => setSelectedBranch(itemValue)}
+          style={styles.picker}
         >
           <Picker.Item label="All Branches" value="All Branches" />
-          {admins.map((admin) => (
-            <Picker.Item label={admin.name} value={admin.id} key={admin.id} />
+          {employee.map((emp) => (
+            <Picker.Item key={emp.employeeId} label={emp.site} value={emp.site} />
           ))}
         </Picker>
       </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Payroll Month</Text>
-        <TouchableOpacity style={styles.datePickerButton} onPress={() => setShowDatePicker(true)}>
-          <Text>{moment(date).format('MMMM DD, YYYY')}</Text>
-        </TouchableOpacity>
-        {showDatePicker && renderDatePicker()}
-      </View>
-      <View style={styles.inputContainer}>
+
+      <View style={styles.inputGroup}>
         <Text style={styles.label}>Wage Type</Text>
         <Picker
-          style={styles.input}
-          selectedValue={selectedWageType}
-          onValueChange={(itemValue, itemIndex) => setSelectedWageType(itemValue)}
+          selectedValue={wageType}
+          onValueChange={(itemValue) => setWageType(itemValue)}
+          style={styles.picker}
         >
           <Picker.Item label="Monthly" value="Monthly" />
           <Picker.Item label="Daily" value="Daily" />
           <Picker.Item label="Hourly" value="Hourly" />
         </Picker>
       </View>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search Employee by name"
-          value={searchText}
-          onChangeText={handleFilter}
-        />
-        <TouchableOpacity style={styles.searchButton}>
-          <Text style={styles.searchButtonText}>Search</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView horizontal>
-        <DataTable style={styles.table}>
-          {renderTableHeader()}
-          <FlatList
-            data={records}
-            renderItem={renderTableData}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </DataTable>
+
+      <ScrollView horizontal={true}>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Name</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Joining Date</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>CTC / Month</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Payable Amount</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Paid Amount</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Remaining Amount</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>YTD Balance</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Calculation Status</Text>
+          </View>
+          {records.map((item) => (
+            <View key={item.employeeId} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.employeeId}</Text>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <Text style={styles.tableCell}>{item.jod}</Text>
+              <Text style={styles.tableCell}>{(item.salary * 12).toFixed(2)}</Text>
+              <Text style={styles.tableCell}>{item.salary}</Text>
+              <Text style={styles.tableCell}>{item.salary}</Text>
+              <Text style={styles.tableCell}>{item.salary}</Text>
+              <Text style={styles.tableCell}>{item.salary}</Text>
+              <Text style={styles.tableCell}>{item.salary}</Text>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </ScrollView>
   );
@@ -168,75 +174,93 @@ const AddPayment = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 16,
-    backgroundColor: '#f8f9fa', // Light background for better contrast
+    backgroundColor: '#fff',
   },
-  inputContainer: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    elevation: 2,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  inputGroup: {
     marginBottom: 16,
   },
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 14,
     color: '#333',
+    marginBottom: 8,
   },
-  input: {
-    borderWidth: 1,
+  picker: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    backgroundColor: '#fff', // White background for inputs
-  },
-  datePickerButton: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-    backgroundColor: '#fff', // White background for date picker button
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
   searchInput: {
-    flex: 1,
-    borderWidth: 1,
+    height: 40,
     borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
-    backgroundColor: '#fff', // White background for search input
-  },
-  searchButton: {
-    backgroundColor: '#668cf5',
-    borderRadius: 4,
-    padding: 8,
-    marginLeft: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 16,
+    fontSize: 16,
   },
   table: {
-    marginTop: 16,
+    flex: 1,
   },
   tableHeader: {
-    backgroundColor: '#668cf5',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#e3f2fd',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  tableHeaderTitle: {
-    color: '#fff',
+  tableHeaderText: {
     fontWeight: 'bold',
+    textAlign: 'center',
     fontSize: 14,
-    marginRight: 20, // Add margin to the right for spacing
+    color: '#0d47a1',
+    width: 120,
+  },
+  fixedHeaderText: {
+    minWidth: 120,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   tableCell: {
-    marginRight: 20, // Add margin to the right for spacing in table cells
-  },
+    textAlign: 'center',
+    fontSize: 14,
+    width: 120,
+    padding: 4,
+    borderRightWidth: 1,
+    borderRightColor: '#ccc',
+},
 });
 
 export default AddPayment;

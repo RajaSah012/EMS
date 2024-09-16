@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import ReportFilter from './ReportFilter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,7 +19,7 @@ const DailyRepoart = () => {
     const fetchEmployeeData = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get("https://emsproject-production.up.railway.app/api/employee/", {
+        const response = await axios.get("https://mohitbyproject-production.up.railway.app/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -93,39 +93,46 @@ const DailyRepoart = () => {
       )}
       <View style={styles.tableContainer}>
         <ScrollView horizontal>
-          <View>
-            <View style={styles.table}>
-              <View style={styles.tableHeader}>
-                <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
-                <Text style={[styles.tableHeaderText]}>Employee Name</Text>
-                <Text style={[styles.tableHeaderText]}>Site</Text>
-                <Text style={[styles.tableHeaderText]}>Shift</Text>
-                <Text style={[styles.tableHeaderText]}>Department</Text>
-                <Text style={[styles.tableHeaderText]}>Work Type</Text>
-                <Text style={[styles.tableHeaderText]}>Location</Text>
-                <Text style={[styles.tableHeaderText]}>Status</Text>
-                <Text style={[styles.tableHeaderText]}>Check In</Text>
-                <Text style={[styles.tableHeaderText]}>Check Out</Text>
-                <Text style={[styles.tableHeaderText]}>Overtime</Text>
-                <Text style={[styles.tableHeaderText]}>Total Duration</Text>
-              </View>
-              {employee.map((e) => (
-                <View key={e.id} style={styles.tableRow}>
-                  <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.name}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.site}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.shift}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.department}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.workType}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.location}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.status}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.checkIn}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.checkOut}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.overtime}</Text>
-                  <Text style={[styles.tableCell, styles.wrapText]}>{e.totalDuration}</Text>
-                </View>
-              ))}
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
+              <Text style={[styles.tableHeaderText]}>Employee Name</Text>
+              <Text style={[styles.tableHeaderText]}>Site</Text>
+              <Text style={[styles.tableHeaderText]}>Shift</Text>
+              <Text style={[styles.tableHeaderText]}>Department</Text>
+              <Text style={[styles.tableHeaderText]}>Work Type</Text>
+              <Text style={[styles.tableHeaderText]}>Location</Text>
+              <Text style={[styles.tableHeaderText]}>Status</Text>
+              <Text style={[styles.tableHeaderText]}>Check In</Text>
+              <Text style={[styles.tableHeaderText]}>Check Out</Text>
+              <Text style={[styles.tableHeaderText]}>Overtime</Text>
+              <Text style={[styles.tableHeaderText]}>Total Duration</Text>
             </View>
+            {employee.map((e) => (
+              <View key={e.id} style={styles.tableRow}>
+                <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
+                <View style={styles.tableCell}>
+                  <Image
+                    source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${e.zname}` }}
+                    style={styles.employeeImage}
+                  />
+                  <View style={styles.employeeInfo}>
+                    <Text>{e.name}</Text>
+                    <Text style={styles.category}>{e.category}</Text>
+                  </View>
+                </View>
+                <Text style={[styles.tableCell]}>{e.address}</Text>
+                <Text style={[styles.tableCell]}>{e.salary}</Text>
+                <Text style={[styles.tableCell]}>{e.name}</Text>
+                <Text style={[styles.tableCell]}>{e.jod}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+                <Text style={[styles.tableCell]}>{e.status}</Text>
+              </View>
+            ))}
           </View>
         </ScrollView>
       </View>
@@ -203,6 +210,19 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
+  },
+  employeeImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 8,
+  },
+  employeeInfo: {
+    flexDirection: 'column',
+  },
+  category: {
+    fontStyle: 'italic',
+    color: '#555',
   },
 });
 

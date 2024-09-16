@@ -1,11 +1,19 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import axios from 'axios';
 import AttendanceFilter from './AttendanceFilter';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const AttendanceRegularization = ({ navigation }) => {
+const AttendanceRegularization = () => {
   const [date, setDate] = useState(new Date());
   const [employee, setEmployee] = useState([]);
   const [employeeCopy, setEmployeeCopy] = useState([]);
@@ -16,26 +24,17 @@ const AttendanceRegularization = ({ navigation }) => {
   const [filterbyShift, setFilterbyShift] = useState('');
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      const token = await AsyncStorage.getItem('token');
-      axios
-        .get("https://emsproject-production.up.railway.app/api/employee/", {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        .then((result) => {
-          if (result.data) {
-            setEmployee(result.data);
-            setEmployeeCopy(result.data);
-          } else {
-            alert(result.data.Error);
-          }
-        })
-        .catch((err) => console.log(err));
-    };
-
-    fetchEmployees();
+    axios
+      .get('https://mohitbyproject-production.up.railway.app/api/employee/')
+      .then((result) => {
+        if (result.data) {
+          setEmployee(result.data);
+          setEmployeeCopy(result.data);
+        } else {
+          alert(result.data.Error);
+        }
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -46,119 +45,165 @@ const AttendanceRegularization = ({ navigation }) => {
     let filteredEmployees = employeeCopy;
 
     if (openReportFilterSearchText) {
-      filteredEmployees = filteredEmployees.filter(f => f.name.toLowerCase().includes(openReportFilterSearchText.toLowerCase()));
+      filteredEmployees = filteredEmployees.filter(f =>
+        f.name.toLowerCase().includes(openReportFilterSearchText.toLowerCase())
+      );
     }
     if (filterbyDepartment) {
-      filteredEmployees = filteredEmployees.filter(f => f.department === filterbyDepartment);
+      filteredEmployees = filteredEmployees.filter(f =>
+        f.department === filterbyDepartment
+      );
     }
     if (filterbySite) {
-      filteredEmployees = filteredEmployees.filter(f => f.site === filterbySite);
+      filteredEmployees = filteredEmployees.filter(f =>
+        f.site === filterbySite
+      );
     }
     if (filterbyShift) {
-      filteredEmployees = filteredEmployees.filter(f => f.shift === filterbyShift);
+      filteredEmployees = filteredEmployees.filter(f =>
+        f.shift === filterbyShift
+      );
     }
 
     setEmployee(filteredEmployees);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Attendance Regularization</Text>
-        <TouchableOpacity style={styles.dateButton}>
-          <Text>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterIcon} onPress={() => setOpenReportFilter(true)}>
-          <Icon name="filter-list" size={24} color="#333" />
-        </TouchableOpacity>
-      </View>
-      <ScrollView horizontal={true}>
-      <ScrollView horizontal>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Employee</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Request Id</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Created On</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Check In</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Check Out</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Next Approver</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Attendance</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Status</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Reason</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Trail</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Total Duration</Text>
-          </View>
-          {employee.map(e => (
-            <View key={e.employeeId} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{e.employeeId}</Text>
-              <View style={[styles.tableCell, styles.employeeInfo]}>
-                <Text numberOfLines={2}>{e.name}</Text>
-                <Text>{e.designation}</Text>
-              </View>
-              <Text style={styles.tableCell}>{e.requestId}</Text>
-              <Text style={styles.tableCell}>{e.createdOn}</Text>
-              <Text style={styles.tableCell}>{e.checkIn}</Text>
-              <Text style={styles.tableCell}>{e.checkOut}</Text>
-              <Text style={styles.tableCell}>{e.nextApprover}</Text>
-              <Text style={styles.tableCell}>{e.attendance}</Text>
-              <Text style={styles.tableCell}>{e.status}</Text>
-              <Text style={styles.tableCell}>{e.reason}</Text>
-              <Text style={styles.tableCell}>{e.trail}</Text>
-              <Text style={styles.tableCell}>{e.totalDuration}</Text>
-            </View>
-          ))}
+        <Text style={styles.title}>Attendance Regular</Text>
+        <View style={styles.dateAndFilterContainer}>
+          <TouchableOpacity style={styles.dateButton} onPress={() => setDate(new Date())}>
+            <Text style={styles.dateText}>
+              {date.getDate()}-{date.getMonth() + 1}-{date.getFullYear()}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setOpenReportFilter(true)}
+          >
+            <Text style={styles.filterIcon}>📝</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-      </ScrollView>
-      <Modal
-        visible={openReportFilter}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setOpenReportFilter(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setOpenReportFilter(false)}>
-          <View style={styles.modalBackdrop}>
-            <View style={styles.modalContent}>
-              <AttendanceFilter
-                setOpenReportFilterSearchText={setOpenReportFilterSearchText}
-                setFilterbyDepartment={setFilterbyDepartment}
-                setFilterbySite={setFilterbySite}
-                setFilterbyShift={setFilterbyShift}
-                onClose={() => setOpenReportFilter(false)}
-              />
+      </View>
+
+      {/* Horizontal Scrollable Table */}
+      <ScrollView horizontal>
+        <ScrollView>
+          <View style={styles.table}>
+            {/* Table Header */}
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderText}>Emp Id</Text>
+              <Text style={styles.tableHeaderText}>Employee</Text>
+              <Text style={styles.tableHeaderText}>Request Id</Text>
+              <Text style={styles.tableHeaderText}>Created On</Text>
+              <Text style={styles.tableHeaderText}>Check In</Text>
+              <Text style={styles.tableHeaderText}>Check Out</Text>
+              <Text style={styles.tableHeaderText}>Next Approver</Text>
+              <Text style={styles.tableHeaderText}>Attendance</Text>
+              <Text style={styles.tableHeaderText}>Status</Text>
+              <Text style={styles.tableHeaderText}>Reason</Text>
+              <Text style={styles.tableHeaderText}>Trail</Text>
+              <Text style={styles.tableHeaderText}>Total Duration</Text>
             </View>
+
+            {/* Table Rows */}
+            {employee.map((item) => (
+              <View key={item.employeeId} style={styles.tableRow}>
+                <Text style={styles.tableCell}>{item.employeeId}</Text>
+                <View style={styles.employeeCell}>
+                  <Image
+                    source={{
+                      uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}`,
+                    }}
+                    style={styles.employeeImage}
+                  />
+                  <View style={styles.employeeInfo}>
+                    <Text style={styles.employeeName}>{item.name}</Text>
+                    <Text style={styles.employeeCategory}>{item.category}</Text>
+                  </View>
+                </View>
+                <Text style={styles.tableCell}>{item.address}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+                <Text style={styles.tableCell}>{item.site}</Text>
+                <Text style={styles.tableCell}>{item.jod}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+                <Text style={styles.tableCell}>{item.status}</Text>
+              </View>
+            ))}
           </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </ScrollView>
+        </ScrollView>
+      </ScrollView>
+
+      {openReportFilter && (
+        <Modal
+          visible={openReportFilter}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setOpenReportFilter(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setOpenReportFilter(false)}>
+            <View style={styles.modalContainer}>
+              <View style={styles.filterModal}>
+                <AttendanceFilter
+                  setOpenReportFilterSearchText={setOpenReportFilterSearchText}
+                  setFilterbyDepartment={setFilterbyDepartment}
+                  setFilterbySite={setFilterbySite}
+                  setFilterbyShift={setFilterbyShift}
+                  onClose={() => setOpenReportFilter(false)}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: '#FFDEE9',
   },
   header: {
+    backgroundColor: '#B5FFFC',
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  dateAndFilterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-  },
-  headerText: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   dateButton: {
-    marginRight: 16,
-    padding: 8,
-    backgroundColor: '#ddd',
-    borderRadius: 4,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  filterButton: {
+    backgroundColor: '#ff6347',
+    padding: 10,
+    borderRadius: 5,
   },
   filterIcon: {
-    padding: 8,
+    fontSize: 20,
+    color: '#fff',
   },
   table: {
     flex: 1,
@@ -166,7 +211,6 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     backgroundColor: '#e3f2fd',
     padding: 8,
     borderBottomWidth: 1,
@@ -179,12 +223,8 @@ const styles = StyleSheet.create({
     color: '#0d47a1',
     width: 120,
   },
-  fixedHeaderText: {
-    minWidth: 120,
-  },
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -197,24 +237,41 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
+  employeeCell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 120,
+    paddingRight: 10,
+  },
+  employeeImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
+  },
   employeeInfo: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
   },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  employeeName: {
+    fontWeight: 'bold',
+    fontSize: 14,
   },
-  modalContent: {
+  employeeCategory: {
+    color: '#555',
+    fontSize: 12,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  filterModal: {
     backgroundColor: '#fff',
+    margin: 20,
     padding: 20,
-    borderRadius: 8,
-    elevation: 5,
-    minWidth: '80%',
-    minHeight: '50%',
+    borderRadius: 10,
   },
 });
 

@@ -1,370 +1,533 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, TextInput, Image, ScrollView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
 const Attendance = () => {
   const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [admins, setAdmins] = useState([]);
   const [category, setCategory] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [records, setRecords] = useState([]);
-  const [status, setStatus] = useState('Select');
-  const navigation = useNavigation();
+  const [punchRecords, setPunchRecords] = useState({});
+  const [statusMap, setStatusMap] = useState({});
+  const [branch, setBranch] = useState(""); 
+  const [department, setDepartment] = useState(""); 
+  const [presentCount, setPresentCount] = useState(0);
+  const [absentCount, setAbsentCount] = useState(0);
+  const [lateCount, setLateCount] = useState(0);
+  const [halfDayCount, setHalfDayCount] = useState(0);
+  const [paidLeaveCount, setPaidLeaveCount] = useState(0);
+  const statusOptions = ['Select', 'Present', 'Absent', 'Late', 'Half Day', 'Paid Leave'];
 
   useEffect(() => {
     AdminRecords();
+    fetchCategories();
+    fetchEmployees();
+    PresentCount();
+    AbsentCount();
+    LateCount();
+    HalfDayCount();
+    PaidLeaveCount();
   }, []);
 
   const AdminRecords = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios
-      .get("https://emsproject-production.up.railway.app/auth/getUsers/", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      .then(result => {
-        if (result.data) {
-          setAdmins(result.data);
-        } else {
-          alert(result.data.Error);
-        }
-      });
+    axios.get('https://emsproject-production.up.railway.app/auth/getUsers/', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setAdmins(result.data))
+      .catch(err => console.log(err));
   };
 
-  useEffect(() => {
-    const fetchCategory = async () => {
-      const token = await AsyncStorage.getItem('token');
-      axios
-        .get("https://emsproject-production.up.railway.app/api/category/", {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        .then((result) => {
-          if (result.data) {
-            setCategory(result.data);
-          } else {
-            alert(result.data.Error);
-          }
-        })
-        .catch((err) => console.log(err));
-    };
-    fetchCategory();
-  }, []);
+  const fetchCategories = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/category/', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setCategory(result.data))
+      .catch(err => console.log(err));
+  };
 
-  useEffect(() => {
-    const fetchEmployee = async () => {
-      const token = await AsyncStorage.getItem('token');
-      axios
-        .get("https://emsproject-production.up.railway.app/api/employee/", {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        .then((result) => {
-          if (result.data) {
-            setEmployee(result.data);
-            setRecords(result.data);
-          } else {
-            alert(result.data.Error);
-          }
-        })
-        .catch((err) => console.log(err));
-    };
-    fetchEmployee();
-  }, []);
+  const fetchEmployees = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/employee/', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => {
+        setEmployee(result.data);
+        setRecords(result.data);
+      })
+      .catch(err => console.log(err));
+  };
 
   const handleFilter = (text) => {
     setRecords(employee.filter(f => f.name.toLowerCase().includes(text.toLowerCase())));
   };
 
-  const status_1 = [
-    { option1: 'Select' },
-    { option1: 'Present' },
-    { option1: 'Absent' },
-    { option1: 'Late' },
-    { option1: 'Half Day' },
-    { option1: 'Paid Leave' }
-  ];
-
-  const handleStatus = (value) => {
-    setStatus(value);
-  };
-
-  const handleDate = (value) => {
-    setDate(new Date(value));
-  };
-
   const handlePunch = async (employeeId, name) => {
+    const isPunchingIn = !punchRecords[employeeId];
     const token = await AsyncStorage.getItem('token');
-    
-    const currentStatus = status === 'Punch In' ? 'Punch Out' : 'Punch In';
-  
-    if (currentStatus === 'Punch In') {
-      axios.post('https://emsproject-production.up.railway.app/auth/attendence/', 
-        { name, employeeId, punchIn: new Date().toLocaleString() },
-        {
-          headers: {
-            "Authorization": `Bearer ${token}`
+
+    if (isPunchingIn) {
+      axios.post('https://mohitbyproject-production.up.railway.app/api/Hello/punchIn', {
+        employeeName: name,
+        employeeId: employeeId,
+        status: statusMap[employeeId] || 'Select',
+      }, { headers: { Authorization: `Bearer ${token}` } })
+        .then(result => {
+          if (result.data) {
+            setPunchRecords(prev => ({ ...prev, [employeeId]: result.data.id }));
           }
         })
-        .then(result => {
-          if (result.data.Status) {
-            setStatus('Punch Out'); 
-            navigation.navigate('/attendance');
-          } else {
-            alert(result.data.Error);
-          }
-        }).catch(err => console.log(err));
+        .catch(err => console.log(err));
     } else {
-      axios.put(`https://emsproject-production.up.railway.app/auth/attendence/${employeeId}`, 
-        { punchOut: new Date().toLocaleString() },
-        {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
+      const attendanceId = punchRecords[employeeId];
+      axios.put(`https://mohitbyproject-production.up.railway.app/api/Hello/punchOut/${attendanceId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(() => {
+          setPunchRecords(prev => {
+            const newState = { ...prev };
+            delete newState[employeeId];
+            return newState;
+          });
         })
-        .then(result => {
-          if (result.data.Status) {
-            setStatus('Punch In'); 
-            navigation.navigate('/attendance');
-          } else {
-            alert(result.data.Error);
-          }
-        }).catch(err => console.log(err));
+        .catch(err => console.log(err));
     }
   };
-  
 
-  const generateCSV = async () => {
-    const header = ['Employee ID', 'Name', 'Status'];
-    const csvData = records.map(record => [record.employeeId, record.name, status]);
+  const handleStatusChange = (employeeId, value) => {
+    setStatusMap(prev => ({ ...prev, [employeeId]: value }));
+  };
 
-    const csvString = [header, ...csvData].map(e => e.join(",")).join("\n");
+  const PresentCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countP', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setPresentCount(result.data))
+      .catch(err => console.log(err));
+  };
 
-    const path = FileSystem.documentDirectory + 'DailyReports.csv';
+  const AbsentCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countA', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setAbsentCount(result.data))
+      .catch(err => console.log(err));
+  };
 
-    await FileSystem.writeAsStringAsync(path, csvString, {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
+  const LateCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countL', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setLateCount(result.data))
+      .catch(err => console.log(err));
+  };
 
-    Sharing.shareAsync(path, {
-      mimeType: 'text/csv',
-      dialogTitle: 'Share Daily Report CSV',
-      UTI: 'public.comma-separated-values-text',
-    });
+  const HalfDayCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countH', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setHalfDayCount(result.data))
+      .catch(err => console.log(err));
+  };
+
+  const PaidLeaveCount = async () => {
+    const token = await AsyncStorage.getItem('token');
+    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countPl', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(result => setPaidLeaveCount(result.data))
+      .catch(err => console.log(err));
+  };
+
+  const exportCSV = async () => {
+    const csvData = records.map(record => ({
+      EmployeeId: record.employeeId,
+      Name: record.name,
+      Status: statusMap[record.employeeId] || 'Select',
+    }));
+
+    const csvContent = [
+      ["EmployeeId", "Name", "Status"],
+      ...csvData.map(row => [row.EmployeeId, row.Name, row.Status])
+    ].map(e => e.join(",")).join("\n");
+
+    const fileUri = `${FileSystem.documentDirectory}AttendanceReport.csv`;
+    await FileSystem.writeAsStringAsync(fileUri, csvContent, { encoding: FileSystem.EncodingType.UTF8 });
+    await Sharing.shareAsync(fileUri);
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Attendance Management</Text>
+      </View>
+      <View style={styles.actionContainer}>
+        <TouchableOpacity onPress={exportCSV} style={styles.exportButton}>
+          <Text style={styles.exportButtonText}>Export Attendance</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => console.log('Mark All Absent As Present')} style={styles.markAbsentButton}>
+          <Text style={styles.markAbsentButtonText}>Mark All Absent As Present</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.filterContainer}>
+        <Text style={styles.label}>Branch</Text>
         <Picker
-          selectedValue="All Branches"
           style={styles.picker}
-          onValueChange={(itemValue) => console.log(itemValue)}
-        >
-          <Picker.Item label="All Branches" value="All Branches" />
-          {admins.map((a) => (
-            <Picker.Item key={a.id} label={a.name} value={a.id} />
+          selectedValue={branch} 
+          onValueChange={(itemValue) => setBranch(itemValue)}>
+          <Picker.Item label="All Branches" value="" />
+          {employee.map(emp => (
+            <Picker.Item key={emp.employeeId} label={emp.site} value={emp.site} />
           ))}
         </Picker>
+      </View>
 
+      <View style={styles.filterContainer}>
+        <Text style={styles.label}>Department</Text>
         <Picker
-          selectedValue="All Departments"
           style={styles.picker}
-          onValueChange={(itemValue) => console.log(itemValue)}
-        >
-          <Picker.Item label="All Departments" value="All Departments" />
-          {category.map((c) => (
-            <Picker.Item key={c.id} label={c.categoryName} value={c.id} />
+          selectedValue={department} 
+          onValueChange={(itemValue) => setDepartment(itemValue)}>
+          <Picker.Item label="All Departments" value="" />
+          {category.map(cat => (
+            <Picker.Item key={cat.id} label={cat.categoryName} value={cat.categoryName} />
           ))}
         </Picker>
-
-        <TextInput
-          style={styles.dateInput}
-          onChangeText={handleDate}
-          value={date.toISOString().split('T')[0]}
-          placeholder="Select Date"
-        />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Button title="Mark All Absent As Present" onPress={() => console.log('Mark All')} />
-        <Button title="Daily Report" onPress={generateCSV} />
+      <View style={styles.filterContainer}>
+        <Text style={styles.label}>Date</Text>
+        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateInput}>
+          <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setDate(selectedDate);
+            }}
+          />
+        )}
       </View>
 
-      <View style={styles.statsContainer}>
-        <View style={styles.statBox}>
-          <Text style={styles.statText}>0</Text>
-          <Text style={styles.statLabel}>Present</Text>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollView}>
+        <View style={styles.countsContainer}>
+          <View style={styles.countBox}>
+            <Text style={styles.countText}>{presentCount}</Text>
+            <Text style={styles.countLabel}>Present</Text>
+          </View>
+          <View style={styles.countBox}>
+            <Text style={styles.countText}>{absentCount}</Text>
+            <Text style={styles.countLabel}>Absent</Text>
+          </View>
+          <View style={styles.countBox}>
+            <Text style={styles.countText}>{lateCount}</Text>
+            <Text style={styles.countLabel}>Late</Text>
+          </View>
+          <View style={styles.countBox}>
+            <Text style={styles.countText}>{halfDayCount}</Text>
+            <Text style={styles.countLabel}>Half Day</Text>
+          </View>
+          <View style={styles.countBox}>
+            <Text style={styles.countText}>{paidLeaveCount}</Text>
+            <Text style={styles.countLabel}>Paid Leave</Text>
+          </View>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statText}>0</Text>
-          <Text style={styles.statLabel}>Absent</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statText}>0</Text>
-          <Text style={styles.statLabel}>Late</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statText}>0</Text>
-          <Text style={styles.statLabel}>Half Day</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statText}>0</Text>
-          <Text style={styles.statLabel}>Paid Leave</Text>
-        </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search Name of Employee"
+          placeholder="Search Name of employee"
           onChangeText={handleFilter}
         />
-        <Button title="Search" onPress={() => console.log('Search')} />
+        <TouchableOpacity style={styles.searchButton}>
+          <Text style={styles.searchButtonText}>Search</Text>
+        </TouchableOpacity>
       </View>
-      <Button title="Export Attendance" onPress={generateCSV} /> 
 
-      <ScrollView style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderText}>Emp Id</Text>
-          <Text style={styles.tableHeaderText}>Image</Text>
-          <Text style={styles.tableHeaderText}>Name</Text>
-          <Text style={styles.tableHeaderText}>Status</Text>
-          <Text style={styles.tableHeaderText}>Punch</Text>
-        </View>
-        {records.map((item) => (
-          <View key={item.employeeId} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.employeeId}</Text>
-            <Image source={{ uri: `http://localhost:3000/Images/` + item.image }} style={styles.employeeImage} />
-            <Text style={styles.tableCell}>{item.name}</Text>
-            <Picker
-              selectedValue={status}
-              style={styles.tableCell}
-              onValueChange={handleStatus}
-            >
-              {status_1.map((stat, index) => (
-                <Picker.Item key={index} label={stat.option1} value={stat.option1} />
-              ))}
-            </Picker>
-            <TouchableOpacity
-              onPress={() => handlePunch(item.employeeId, item.name)}
-              style={styles.punchButton}
-            >
-              <Text>Punch In</Text>
-            </TouchableOpacity>
+      <ScrollView horizontal={true}>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Image</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Name</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Status</Text>
+            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Punch</Text>
           </View>
-        ))}
+          {records.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.employeeId}</Text>
+              <View style={styles.imageCell}>
+                <Image
+                  source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}` }}
+                  style={styles.employeeImage}
+                />
+              </View>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <View style={styles.statusCell}>
+                <Picker
+                  style={styles.statusPicker}
+                  selectedValue={statusMap[item.employeeId] || 'Select'}
+                  onValueChange={value => handleStatusChange(item.employeeId, value)}>
+                  {statusOptions.map((option, index) => (
+                    <Picker.Item key={index} label={option} value={option} />
+                  ))}
+                </Picker>
+              </View>
+              <TouchableOpacity
+                onPress={() => handlePunch(item.employeeId, item.name)}
+                style={[
+                  styles.punchButton,
+                  punchRecords[item.employeeId] ? styles.punchOut : styles.punchIn,
+                ]}>
+                <Text style={styles.punchButtonText}>
+                  {punchRecords[item.employeeId] ? 'Punch Out' : 'Punch In'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
       </ScrollView>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f8f9fa',
+    padding: 20,
+    backgroundColor: '#E3F2FD',
   },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  picker: {
-    flex: 1,
-    height: 40,
-    marginHorizontal: 4,
-    backgroundColor: '#fff',
-  },
-  dateInput: {
-    flex: 1,
-    height: 40,
-    marginHorizontal: 4,
-    backgroundColor: '#fff',
-    paddingHorizontal: 8,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-    backgroundColor: '#fff',
-    padding: 16,
+  header: {
+    backgroundColor: '#BBDEFB',
+    padding: 15,
     borderRadius: 8,
-  },
-  statBox: {
+    marginBottom: 10,
     alignItems: 'center',
   },
-  statText: {
+  headerText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#0D47A1',
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  exportButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+  },
+  markAbsentButton: {
+    backgroundColor: '#FF9800',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+  },
+  exportButtonText: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  markAbsentButtonText: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  filterContainer: {
+    marginBottom: 15,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  label: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 5,
+  },
+  picker: {
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#DDD',
+  },
+  dateInput: {
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  scrollView: {
+    marginVertical: 10,
+  },
+  countsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  countBox: {
+    alignItems: 'center',
+    padding: 30,
+    backgroundColor: '#BBDEFB',
+    borderRadius: 8,
+    width: 100,
+    marginHorizontal: 10,
+    elevation: 2,
+  },
+  countText: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#0D47A1',
   },
-  statLabel: {
-    fontSize: 14,
-    color: '#6c757d',
+  countLabel: {
+    fontSize: 10,
+    color: '#555',
+    marginTop: 5,
   },
   searchContainer: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginVertical: 10,
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    backgroundColor: '#fff',
-    paddingHorizontal: 8,
+    height: 50,
+    borderColor: '#DDD',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFF',
   },
-  tableContainer: {
-    marginTop: 16,
+  searchButton: {
+    marginLeft: 10,
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+  },
+  table: {
+    flex: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   tableHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#007bff',
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: '#BBDEFB',
+    padding: 10,
   },
   tableHeaderText: {
-    flex: 1,
-    textAlign: 'center',
     fontWeight: 'bold',
-    color: '#fff',
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#0D47A1',
+    width: 120,
   },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#dee2e6',
+    borderBottomColor: '#ccc',
   },
   tableCell: {
-    flex: 1,
     textAlign: 'center',
+    fontSize: 14,
+    width: 120,
+    padding: 4,
+  },
+  imageCell: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 120,
+    padding: 4,
   },
   employeeImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  statusCell: {
+    flex: 1,
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusPicker: {
+    width: '100%',
+    height: 40,
   },
   punchButton: {
-    flex: 1,
-    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+    minWidth: 70,
+    height: 35,
     justifyContent: 'center',
-    backgroundColor: '#007bff',
-    paddingVertical: 8,
-    borderRadius: 8,
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  punchIn: {
+    backgroundColor: '#4CAF50',
+  },
+  punchOut: {
+    backgroundColor: '#F44336',
+  },
+  punchButtonText: {
+    color: '#FFF',
+    fontSize: 14,
   },
 });
 

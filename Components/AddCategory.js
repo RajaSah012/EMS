@@ -13,7 +13,7 @@ const AddCategory = () => {
             const token = await AsyncStorage.getItem('token'); // Await the AsyncStorage call
 
             const response = await axios.post(
-                "https://emsproject-production.up.railway.app/api/category/",
+                "https://mohitbyproject-production.up.railway.app/api/category/",
                 {
                     categoryName: category // Adjust as per your API's expected data structure
                 },

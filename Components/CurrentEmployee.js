@@ -17,13 +17,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const CurrentEmployee = () => {
   const [employee, setEmployee] = useState([]);
   const [records, setRecords] = useState([]);
+  const [selectedGender, setSelectedGender] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchEmployees = async () => {
       const token = await AsyncStorage.getItem('token');
       axios
-        .get('https://emsproject-production.up.railway.app/api/employee/', {
+        .get('https://mohitbyproject-production.up.railway.app/api/employee/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,16 +47,17 @@ const CurrentEmployee = () => {
     setRecords(employee.filter((f) => f.name.toLowerCase().includes(text.toLowerCase())));
   };
 
-  const handleDelete = (id) => {
-    axios
-      .delete('http://localhost:3000/auth/delete_employee/' + id)
-      .then((result) => {
-        if (result.data.Status) {
-          window.location.reload();
-        } else {
-          Alert.alert(result.data.Error);
-        }
-      });
+  const handleDelete = (employeeId) => {
+    axios.delete(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`)
+        .then(result => {
+            if (result.data) {
+                setRecords(records.filter(e => e.employeeId !== employeeId));
+                Alert.alert('Success', 'Employee deleted successfully.');
+            } else {
+                Alert.alert('Error', result.data.Error);
+            }
+        })
+        .catch(err => Alert.alert('Error', 'Failed to delete employee.'));
   };
 
   return (
@@ -63,12 +65,13 @@ const CurrentEmployee = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Employees</Text>
         <Picker
+          selectedValue={selectedGender}
           style={styles.picker}
-          onValueChange={(value) => console.log(value)}
+          onValueChange={(value) => setSelectedGender(value)}
         >
           <Picker.Item label="Gender" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.gender} value={c.id} />
+            <Picker.Item key={c.gender} label={c.gender} value={c.gender} />
           ))}
         </Picker>
         <TouchableOpacity style={styles.button}>
@@ -92,31 +95,31 @@ const CurrentEmployee = () => {
         <Picker style={styles.picker}>
           <Picker.Item label="STAFF" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.name} value={c.id} />
+            <Picker.Item key={`staff-${c.name}`} label={c.name} value={c.name} />
           ))}
         </Picker>
         <Picker style={styles.picker}>
           <Picker.Item label="SHIFT" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.work} value={c.id} />
+            <Picker.Item key={`shift-${c.employeeId}`} label={c.work} value={c.id} />
           ))}
         </Picker>
         <Picker style={styles.picker}>
           <Picker.Item label="DEPARTMENT" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.category} value={c.id} />
+            <Picker.Item key={`dept-${c.id}`} label={c.category} value={c.id} />
           ))}
         </Picker>
         <Picker style={styles.picker}>
           <Picker.Item label="ALL" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.status} value={c.id} />
+            <Picker.Item key={`status-${c.id}`} label={c.status} value={c.id} />
           ))}
         </Picker>
         <Picker style={styles.picker}>
           <Picker.Item label="SITE" value="" />
           {employee.map((c) => (
-            <Picker.Item key={c.id} label={c.site} value={c.id} />
+            <Picker.Item key={`site-${c.id}`} label={c.site} value={c.id} />
           ))}
         </Picker>
         <TextInput
@@ -146,15 +149,15 @@ const CurrentEmployee = () => {
             </View>
             {records.map((e) => (
               <View key={e.id} style={styles.tableRow}>
-                <Text style={[styles.tableCell, { width: 80 }]}>{e.employeeId}</Text>
-                <View style={[styles.tableCellEmployee, { width: 180 }]}>
+                <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
+                <View style={styles.tableCell}>
                   <Image
-                    source={{ uri: `http://localhost:3000/Images/${e.image}` }}
-                    style={styles.image}
+                    source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${e.zname}` }}
+                    style={styles.employeeImage}
                   />
-                  <View style={styles.employeeDetails}>
+                  <View style={styles.employeeInfo}>
                     <Text>{e.name}</Text>
-                    <Text>{e.designation}</Text>
+                    <Text style={styles.category}>{e.category}</Text>
                   </View>
                 </View>
                 <Text style={[styles.tableCell, { width: 120 }]}>{e.category}</Text>
@@ -175,7 +178,7 @@ const CurrentEmployee = () => {
                   >
                     <Text style={styles.editButton}>Edit</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDelete(e.id)}>
+                  <TouchableOpacity onPress={() => handleDelete(e.employeeId)}>
                     <Text style={styles.deleteButton}>Delete</Text>
                   </TouchableOpacity>
                 </View>
@@ -238,57 +241,57 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   tableContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  table: {
+    flex: 1,
   },
   tableHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: '#e3f2fd',
-    borderTopWidth: 1,
+    padding: 8,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-    height: 50,
-    alignItems: 'center',
+    borderBottomColor: '#ccc',
   },
   tableHeaderText: {
     fontWeight: 'bold',
-    borderRightWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
     textAlign: 'center',
+    fontSize: 14,
     color: '#0d47a1',
     width: 120,
   },
+  fixedHeaderText: {
+    minWidth: 120,
+  },
   tableRow: {
     flexDirection: 'row',
-    height: 50,
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 8,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderBottomColor: '#ccc',
   },
   tableCell: {
-    borderRightWidth: 1,
-    borderColor: '#ccc',
-    padding: 5,
     textAlign: 'center',
+    fontSize: 14,
     width: 120,
-  },
-  tableCellEmployee: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    padding: 4,
     borderRightWidth: 1,
-    borderColor: '#ccc',
-    padding: 5,
-    width: 150,
+    borderRightColor: '#ccc',
   },
-  image: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  employeeImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 8,
   },
-  employeeDetails: {
-    marginLeft: 10,
+  employeeInfo: {
+    flexDirection: 'column',
+  },
+  category: {
+    fontStyle: 'italic',
+    color: '#555',
   },
   tableCellAction: {
     flexDirection: 'row',
