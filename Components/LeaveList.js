@@ -1,148 +1,128 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
 
 const LeaveList = () => {
   const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
   const [employee, setEmployee] = useState([]);
   const [records, setRecords] = useState([]);
   const [filterbySite, setFilterbySite] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedLeaveType, setSelectedLeaveType] = useState('');
-  const [searchText, setSearchText] = useState('');
+  const [status, setStatus] = useState('');
+  const [leaveType, setLeaveType] = useState('');
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (token) {
-          const result = await axios.get("https://emsproject-production.up.railway.app/api/employee/", {
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
-          });
-          if (result.data) {
-            setEmployee(result.data);
-            setRecords(result.data);
-          } else {
-            alert(result.data.Error);
-          }
+    axios
+      .get("https://mohitbyproject-production.up.railway.app/api/employee/")
+      .then((result) => {
+        if (result.data) {
+          setEmployee(result.data);
+          setRecords(result.data);
+        } else {
+          alert(result.data.Error);
         }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchEmployees();
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const handleFilter = (text) => {
-    setRecords(employee.filter(f =>
-      f.name.toLowerCase().includes(text.toLowerCase()) &&
-      (filterbySite === '' || f.address === filterbySite)
-    ));
+    setRecords(employee.filter(f => f.name.toLowerCase().includes(text.toLowerCase())));
   };
 
-  useEffect(() => {
-    setRecords(employee.filter(f => f.address === filterbySite));
-  }, [filterbySite]);
+  const siteFilter = (selectedSite) => {
+    setFilterbySite(selectedSite);
+    setRecords(employee.filter(f => f.site === selectedSite));
+  };
 
-  const handleDateChange = (event, selectedDate) => {
+  const onDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowDatePicker(false);
-    setDate(currentDate);
+    setShowPicker(false); // Close the picker after selecting the date
+    setDate(currentDate); // Update the state with the selected date
   };
 
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
-    // Perform any additional actions based on status selection
-  };
-
-  const handleLeaveTypeChange = (leaveType) => {
-    setSelectedLeaveType(leaveType);
-    // Perform any additional actions based on leave type selection
-  };
-
-  const handleSearchChange = (text) => {
-    setSearchText(text);
-    handleFilter(text);
-  };
+  // Format the date to a readable format like MM/DD/YYYY
+  const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Leave Requests</Text>
-        <Button title="Leave Export" onPress={() => {}} />
-      </View>
-      <View style={styles.datePickerContainer}>
-        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePicker}>
-          <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Leave Requests</Text>
+      
+      <View style={styles.filterSection}>
+        {/* Export Button */}
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Leave Export</Text>
         </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
-      </View>
-      <View style={styles.additionalFields}>
-        {/* Leave Type */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Leave Type</Text>
-          <Picker
-            selectedValue={selectedLeaveType}
-            style={styles.fieldPicker}
-            onValueChange={(itemValue) => handleLeaveTypeChange(itemValue)}
-          >
-            <Picker.Item label="Leave Type" value="" />
-            {employee.map((e) => (
-              <Picker.Item key={e.id} label={e.leaveType} value={e.leaveType} />
-            ))}
-          </Picker>
+
+        {/* Date Picker */}
+        <View style={styles.dateContainer}>
+          <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.dateButton}>
+            <Text style={styles.dateText}>{formattedDate}</Text>
+          </TouchableOpacity>
+          {showPicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={onDateChange}
+            />
+          )}
         </View>
-        {/* Select Status */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Select Status</Text>
+
+        {/* Status Dropdown */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.label}>Select Status</Text>
           <Picker
-            selectedValue={selectedStatus}
-            style={styles.fieldPicker}
-            onValueChange={(itemValue) => handleStatusChange(itemValue)}
-          >
+            selectedValue={status}
+            onValueChange={(itemValue) => setStatus(itemValue)}
+            style={styles.picker}>
             <Picker.Item label="Select Status" value="" />
             {employee.map((e) => (
-              <Picker.Item key={e.id} label={e.status} value={e.status} />
+              <Picker.Item label={e.site} value={e.employeeId} key={e.employeeId} />
             ))}
           </Picker>
         </View>
-        {/* Select Site */}
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Select Site</Text>
+
+        {/* Leave Type Dropdown */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.label}>Leave Type</Text>
+          <Picker
+            selectedValue={leaveType}
+            onValueChange={(itemValue) => setLeaveType(itemValue)}
+            style={styles.picker}>
+            <Picker.Item label="Leave Type" value="" />
+            {employee.map((c) => (
+              <Picker.Item label={c.name} value={c.employeeId} key={c.employeeId} />
+            ))}
+          </Picker>
+        </View>
+
+        {/* Site Dropdown */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.label}>Select Site</Text>
           <Picker
             selectedValue={filterbySite}
-            style={styles.fieldPicker}
-            onValueChange={(itemValue) => setFilterbySite(itemValue)}
-          >
+            onValueChange={(itemValue) => siteFilter(itemValue)}
+            style={styles.picker}>
             <Picker.Item label="Select Site" value="" />
-            {employee.map((e) => (
-              <Picker.Item key={e.id} label={e.address} value={e.address} />
+            {employee.map((c) => (
+              <Picker.Item label={c.site} value={c.site} key={c.site} />
             ))}
           </Picker>
         </View>
+
         {/* Search by Name */}
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search by name"
-          onChangeText={handleSearchChange}
-          value={searchText}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Search by name"
+            onChangeText={handleFilter}
+          />
+        </View>
       </View>
+
+      {/* Table */}
       <ScrollView horizontal>
         <View style={styles.table}>
           <View style={styles.tableHeader}>
@@ -173,75 +153,95 @@ const LeaveList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#E3F2FD', // Light blue background
   },
   header: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginVertical: 15,
+    color: '#0d47a1', // Dark blue color
     textAlign: 'center',
   },
-  datePickerContainer: {
-    marginBottom: 20,
+  filterSection: {
+    marginVertical: 15,
+    backgroundColor: '#ffffff', // White background for filter section
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  datePicker: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+  button: {
+    backgroundColor: '#0d47a1',
+    padding: 12,
     borderRadius: 5,
-    padding: 8,
+    marginBottom: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  dateContainer: {
+    marginBottom: 10,
+  },
+  dateButton: {
+    backgroundColor: '#81D4FA', // Light blue for date button
+    padding: 10,
+    borderRadius: 5,
   },
   dateText: {
+    color: '#0d47a1',
+    fontWeight: 'bold',
     fontSize: 16,
+  },
+  dropdownContainer: {
+    marginBottom: 10,
   },
   picker: {
     height: 50,
-    marginBottom: 20,
-  },
-  additionalFields: {
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 5,
+    width: '100%',
+    borderColor: '#81D4FA', // Light blue border for pickers
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderRadius: 5,
   },
-  fieldContainer: {
-    marginBottom: 16,
-  },
-  fieldLabel: {
-    marginBottom: 8,
-    fontSize: 16,
+  label: {
+    marginBottom: 5,
     fontWeight: 'bold',
+    color: '#0d47a1',
   },
-  fieldPicker: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+  inputContainer: {
+    marginBottom: 10,
   },
-  searchInput: {
+  input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 5,
-    padding: 8,
-    marginBottom: 16,
+    padding: 10,
+    backgroundColor: '#ffffff', // White background for input
   },
   table: {
     flex: 1,
+    backgroundColor: '#ffffff', // White background for the table
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   tableHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#e3f2fd',
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#BBDEFB', // Slightly darker light blue
+    padding: 10,
   },
   tableHeaderText: {
     fontWeight: 'bold',
@@ -250,15 +250,12 @@ const styles = StyleSheet.create({
     color: '#0d47a1',
     width: 120,
   },
-  fixedHeaderText: {
-    minWidth: 120,
-  },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 8,
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#eee',
   },
   tableCell: {
     textAlign: 'center',
@@ -269,5 +266,7 @@ const styles = StyleSheet.create({
     borderRightColor: '#ccc',
   },
 });
+
+
 
 export default LeaveList;

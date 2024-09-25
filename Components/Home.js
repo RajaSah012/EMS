@@ -47,7 +47,7 @@ const Home = ({ navigation }) => {
           }
         })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setAdmins(result.data)
         } else {
           alert(result.data.Error)
@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setO(result.data)
         } else {
           alert("o")
@@ -79,7 +79,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setTi(result.data)
         } else {
           alert("ti")
@@ -95,7 +95,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setTo(result.data)
         } else {
           alert("to")
@@ -111,7 +111,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setN(result.data)
         } else {
           alert("n")
@@ -127,7 +127,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setE(result.data)
         } else {
           alert("exit")
@@ -143,7 +143,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setC(result.data)
         } else {
           alert("close")
@@ -160,7 +160,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setM(result.data)
         } else {
           alert("m")
@@ -176,7 +176,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setF(result.data)
         } else {
           alert("f")
@@ -192,7 +192,7 @@ const Home = ({ navigation }) => {
         }
       })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setT(result.data)
         } else {
           alert("t")
@@ -210,7 +210,7 @@ const Home = ({ navigation }) => {
           }
         })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setAdminTotal(result.data)
         }
       })
@@ -226,7 +226,7 @@ const Home = ({ navigation }) => {
           }
         })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setEmployeeTotal(result.data)
         }
       })
@@ -242,7 +242,7 @@ const Home = ({ navigation }) => {
           }
         })
       .then(result => {
-        if (result.data) {
+        if (result.data>=0) {
           setSalaryTotal(result.data)
         } else {
           alert(result.data.Error)
@@ -261,7 +261,7 @@ const Home = ({ navigation }) => {
             }
           })
         .then((result) => {
-          if (result.data) {
+          if (result.data>=0) {
             setEmployee(result.data);
           } else {
             alert(result.data.Error);
@@ -283,7 +283,7 @@ const Home = ({ navigation }) => {
         }
       })
         .then((result) => {
-          if (result.data) {
+          if (result.data>=0) {
             setCategory(result.data);
           } else {
             alert(result.data.Error);
@@ -332,7 +332,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.col, styles.bgTeal]}
-          onPress={() => navigation.navigate('DailyRepoart')}>
+          onPress={() => navigation.navigate('DailyReport')}>
           <View style={styles.dash1}>
             <View style={styles.dash3}>
               <View style={styles.iconPre}>
@@ -540,7 +540,7 @@ const Home = ({ navigation }) => {
                       <View style={styles.tableHeaderContent}>
                         <Text style={[styles.tableHeaderText, { width: 100 }]}>Code</Text>
                         <Text style={[styles.tableHeaderText, { width: 100 }]}>Full Name</Text>
-                        <Text style={[styles.tableHeaderText, { width: 120 }]}>Reason</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Reason</Text>
                         <Text style={[styles.tableHeaderText, { width: 100 }]}>Applied From</Text>
                         <Text style={[styles.tableHeaderText, { width: 100 }]}>Applied To</Text>
                         <Text style={[styles.tableHeaderText, { width: 100 }]}>Status</Text>
@@ -550,69 +550,59 @@ const Home = ({ navigation }) => {
                       {employee.map((employee) => (
                         <View key={employee.employeeId} style={styles.tableRow}>
                           <Text style={[styles.tableRowText, { width: 100 }]}>{employee.employeeId}</Text>
-                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.name}</Text>
-                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.fname}</Text>
-                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.email}</Text>
-                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.dob}</Text>
-                          <Text style={[styles.tableRowText, { width: 120 }]}>{employee.status}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.name}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.fname}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.email}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.dob}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.status}</Text>
                         </View>
                       ))}
                     </ScrollView>
                   </View>
                 </ScrollView>
               </View>
-              <View style={styles.dashFontBorderTop}>
-                <TouchableOpacity
-                  onPress={() => console.log('View Leave Requests')}>
-                  <Text style={styles.navLink}>View Leave Requests</Text>
-                </TouchableOpacity>
-              </View>
+              
             </View>
           </View>
         </View>
       </View>
       <View style={styles.dashContan}>
-        <View style={styles.row}>
-          <View style={[styles.colSm4, styles.bgTeal]}>
-            <View style={styles.dash7}>
-              <View style={styles.dash6}>
-                <Text style={styles.dashFont}>Task List</Text>
-              </View>
-              <View style={styles.tableSizeArgs1}>
-                <ScrollView horizontal={true}>
-                  <View style={styles.tableHeader}>
-                    <View style={styles.tableHeaderContent}>
-                      <Text style={styles.tableHeaderText}>Code</Text>
-                      <Text style={styles.tableHeaderText}>Name</Text>
-                      <Text style={styles.tableHeaderText}>Assigned By</Text>
-                      <Text style={styles.tableHeaderText}>Status</Text>
-                    </View>
-                  </View>
-                  <ScrollView style={styles.tableBody}>
-                    {employee.map((t) => (
-                      <View key={t.employeeId}>
-                        <View style={styles.tableRow}>
-                          <Text style={styles.tableRowText}>{t.employeeId}</Text>
-                          <Text style={styles.tableRowText}>{t.name}</Text>
-                          <Text style={styles.tableRowText}>{t.fname}</Text>
-                          <Text style={styles.tableRowText}>{t.status}</Text>
-                        </View>
+  <View style={styles.row}>
+    <View style={[styles.colSm4, styles.bgTeal]}>
+      <View style={styles.dash7}>
+        <View style={styles.dash6}>
+          <Text style={styles.dashFont}>Task List</Text>
+        </View>
+        <View style={styles.tableSizeArgs1}>
+        <ScrollView horizontal={true}>
+                  <View>
+                    <View style={styles.tableHeader}>
+                      <View style={styles.tableHeaderContent}>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Code</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}> Name</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}>Assigned By</Text>
+                        <Text style={[styles.tableHeaderText, { width: 100 }]}> Status</Text>
                       </View>
-                    ))}
-                  </ScrollView>
+                    </View>
+                    <ScrollView style={styles.tableBody}>
+                      {employee.map((employee) => (
+                        <View key={employee.employeeId} style={styles.tableRow}>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.employeeId}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.name}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.fname}</Text>
+                          <Text style={[styles.tableRowText, { width: 100 }]}>{employee.status}</Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
                 </ScrollView>
-              </View>
-              <View style={styles.dashFontBorderTop}>
-                <TouchableOpacity
-                  onPress={() => console.log('View Task List')}>
-                  <Text style={styles.navLink}>View Task List</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
+  </View>
+</View>
+</ScrollView>
+
   );
 };
 

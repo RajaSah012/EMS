@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Start = () => {
   const navigation = useNavigation();
@@ -21,15 +22,18 @@ const Start = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+    colors={['#000000', '#8B0000']} // Red to Black gradient
+      style={styles.container}
+    >
       <View style={styles.loginForm}>
         <Text style={styles.title}>Login As</Text>
         <View style={styles.buttonContainer}>
-          <Button title="Employee" onPress={() => { navigation.navigate('EmployeeLogin') }} />
-          <Button title="Admin" onPress={() => { navigation.navigate('AdminLogin') }} />
+          <Button title="Employee" onPress={() => { navigation.navigate('EmployeeLogin') }} color="#ff4c4c" />
+          <Button title="Admin" onPress={() => { navigation.navigate('AdminLogin') }} color="#ff4c4c" />
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -38,7 +42,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e0f7fa', // Background color for the entire screen
   },
   loginForm: {
     padding: 20,
@@ -51,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#00796b', // Title color
+    color: '#ff4c4c', // Title color
   },
   buttonContainer: {
     flexDirection: 'row',

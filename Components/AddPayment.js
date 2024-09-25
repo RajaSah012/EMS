@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const AddPayment = () => {
   const [admins, setAdmins] = useState([]);
@@ -63,134 +64,118 @@ const AddPayment = () => {
     }
   };
 
-  const formatDate = (dateArray, options = {}) => {
-    try {
-      if (!Array.isArray(dateArray) || dateArray.length !== 3) {
-        console.log("Invalid date format:", dateArray);
-        return "N/A";
-      }
-      const [year, month, day] = dateArray;
-      const date = new Date(year, month - 1, day);
-      if (isNaN(date.getTime())) {
-        console.log("Invalid date value:", dateArray);
-        return "N/A";
-      }
-      return new Intl.DateTimeFormat('en-GB', options).format(date);
-    } catch (error) {
-      console.log('Date formatting error:', error);
-      return "N/A";
-    }
-  };
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Payroll Month</Text>
-        <View style={styles.headerButtons}>
-          <Text style={styles.dateText}>{date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</Text>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Icon name="calendar" size={24} color="#007bff" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={onChangeDate}
-          maximumDate={new Date()}
-        />
-      )}
-
-      <View style={styles.inputGroup}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search Employee"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Branch</Text>
-        <Picker
-          selectedValue={selectedBranch}
-          onValueChange={(itemValue) => setSelectedBranch(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="All Branches" value="All Branches" />
-          {employee.map((emp) => (
-            <Picker.Item key={emp.employeeId} label={emp.site} value={emp.site} />
-          ))}
-        </Picker>
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Wage Type</Text>
-        <Picker
-          selectedValue={wageType}
-          onValueChange={(itemValue) => setWageType(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Monthly" value="Monthly" />
-          <Picker.Item label="Daily" value="Daily" />
-          <Picker.Item label="Hourly" value="Hourly" />
-        </Picker>
-      </View>
-
-      <ScrollView horizontal={true}>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Name</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Joining Date</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>CTC / Month</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Payable Amount</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Paid Amount</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Remaining Amount</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>YTD Balance</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Calculation Status</Text>
+    <LinearGradient
+      colors={['#6a11cb', '#2575fc']}
+      style={styles.gradientBackground}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Payroll Month</Text>
+          <View style={styles.headerButtons}>
+            <Text style={styles.dateText}>{date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</Text>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <Icon name="calendar" size={24} color="#fff" />
+            </TouchableOpacity>
           </View>
-          {records.map((item) => (
-            <View key={item.employeeId} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{item.employeeId}</Text>
-              <Text style={styles.tableCell}>{item.name}</Text>
-              <Text style={styles.tableCell}>{item.jod}</Text>
-              <Text style={styles.tableCell}>{(item.salary * 12).toFixed(2)}</Text>
-              <Text style={styles.tableCell}>{item.salary}</Text>
-              <Text style={styles.tableCell}>{item.salary}</Text>
-              <Text style={styles.tableCell}>{item.salary}</Text>
-              <Text style={styles.tableCell}>{item.salary}</Text>
-              <Text style={styles.tableCell}>{item.salary}</Text>
-            </View>
-          ))}
         </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+            maximumDate={new Date()}
+          />
+        )}
+
+        <View style={styles.inputGroup}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search Employee"
+            placeholderTextColor="#ddd"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Branch</Text>
+          <Picker
+            selectedValue={selectedBranch}
+            onValueChange={(itemValue) => setSelectedBranch(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="All Branches" value="All Branches" />
+            {employee.map((emp) => (
+              <Picker.Item key={emp.employeeId} label={emp.site} value={emp.site} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Wage Type</Text>
+          <Picker
+            selectedValue={wageType}
+            onValueChange={(itemValue) => setWageType(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Monthly" value="Monthly" />
+            <Picker.Item label="Daily" value="Daily" />
+            <Picker.Item label="Hourly" value="Hourly" />
+          </Picker>
+        </View>
+
+        <ScrollView horizontal={true}>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              {["Emp Id", "Name", "Joining Date", "CTC / Month", "Payable Amount", "Paid Amount", "Remaining Amount", "YTD Balance", "Calculation Status"].map((header, index) => (
+                <Text key={index} style={[styles.tableHeaderText, styles.fixedHeaderText]}>{header}</Text>
+              ))}
+            </View>
+            {records.map((item) => (
+              <View key={item.employeeId} style={styles.tableRow}>
+                <Text style={styles.tableCell}>{item.employeeId}</Text>
+                <Text style={styles.tableCell}>{item.name}</Text>
+                <Text style={styles.tableCell}>{item.jod}</Text>
+                <Text style={styles.tableCell}>{(item.salary * 12).toFixed(2)}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+                <Text style={styles.tableCell}>{item.salary}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </ScrollView>
-    </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#6a11cb',
     borderRadius: 5,
-    elevation: 2,
+    elevation: 3,
   },
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff',
   },
   headerButtons: {
     flexDirection: 'row',
@@ -198,6 +183,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
+    color: '#fff',
     marginRight: 10,
   },
   inputGroup: {
@@ -205,53 +191,48 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#333',
+    color: '#fff',
     marginBottom: 8,
   },
   picker: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    padding: 12,
+    color: '#333',
   },
   searchInput: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 16,
     fontSize: 16,
+    color: '#fff',
+    backgroundColor: '#333',
   },
   table: {
     flex: 1,
+    marginTop: 20,
   },
   tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#e3f2fd',
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#3b5998',
+    padding: 10,
   },
   tableHeaderText: {
     fontWeight: 'bold',
-    textAlign: 'center',
     fontSize: 14,
-    color: '#0d47a1',
+    color: '#fff',
     width: 120,
+    textAlign: 'center',
   },
   fixedHeaderText: {
     minWidth: 120,
   },
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#f0f0f0',
     padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
   tableCell: {
     textAlign: 'center',
@@ -260,7 +241,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
-},
+  },
 });
 
 export default AddPayment;

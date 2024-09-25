@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const Employee = () => {
   const [employee, setEmployee] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); // Loading states
   const navigation = useNavigation();
 
   const fetchEmployees = async () => {

@@ -17,7 +17,7 @@ import Home from './Components/Home';
 import AddCategory from './Components/AddCategory';
 import Category from './Components/Category';
 import EmployeeLogin from './Components/EmployeeLogin';
-import EmployeeDetail from './Components/EmployeeDetail';
+//import EmployeeDetail from './Components/EmployeeDetail';
 import Support from './Components/Support';
 import Dashboard from './Components/Dashboard';
 import EmployeeMenu from './Components/EmployeeMenu';
@@ -27,6 +27,10 @@ import Notification from './Components/Notification';
 import CalculateSalary from './Components/CalculateSalary';
 import AddPayment from './Components/AddPayment';
 import PayEmployees from './Components/PayEmployees';
+import KycVerification from './Components/KycVerification';
+import KycUpdate from './Components/KycUpdate';
+import PaySalary from './Components/PaySalary';
+
 import LiveLocation from './Components/LiveLocation';
 import Document from './Components/Document';
 import Settings from './Components/Settings';
@@ -115,8 +119,8 @@ const CustomDrawerContent = (props) => {
               key={name}
               label={name}
               onPress={() => props.navigation.navigate(name)}
-              icon={() => <MaterialIcons name={getIcon(name)} size={24} color={isFocused ? '#1E90FE' : '#808080'} />}
-              labelStyle={{ color: isFocused ? '#1E90FF' : '#808080', marginLeft: -16 }}
+              icon={() => <MaterialIcons name={getIcon(name)} size={24} color={isFocused ? '#ff4c4c' : '#808080'} />}
+              labelStyle={{ color: isFocused ? '#ff4c4c' : '#808080', marginLeft: -16 }}
               style={{ marginBottom: 8 }}
             />
           );
@@ -223,7 +227,7 @@ const MainDrawer = () => {
       initialRouteName="Start"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={({ navigation }) => ({
-        headerStyle: { backgroundColor: '#1E90FF' },
+        headerStyle: { backgroundColor: '#ff4c4c' },
         headerTintColor: 'white',
         headerRight: () => <CustomHeader navigation={navigation} />,
       })}
@@ -237,7 +241,7 @@ const MainDrawer = () => {
       <Drawer.Screen name="AddCategory" component={AddCategory} />
       <Drawer.Screen name="Category" component={Category} />
       <Drawer.Screen name="EmployeeLogin" component={EmployeeLogin} />
-      <Drawer.Screen name="EmployeeDetail" component={EmployeeDetail} />
+    
       <Drawer.Screen name="Support" component={Support} />
       <Drawer.Screen name="Dashboard" component={Dashboard} />
       <Drawer.Screen name="Profile" component={Profile} />
@@ -246,6 +250,10 @@ const MainDrawer = () => {
       <Drawer.Screen name="CalculateSalary" component={CalculateSalary} />
       <Drawer.Screen name="AddPayment" component={AddPayment} />
       <Drawer.Screen name="PayEmployees" component={PayEmployees} />
+      <Drawer.Screen name="kycVerification" component={KycVerification} />
+      <Drawer.Screen name="kycUpdate" component={KycUpdate} />
+      <Drawer.Screen name="paySalary" component={PaySalary} />
+      
       <Drawer.Screen name="LiveLocation" component={LiveLocation} />
       <Drawer.Screen name="Document" component={Document} />
       <Drawer.Screen name="Settings" component={Settings} />
@@ -321,7 +329,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: '#1E90FF' },
+          headerStyle: { backgroundColor: '#ff4c4c' },
           headerTintColor: 'white',
         }}
       >
@@ -370,7 +378,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   drawerHeader: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#ff4c4c',
     alignItems: 'center',
     paddingTop: 40,
     paddingBottom: 20,

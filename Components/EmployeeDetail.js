@@ -1,104 +1,158 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const EmployeeDetail = ({ route, navigation }) => {
-    const { id } = route.params || {};
+const EmployeeDetail = () => {
     const [employee, setEmployee] = useState({});
+    const navigation = useNavigation();
 
     useEffect(() => {
-        if (id) {
-            axios.get(`http://localhost:3000/employee/detail/${id}`)
-                .then(response => {
-                    setEmployee(response.data[0]);
-                })
-                .catch(error => {
-                    console.log('Axios Error:', error);
-                    // Handle error state or navigation here
+        const fetchData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                const employeeId = await AsyncStorage.getItem('employeeId');
+                const result = await axios.get(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 });
-        }
-    }, [id]);
+                setEmployee(result.data);
+            } catch (err) {
+                console.error("Error fetching employee details", err);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleLogout = () => {
-        axios.get('http://localhost:3000/employee/logout')
-            .then(response => {
-                if (response.data.Status) {
-                    navigation.navigate('Home'); // Replace 'Home' with your actual home screen route name
-                    console.log("logout");
-                }
-            })
-            .catch(error => console.log('Axios Error:', error));
+        // Perform logout action
+        navigation.navigate('Login'); // Navigate to Login screen
     };
 
-    if (!id) {
-        return (
-            <View style={styles.container}>
-                <Text>No employee ID provided.</Text>
-            </View>
-        );
-    }
-
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Employee Management System</Text>
+                <Image source={require('../assets/Images/pay-emp-bg.png')} style={styles.logo} />
+                <Text style={styles.title}>STAFF WORLD</Text>
+                <Text style={styles.subtitle}>An Employee Management System</Text>
             </View>
-            <View style={styles.content}>
-                <Image source={{ uri: `http://localhost:3000/Images/${employee.image}` }} style={styles.employeeImage} />
-                <View style={styles.employeeDetails}>
-                    <Text style={styles.detailText}>Name: {employee.name}</Text>
-                    <Text style={styles.detailText}>Email: {employee.email}</Text>
-                    <Text style={styles.detailText}>Salary: ${employee.salary}</Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                    <Button title="Edit" onPress={() => { /* Handle Edit functionality */ }} />
-                    <Button title="Logout" onPress={handleLogout} />
-                </View>
+
+            <View style={styles.profileSection}>
+                <Image
+                    source={require('../assets/Images/pay-emp-bg.png')}
+                    style={styles.profileImage}
+                />
+                <Text style={styles.profileName}>{employee.name}</Text>
+                <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                    <Text style={styles.logoutText}>Logout</Text>
+                </TouchableOpacity>
             </View>
-        </View>
+
+            <View style={styles.navigation}>
+                <TouchableOpacity onPress={() => navigation.navigate('Dashboard')} style={styles.navButton}>
+                    <Text style={styles.navText}>Dashboard</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('MarkAttendance')} style={styles.navButton}>
+                    <Text style={styles.navText}>Mark Attendance</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('ViewAttendance')} style={styles.navButton}>
+                    <Text style={styles.navText}>View Attendance</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('RequestLeave')} style={styles.navButton}>
+                    <Text style={styles.navText}>Request Leaves</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('HolidayList')} style={styles.navButton}>
+                    <Text style={styles.navText}>Holiday List</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('MyDocuments')} style={styles.navButton}>
+                    <Text style={styles.navText}>My Documents</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Tasks')} style={styles.navButton}>
+                    <Text style={styles.navText}>Tasks</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>Copyright © Acetech Work Organization Pvt. Ltd. 2024.</Text>
+            </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#F5F5F5',
     },
     header: {
-        padding: 10,
+        padding: 16,
+        backgroundColor: '#fff',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
-        marginBottom: 20,
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
     },
-    headerText: {
-        fontSize: 24,
-    },
-    content: {
-        alignItems: 'center',
-    },
-    employeeImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginBottom: 20,
-    },
-    employeeDetails: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    detailText: {
-        fontSize: 18,
+    logo: {
+        width: 100,
+        height: 50,
         marginBottom: 10,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        marginBottom: 20,
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#777',
+    },
+    profileSection: {
+        padding: 16,
+        alignItems: 'center',
+    },
+    profileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 10,
+    },
+    profileName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    logoutButton: {
+        backgroundColor: '#f00',
+        padding: 10,
+        borderRadius: 5,
+    },
+    logoutText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    navigation: {
+        padding: 16,
+        backgroundColor: '#fff',
+    },
+    navButton: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    navText: {
+        fontSize: 16,
+    },
+    footer: {
+        padding: 16,
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#ddd',
+        alignItems: 'center',
+    },
+    footerText: {
+        fontSize: 14,
+        color: '#777',
     },
 });
 
