@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
-import Branches from './Branches';
+import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
+import Branches from './Branches'; // Ensure you have the Branches component
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,6 +18,9 @@ const CompanyForm = () => {
   const [companyAddress, setCompanyAddress] = useState('');
   const [gstNumber, setGstNumber] = useState('');
   const [udyamNumber, setUdyamNumber] = useState('');
+  const [companyCIN, setCompanyCIN] = useState('');
+  const [companyEmail, setCompanyEmail] = useState('');
+  const [companyRepresentative, setCompanyRepresentative] = useState('');
   const [logoUri, setLogoUri] = useState('');
 
   useEffect(() => {
@@ -90,6 +94,24 @@ const CompanyForm = () => {
   };
 
   const handleSave = async () => {
+    if (!companyName || !businessType || !companyAddress || !gstNumber || !udyamNumber || !companyCIN || !companyEmail || !companyRepresentative) {
+      Alert.alert("Error", "All fields are required.");
+      return;
+    }
+
+    const gstPattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!gstPattern.test(gstNumber)) {
+      Alert.alert("Error", "Invalid GST Number.");
+      return;
+    }
+
+    if (!emailPattern.test(companyEmail)) {
+      Alert.alert("Error", "Invalid email address.");
+      return;
+    }
+
     try {
       const token = await AsyncStorage.getItem('token');
       const data = {
@@ -98,6 +120,9 @@ const CompanyForm = () => {
         companyAddress,
         gstNumber,
         udyamNumber,
+        companyCIN,
+        companyEmail,
+        companyRepresentative,
         logoUri,
       };
 
@@ -120,85 +145,119 @@ const CompanyForm = () => {
     setCompanyAddress('');
     setGstNumber('');
     setUdyamNumber('');
+    setCompanyCIN('');
+    setCompanyEmail('');
+    setCompanyRepresentative('');
     setLogoUri('');
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image source={logoUri ? { uri: logoUri } : null} style={styles.logo} />
-        <TouchableOpacity style={styles.addLogoButton} onPress={handleImagePicker}>
-          <Text style={styles.addLogoText}>+</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Company Name"
-        value={companyName}
-        onChangeText={setCompanyName}
-      />
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={businessType}
-          onValueChange={(itemValue) => setBusinessType(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Select Business Type" value="" />
-          {businessTypes.map((type) => (
-            <Picker.Item key={type.id} label={type.name} value={type.name} />
-          ))}
-        </Picker>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Company Address"
-        value={companyAddress}
-        onChangeText={setCompanyAddress}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="GST Number"
-        value={gstNumber}
-        onChangeText={setGstNumber}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Udyam Registration Number"
-        value={udyamNumber}
-        onChangeText={setUdyamNumber}
-      />
-      <View style={styles.buttonContainer}>
-        <Button 
-          mode="outlined" 
-          style={styles.cancelButton} 
-          labelStyle={styles.cancelButtonText} // Change here
-          onPress={handleCancel}
-        >
-          Cancel
-        </Button>
-        <Button 
-          mode="contained" 
-          style={styles.saveButton} 
-          labelStyle={styles.saveButtonText} // Change here
-          onPress={handleSave}
-        >
-          Save
-        </Button>
-      </View>
-    </View>
+    <LinearGradient
+      colors={['#000', '#FF6347']} // Black to red gradient
+      style={styles.gradient}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image source={logoUri ? { uri: logoUri } : null} style={styles.logo} />
+            <TouchableOpacity style={styles.addLogoButton} onPress={handleImagePicker}>
+              <Text style={styles.addLogoText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Company Name"
+            value={companyName}
+            onChangeText={setCompanyName}
+            placeholderTextColor="#999"
+          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={businessType}
+              onValueChange={(itemValue) => setBusinessType(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Business Type" value="" />
+              {businessTypes.map((type) => (
+                <Picker.Item key={type.id} label={type.name} value={type.name} />
+              ))}
+            </Picker>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Company Address"
+            value={companyAddress}
+            onChangeText={setCompanyAddress}
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="GST Number"
+            value={gstNumber}
+            onChangeText={setGstNumber}
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Udyam Registration Number"
+            value={udyamNumber}
+            onChangeText={setUdyamNumber}
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Company Corporation Number (CIN)"
+            value={companyCIN}
+            onChangeText={setCompanyCIN}
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Company Email"
+            value={companyEmail}
+            onChangeText={setCompanyEmail}
+            keyboardType="email-address"
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Company Representative"
+            value={companyRepresentative}
+            onChangeText={setCompanyRepresentative}
+            placeholderTextColor="#999"
+          />
+          <View style={styles.buttonContainer}>
+            <Button 
+              mode="outlined" 
+              style={styles.cancelButton} 
+              labelStyle={styles.cancelButtonText}
+              onPress={handleCancel}
+            >
+              Cancel
+            </Button>
+            <Button 
+              mode="contained" 
+              style={styles.saveButton} 
+              labelStyle={styles.saveButtonText}
+              onPress={handleSave}
+            >
+              Save
+            </Button>
+          </View>
+        </View>
+      </ScrollView>
+    </LinearGradient>
   );
 };
-
-
 
 const CompanyDetails = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: '#00cc00' },
-        tabBarActiveTintColor: '#00cc00',
-        tabBarInactiveTintColor: '#555',
-        tabBarStyle: { backgroundColor: '#f8f8f8' },
+        tabBarIndicatorStyle: { backgroundColor: '#FF6347' },
+        tabBarActiveTintColor: '#FF6347',
+        tabBarInactiveTintColor: '#fff',
+        tabBarStyle: { backgroundColor: '#000' },
       }}
     >
       <Tab.Screen name="COMPANY" component={CompanyForm} />
@@ -208,10 +267,16 @@ const CompanyDetails = () => {
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#ffffff',
   },
   logoContainer: {
     alignItems: 'center',
@@ -221,62 +286,65 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#333',
     justifyContent: 'center',
     alignItems: 'center',
   },
   addLogoButton: {
-    marginTop: -20,
-    backgroundColor: '#00FA9A',
-    borderRadius: 20,
-    width: 40,
-    height: 40,
+    position: 'absolute',
+    top: 80, // Adjust this value to position the button just below the logo
+    backgroundColor: '#FF6347',
+    borderRadius: 50,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 5, // Optional: Add elevation for shadow
   },
   addLogoText: {
     color: '#fff',
-    fontSize: 24,
-    lineHeight: 24,
+    fontSize: 20,
   },
   input: {
+    height: 50,
+    borderColor: '#FF6347',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    color: '#fff', // Adjust the text color
+    backgroundColor: '#222', // Optional: Add a background color
   },
   pickerContainer: {
+    borderColor: '#FF6347',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    marginBottom: 15,
   },
   picker: {
-    height: 40,
-    width: '100%',
+    height: 50,
+    color: '#fff',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  cancelButton: {
-    width: '45%',
-    borderColor: '#00FA9A',
-    borderWidth: 1,
-    backgroundColor: '#fff',
-  },
-  cancelButtonText: {
-    color: '#00FA9A', // Set the text color for the Cancel button
+    marginTop: 20,
   },
   saveButton: {
-    width: '45%',
-    backgroundColor: '#00FA9A',
+    backgroundColor: '#ff7733',
+    flex: 1,
+    marginLeft: 10,
   },
   saveButtonText: {
-    color: '#000', // Set the text color for the Save button
+    color: '#fff',
+  },
+  cancelButton: {
+    backgroundColor: '#444444',
+    borderColor: '#FF6347',
+    flex: 1,
+  },
+  cancelButtonText: {
+    color: '#fff',
   },
 });
 

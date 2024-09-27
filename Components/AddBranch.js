@@ -5,6 +5,7 @@ import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import RNPickerSelect from 'react-native-picker-select';
 
 const AddBranch = ({ navigation }) => {
   const [step, setStep] = useState(1);
@@ -15,6 +16,7 @@ const AddBranch = ({ navigation }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [branchType, setBranchType] = useState(''); // State for branch type
 
   useEffect(() => {
     const getLocationPermission = async () => {
@@ -51,6 +53,7 @@ const AddBranch = ({ navigation }) => {
           name,
           location,
           radius,
+          branchType, // Send branch type to the backend
         }),
       });
       setShowConfirmation(false);
@@ -79,6 +82,17 @@ const AddBranch = ({ navigation }) => {
             value={name}
             onChangeText={setName}
             style={styles.input}
+          />
+          <RNPickerSelect
+            placeholder={{ label: 'Select Branch Type', value: null }}
+            onValueChange={(value) => setBranchType(value)}
+            items={[
+              { label: 'Type 1', value: 'type1' },
+              { label: 'Type 2', value: 'type2' },
+              { label: 'Type 3', value: 'type3' },
+              // Add more branch types as needed
+            ]}
+            style={pickerSelectStyles}
           />
           <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
             <Text style={styles.buttonText}>Continue</Text>
@@ -203,6 +217,32 @@ const AddBranch = ({ navigation }) => {
   );
 };
 
+// Styles for the dropdown
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    color: '#5d5d5d',
+    backgroundColor: '#fff',
+    marginBottom: 16,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    color: '#5d5d5d',
+    backgroundColor: '#fff',
+    marginBottom: 16,
+  },
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -241,8 +281,6 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     padding: 16,
-    backgroundColor: '#fff',
-    marginTop: -20,
   },
   addressLabel: {
     fontSize: 16,
@@ -252,33 +290,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 12,
+    marginBottom: 16,
     borderRadius: 8,
-    marginBottom: 8,
     backgroundColor: '#fff',
   },
   currentLocationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 16,
   },
   currentLocationLabel: {
-    fontSize: 14,
-    marginRight: 8,
+    fontSize: 16,
   },
   currentLocationText: {
-    fontSize: 14,
+    fontSize: 16,
+    color: '#555',
   },
   radiusLabel: {
     fontSize: 16,
     marginBottom: 8,
   },
   slider: {
-    width: '100%',
     height: 40,
   },
   radiusValue: {
     fontSize: 16,
-    textAlign: 'center',
     marginBottom: 16,
   },
   addButton: {
@@ -291,24 +325,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     borderRadius: 8,
     alignItems: 'center',
   },
   modalButtons: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
     marginTop: 16,
   },
   modalButton: {
     backgroundColor: '#00C7BE',
-    padding: 8,
+    padding: 12,
     borderRadius: 8,
-    marginHorizontal: 8,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 4,
   },
 });
 

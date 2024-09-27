@@ -29,8 +29,8 @@ const Start = () => {
       <View style={styles.loginForm}>
         <Text style={styles.title}>Login As</Text>
         <View style={styles.buttonContainer}>
-          <Button title="Employee" onPress={() => { navigation.navigate('EmployeeLogin') }} color="#ff4c4c" />
-          <Button title="Admin" onPress={() => { navigation.navigate('AdminLogin') }} color="#ff4c4c" />
+          <Button title="Employee" onPress={() => { navigation.navigate('EmployeeLogin') }} color="#880808" />
+          <Button title="Admin" onPress={() => { navigation.navigate('AdminLogin') }} color="#880808" />
         </View>
       </View>
     </LinearGradient>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#ff4c4c', // Title color
+    color: '#880808', // Title color
   },
   buttonContainer: {
     flexDirection: 'row',

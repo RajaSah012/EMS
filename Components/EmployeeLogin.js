@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
@@ -16,9 +15,9 @@ const EmployeeLogin = () => {
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  
+
   axios.defaults.withCredentials = true;
 
   const handleSubmit = async () => {
@@ -26,11 +25,12 @@ const EmployeeLogin = () => {
       Alert.alert('Terms and Conditions', 'You must agree to the terms and conditions to continue.');
       return;
     }
-
+  
     try {
-      const response = await axios.post('https://emsproject-production.up.railway.app/auth/login', values);
+      const response = await axios.post('https://mohitbyproject-production.up.railway.app/api/employee/login', values);
       if (response.data) {
-        await AsyncStorage.setItem("token", response.data);
+        await AsyncStorage.setItem("token", response.data.token);
+  
         if (rememberMe) {
           await AsyncStorage.setItem('savedUserName', values.userName);
           await AsyncStorage.setItem('savedPassword', values.password);
@@ -38,14 +38,24 @@ const EmployeeLogin = () => {
           await AsyncStorage.removeItem('savedUserName');
           await AsyncStorage.removeItem('savedPassword');
         }
+  
         navigation.navigate('Employee');
       } else {
-        setError(response.data.Error);
+        if (response.data.Error) {
+          setError(response.data.Error);
+        } else {
+          setError('Invalid username or password. Please try again.');
+        }
       }
     } catch (err) {
       console.log(err);
       setError('An error occurred during login. Please try again.');
     }
+  };
+
+  const handleInputChange = (field, text) => {
+    setValues({ ...values, [field]: text });
+    setError(null); // Clear error message when typing
   };
 
   const toggleCheckbox = () => {
@@ -57,66 +67,79 @@ const EmployeeLogin = () => {
   };
 
   const openTerms = () => {
-    setModalVisible(true); // Open the modal
+    setModalVisible(true);
   };
 
   const closeTerms = () => {
-    setModalVisible(false); // Close the modal
+    setModalVisible(false);
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword');
   };
 
   return (
-    <LinearGradient colors={['#000000', '#8B0000']} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Employee Management System</Text>
-      </View>
-      <View style={styles.formContainer}>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <Text style={styles.formTitle}>Employee Login</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Username"
-          placeholderTextColor="#ccc"
-          value={values.userName}
-          onChangeText={(text) => setValues({ ...values, userName: text })}
-          autoCompleteType="username"
-          textContentType="username"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry={true}
-          value={values.password}
-          onChangeText={(text) => setValues({ ...values, password: text })}
-          textContentType="password"
-        />
+    <View style={styles.container}>
+      {/* Custom Shape Background */}
+      <View style={styles.shapeBackgroundYellow} />
+      <View style={styles.shapeBackgroundGreen} />
+      <View style={styles.shapeBackgroundBlue} />
 
-        {/* Terms and Conditions Checkbox */}
-        <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
-          <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
-            {isChecked && <MaterialIcons name="check" size={18} color="white" />}
-          </View>
-          <TouchableOpacity onPress={openTerms}>
-            <Text style={[styles.checkboxLabel, { textDecorationLine: 'underline' }]}>
-              I agree with the terms and conditions
-            </Text>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Employee Management</Text>
+        </View>
+
+        <View style={styles.formContainer}>
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <Text style={styles.formTitle}>Employee Login</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Username"
+            placeholderTextColor="#ccc"
+            value={values.userName}
+            onChangeText={(text) => handleInputChange('userName', text)} // Update this line
+            autoCompleteType="username"
+            textContentType="username"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Password"
+            placeholderTextColor="#ccc"
+            secureTextEntry={true}
+            value={values.password}
+            onChangeText={(text) => handleInputChange('password', text)} // Update this line
+            textContentType="password"
+          />
+
+          <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
+            <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
+              {isChecked && <MaterialIcons name="check" size={18} color="white" />}
+            </View>
+            <TouchableOpacity onPress={openTerms}>
+              <Text style={[styles.checkboxLabel, { textDecorationLine: 'underline' }]}>
+                I agree with the terms and conditions
+              </Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
 
-        {/* Remember Me Checkbox */}
-        <TouchableOpacity style={styles.checkboxContainer} onPress={toggleRememberMe}>
-          <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-            {rememberMe && <MaterialIcons name="check" size={18} color="white" />}
-          </View>
-          <Text style={styles.checkboxLabel}>Remember Me</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.checkboxContainer} onPress={toggleRememberMe}>
+            <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+              {rememberMe && <MaterialIcons name="check" size={18} color="white" />}
+            </View>
+            <Text style={styles.checkboxLabel}>Remember Me</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleForgotPassword}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Terms and Conditions Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -144,36 +167,76 @@ const EmployeeLogin = () => {
           </View>
         </View>
       </Modal>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: '#f0f8ff',
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  // Reduce the size of the yellow shape
+  shapeBackgroundYellow: {
+    position: 'absolute',
+    width: width * 1.2,
+    height: height * 0.5,
+    backgroundColor: '#F7DC6F',
+    top: 0,
+    borderBottomRightRadius: width * 1.2,
+  },
+  // Reduce the size of the green shape and adjust position to avoid overlap
+  shapeBackgroundGreen: {
+    position: 'absolute',
+    width: width * 1.1,
+    height: height * 0.4,
+    backgroundColor: '#58D68D',
+    top: height * 0.3,
+    borderBottomLeftRadius: width * 1.5,
+  },
+  // Reduce the size of the blue shape and adjust position to avoid overlap
+  shapeBackgroundBlue: {
+    position: 'absolute',
+    width: width * 0.9,
+    height: height * 0.3,
+    backgroundColor: '#5DADE2',
+    top: height * 0.55,
+    borderTopRightRadius: width * 1.2,
   },
   header: {
     width: '100%',
     alignItems: 'center',
     paddingVertical: 20,
-    backgroundColor: 'transparent',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
   formContainer: {
     width: '80%',
     paddingVertical: 30,
     justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   formTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -184,47 +247,51 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
     borderRadius: 8,
-    color: '#fff',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#e8f0fe',
+    color: '#333',
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: -10,
   },
   checkbox: {
     width: 24,
     height: 24,
     borderWidth: 1,
-    borderColor: '#ccc',
-    marginRight: 10,
-    alignItems: 'center',
+    borderColor: '#333',
+    borderRadius: 4,
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    alignItems: 'center',
+    marginRight: 10,
   },
   checkboxChecked: {
-    backgroundColor: '#ff4c4c',
+    backgroundColor: '#5DADE2',
   },
   checkboxLabel: {
     fontSize: 16,
-    color: '#fff',
+    color: '#333',
+  },
+  forgotPasswordText: {
+    color: '#5DADE2',
+    textDecorationLine: 'underline',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   loginButton: {
-    backgroundColor: '#ff4c4c',
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: '#5DADE2',
+    paddingVertical: 15,
+    borderRadius: 10,
     alignItems: 'center',
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   errorText: {
-    fontSize: 14,
-    color: '#f00',
-    marginBottom: 10,
+    color: 'red',
+    marginBottom: 20,
     textAlign: 'center',
   },
   modalContainer: {
@@ -234,13 +301,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '85%',
+    width: '80%',
     backgroundColor: '#fff',
+    borderRadius: 20,
     padding: 20,
-    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   modalTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -249,14 +320,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: '#ff4c4c',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#5DADE2',
+    paddingVertical: 10,
+    borderRadius: 5,
     alignItems: 'center',
   },
   closeButtonText: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
 

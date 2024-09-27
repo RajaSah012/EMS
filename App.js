@@ -76,6 +76,7 @@ import EmpHolidayList from './Components/EmpHolidayList';
 import EmpTask from './Components/EmpTask';
 import AddTask from './Components/AddTask';
 import AssignTask from './Components/AssignTask';
+import ForgotPassword from './Components/ForgotPassword';
 
 
 
@@ -119,8 +120,8 @@ const CustomDrawerContent = (props) => {
               key={name}
               label={name}
               onPress={() => props.navigation.navigate(name)}
-              icon={() => <MaterialIcons name={getIcon(name)} size={24} color={isFocused ? '#ff4c4c' : '#808080'} />}
-              labelStyle={{ color: isFocused ? '#ff4c4c' : '#808080', marginLeft: -16 }}
+              icon={() => <MaterialIcons name={getIcon(name)} size={24} color={isFocused ? '#880808' : '#808080'} />}
+              labelStyle={{ color: isFocused ? '#880808' : '#808080', marginLeft: -16 }}
               style={{ marginBottom: 8 }}
             />
           );
@@ -227,7 +228,7 @@ const MainDrawer = () => {
       initialRouteName="Start"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={({ navigation }) => ({
-        headerStyle: { backgroundColor: '#ff4c4c' },
+        headerStyle: { backgroundColor: '#880808' },
         headerTintColor: 'white',
         headerRight: () => <CustomHeader navigation={navigation} />,
       })}
@@ -329,7 +330,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: '#ff4c4c' },
+          headerStyle: { backgroundColor: '#880808' },
           headerTintColor: 'white',
         }}
       >
@@ -363,7 +364,12 @@ function App() {
           component={AssignTask}
           options={{ title: 'AssignTask' }}
         />
-
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{ title: 'ForgotPassword' }}
+        />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -378,7 +384,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   drawerHeader: {
-    backgroundColor: '#ff4c4c',
+    backgroundColor: '#880808',
     alignItems: 'center',
     paddingTop: 40,
     paddingBottom: 20,
