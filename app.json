@@ -20,7 +20,9 @@
         "NSLocationAlwaysUsageDescription": "This app uses your location to track your attendance.",
         "NSLocationWhenInUseUsageDescription": "This app uses your location to track your attendance.",
         "NSCameraUsageDescription": "This app uses the camera to take a selfie for attendance purposes.",
-        "UIBackgroundModes": ["location"]
+        "UIBackgroundModes": [
+          "location"
+        ]
       }
     },
     "android": {
@@ -43,6 +45,9 @@
       "eas": {
         "projectId": "0185c538-93ed-4def-a298-2c543414f809"
       }
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

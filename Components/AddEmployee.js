@@ -47,7 +47,7 @@ const AddEmployee = () => {
     const fetchCategories = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        const response = await axios.get("https://mohitbyproject-production.up.railway.app/api/category/", {
+        const response = await axios.get("http://184.168.127.127:8080/api/category/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,7 +84,7 @@ const AddEmployee = () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await axios.post("https://mohitbyproject-production.up.railway.app/api/employee/", formData, {
+      const response = await axios.post("http://184.168.127.127:8080/api/employee/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -140,261 +140,297 @@ const AddEmployee = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Add Employee</Text>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Name"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, name: value })
-          }
-          value={employee.name}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Email"
-          keyboardType="email-address"
-          autoComplete="off"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, email: value })
-          }
-          value={employee.email}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Mobile No.</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Mobile No."
-          keyboardType="phone-pad"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, mobile: value })
-          }
-          value={employee.mobile}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Date of Birth</Text>
-        <View style={styles.datePickerWrapper}>
+
+      {/* Personal Information Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Personal Information</Text>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Select Date of Birth"
-            value={employee.dob}
-            editable={false}
+            placeholder="Enter Name"
+            onChangeText={(value) =>
+              setEmployee({ ...employee, name: value })
+            }
+            value={employee.name}
           />
-          <TouchableOpacity onPress={() => showDatePickerModal('dob')}>
-            <Ionicons name="calendar" size={24} color="black" />
-          </TouchableOpacity>
         </View>
-        {showDatePicker.dob && (
-          <DateTimePicker
-            value={new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'dob')}
-          />
-        )}
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Password"
-          secureTextEntry
-          onChangeText={(value) =>
-            setEmployee({ ...employee, password: value })
-          }
-          value={employee.password}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Father's Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Father's Name"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, fname: value })
-          }
-          value={employee.fname}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Salary Monthly</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Monthly Salary"
-          keyboardType="numeric"
-          autoComplete="off"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, salary: value })
-          }
-          value={employee.salary}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Address"
-          autoComplete="off"
-          onChangeText={(value) =>
-            setEmployee({ ...employee, address: value })
-          }
-          value={employee.address}
-        />
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Date of Joining</Text>
-        <View style={styles.datePickerWrapper}>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Father's Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Select Date of Joining"
-            value={employee.jod}
-            editable={false}
+            placeholder="Enter Father's Name"
+            onChangeText={(value) =>
+              setEmployee({ ...employee, fname: value })
+            }
+            value={employee.fname}
           />
-          <TouchableOpacity onPress={() => showDatePickerModal('jod')}>
-            <Ionicons name="calendar" size={24} color="black" />
-          </TouchableOpacity>
         </View>
-        {showDatePicker.jod && (
-          <DateTimePicker
-            value={new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'jod')}
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Email"
+            keyboardType="email-address"
+            autoComplete="off"
+            onChangeText={(value) =>
+              setEmployee({ ...employee, email: value })
+            }
+            value={employee.email}
           />
-        )}
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Category / Department</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={employee.category}
-            onValueChange={(value) =>
-              setEmployee({ ...employee, category: value })
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Mobile No.</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Mobile No."
+            keyboardType="phone-pad"
+            onChangeText={(value) =>
+              setEmployee({ ...employee, mobile: value })
             }
-            style={styles.picker}
-          >
-            <Picker.Item label="Select Category" value="" />
-            {categories.map((c) => (
-              <Picker.Item key={c.categoryId} label={c.categoryName} value={c.categoryName} />
-            ))}
-          </Picker>
+            value={employee.mobile}
+          />
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Password"
+            secureTextEntry
+            onChangeText={(value) =>
+              setEmployee({ ...employee, password: value })
+            }
+            value={employee.password}
+          />
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Date of Birth</Text>
+          <View style={styles.datePickerWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Select Date of Birth"
+              value={employee.dob}
+              editable={false}
+            />
+            <TouchableOpacity onPress={() => showDatePickerModal('dob')}>
+              <Ionicons name="calendar" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+          {showDatePicker.dob && (
+            <DateTimePicker
+              value={employee.dob ? new Date(employee.dob) : new Date()}
+              mode="date"
+              display="default"
+              maximumDate={new Date()}
+              onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'dob')}
+            />
+          )}
         </View>
       </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Gender</Text>
-        <View style={styles.genderContainer}>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              employee.gender === "male" && styles.selectedGenderButton,
-            ]}
-            onPress={() => setEmployee({ ...employee, gender: "male" })}
-          >
-            <Text style={styles.genderButtonText}>Male</Text>
+
+      {/* Job Details Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Job Details</Text>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Salary Monthly</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Monthly Salary"
+            keyboardType="numeric"
+            autoComplete="off"
+            onChangeText={(value) =>
+              setEmployee({ ...employee, salary: value })
+            }
+            value={employee.salary}
+          />
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            style={[styles.input, styles.multilineInput]}
+            placeholder="Enter Address"
+            autoComplete="off"
+            multiline
+            numberOfLines={3}
+            onChangeText={(value) =>
+              setEmployee({ ...employee, address: value })
+            }
+            value={employee.address}
+          />
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Date of Joining</Text>
+          <View style={styles.datePickerWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Select Date of Joining"
+              value={employee.jod}
+              editable={false}
+            />
+            <TouchableOpacity onPress={() => showDatePickerModal('jod')}>
+              <Ionicons name="calendar" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+          {showDatePicker.jod && (
+            <DateTimePicker
+              value={employee.jod ? new Date(employee.jod) : new Date()}
+              mode="date"
+              display="default"
+              maximumDate={new Date()}
+              onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'jod')}
+            />
+          )}
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Category / Department</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={employee.category}
+              onValueChange={(value) =>
+                setEmployee({ ...employee, category: value })
+              }
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Category" value="" />
+              {categories.map((c) => (
+                <Picker.Item key={c.categoryId} label={c.categoryName} value={c.categoryName} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Employee Status</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={employee.status}
+              onValueChange={(value) =>
+                setEmployee({ ...employee, status: value })
+              }
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Employee Status" value="" />
+              {statuses.map((status) => (
+                <Picker.Item key={status} label={status} value={status} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Site</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={employee.site}
+              onValueChange={(value) =>
+                setEmployee({ ...employee, site: value })
+              }
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Site" value="" />
+              {sites.map((site) => (
+                <Picker.Item key={site} label={site} value={site} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Type of Work</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={employee.work}
+              onValueChange={(value) =>
+                setEmployee({ ...employee, work: value })
+              }
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Type of Work" value="" />
+              {works.map((work) => (
+                <Picker.Item key={work} label={work} value={work} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+      </View>
+
+      {/* Additional Information Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Additional Information</Text>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Gender</Text>
+          <View style={styles.genderContainer}>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                employee.gender === "male" && styles.selectedGenderButton,
+              ]}
+              onPress={() => setEmployee({ ...employee, gender: "male" })}
+            >
+              <Text style={styles.genderButtonText}>Male</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                employee.gender === "female" && styles.selectedGenderButton,
+              ]}
+              onPress={() => setEmployee({ ...employee, gender: "female" })}
+            >
+              <Text style={styles.genderButtonText}>Female</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                employee.gender === "trans" && styles.selectedGenderButton,
+              ]}
+              onPress={() => setEmployee({ ...employee, gender: "trans" })}
+            >
+              <Text style={styles.genderButtonText}>Trans</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Marital Status</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={employee.marritalStatus}
+              onValueChange={(value) =>
+                setEmployee({ ...employee, marritalStatus: value })
+              }
+              style={styles.picker}
+            >
+              <Picker.Item label="Select Marital Status" value="" />
+              {marritalStatuses.map((status) => (
+                <Picker.Item key={status} label={status} value={status} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Upload Image</Text>
+          <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+            <Text style={styles.imagePickerText}>Choose Image</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              employee.gender === "female" && styles.selectedGenderButton,
-            ]}
-            onPress={() => setEmployee({ ...employee, gender: "female" })}
-          >
-            <Text style={styles.genderButtonText}>Female</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.genderButton,
-              employee.gender === "trans" && styles.selectedGenderButton,
-            ]}
-            onPress={() => setEmployee({ ...employee, gender: "trans" })}
-          >
-            <Text style={styles.genderButtonText}>Trans</Text>
-          </TouchableOpacity>
+          {employee.image && (
+            <Image source={{ uri: employee.image.uri }} style={styles.imagePreview} />
+          )}
         </View>
       </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Marital Status</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={employee.marritalStatus}
-            onValueChange={(value) =>
-              setEmployee({ ...employee, marritalStatus: value })
-            }
-            style={styles.picker}
-          >
-            <Picker.Item label="Select Marital Status" value="" />
-            {marritalStatuses.map((status) => (
-              <Picker.Item key={status} label={status} value={status} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Employee Status</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={employee.status}
-            onValueChange={(value) =>
-              setEmployee({ ...employee, status: value })
-            }
-            style={styles.picker}
-          >
-            <Picker.Item label="Select Employee Status" value="" />
-            {statuses.map((status) => (
-              <Picker.Item key={status} label={status} value={status} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Site</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={employee.site}
-            onValueChange={(value) =>
-              setEmployee({ ...employee, site: value })
-            }
-            style={styles.picker}
-          >
-            <Picker.Item label="Select Site" value="" />
-            {sites.map((site) => (
-              <Picker.Item key={site} label={site} value={site} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Type of Work</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={employee.work}
-            onValueChange={(value) =>
-              setEmployee({ ...employee, work: value })
-            }
-            style={styles.picker}
-          >
-            <Picker.Item label="Select Type of Work" value="" />
-            {works.map((work) => (
-              <Picker.Item key={work} label={work} value={work} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Upload Image</Text>
-        <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-          <Text style={styles.imagePickerText}>Choose Image</Text>
-        </TouchableOpacity>
-        {employee.image && (
-          <Image source={{ uri: employee.image.uri }} style={styles.imagePreview} />
-        )}
-      </View>
-      <Button title="Submit" onPress={handleSubmit} />
+
+      <Button title="Submit" onPress={handleSubmit} color="#007bff" />
     </ScrollView>
   );
 };
@@ -406,45 +442,69 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 26,
+    fontWeight: "700",
+    marginBottom: 30,
     textAlign: "center",
+    color: "#333",
+  },
+  section: {
+    marginBottom: 30,
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    elevation: 3, // for Android shadow
+    shadowColor: "#000", // for iOS shadow
+    shadowOffset: { width: 0, height: 2 }, // for iOS shadow
+    shadowOpacity: 0.1, // for iOS shadow
+    shadowRadius: 5, // for iOS shadow
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 15,
+    color: "#007bff",
+    borderBottomWidth: 2,
+    borderBottomColor: "#007bff",
+    paddingBottom: 5,
   },
   formGroup: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "500",
     marginBottom: 5,
+    color: "#555",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
     backgroundColor: "#fff",
+    color: "#333",
+  },
+  multilineInput: {
+    height: 80,
+    textAlignVertical: "top",
   },
   datePickerWrapper: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: "#fff",
   },
   pickerWrapper: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: "#fff",
     overflow: "hidden",
   },
   picker: {
     width: "100%",
+    height: 50,
   },
   genderContainer: {
     flexDirection: "row",
@@ -452,34 +512,40 @@ const styles = StyleSheet.create({
   },
   genderButton: {
     flex: 1,
-    padding: 10,
-    backgroundColor: "#e0e0e0",
-    borderRadius: 5,
-    alignItems: "center",
+    paddingVertical: 12,
     marginRight: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#f0f0f0",
+    alignItems: "center",
+  },
+  selectedGenderButton: {
+    backgroundColor: "#007bff",
+    borderColor: "#007bff",
   },
   genderButtonText: {
     fontSize: 16,
     color: "#333",
   },
-  selectedGenderButton: {
-    backgroundColor: "#007bff",
-  },
   imagePicker: {
     backgroundColor: "#007bff",
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 12,
+    borderRadius: 8,
     alignItems: "center",
+    marginTop: 5,
   },
   imagePickerText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "500",
   },
   imagePreview: {
+    width: 120,
+    height: 120,
     marginTop: 10,
-    width: 100,
-    height: 100,
-    borderRadius: 5,
+    borderRadius: 10,
+    alignSelf: "center",
   },
 });
 

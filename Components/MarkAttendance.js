@@ -193,7 +193,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
             pictureUri: data.uri,
             employeeId: storedEmployeeId,
           });
-          const response = await axios.post('http://localhost:8080/attendance/punchIn', {
+          const response = await axios.post('http://184.168.127.127:8080/api/rAttendance/punchIn', {
             time: punchInTime,
             location: currentLocation,
             pictureUri: data.uri,
@@ -237,7 +237,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
       employeeId: storedEmployeeId,
     });
     try {
-      const response = await axios.post(`http://localhost:8080/attendance/punchOut/${employeeId}`, {
+      const response = await axios.post(`http://184.168.127.127:8080/api/rAttendance/punchOut/${attendanceId}`, {
         time: punchOutTime,
         location: currentLocation,
         employeeId: storedEmployeeId,
