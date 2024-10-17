@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, SafeAreaView, ScrollView, Dimensions, StyleSheet } from 'react-native';
-import ImageSlider from './ImageSlider';
+
 import SelfServiceCategory from './SelfServiceCategory';
 import ManagementCategory from './ManagementCategory';
 
@@ -11,7 +11,7 @@ const Dashboard = () => {
     <ScrollView>
       <View style={styles.container}>
         <SafeAreaView>
-          <ImageSlider />
+          
           <SelfServiceCategory />
           <ManagementCategory />
           

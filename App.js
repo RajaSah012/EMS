@@ -10,7 +10,7 @@ import { Text } from 'react-native-paper';
 
 // Import your components here
 import Start from './Components/Start';
-import Welcome from './Components/Welcome';
+
 import AdminRegistration from './Components/AdminRegistration';
 import Login from './Components/Login';
 import Home from './Components/Home';
@@ -22,6 +22,8 @@ import Support from './Components/Support';
 import Dashboard from './Components/Dashboard';
 import EmployeeMenu from './Components/EmployeeMenu';
 import Profile from './Components/Profile';
+import AdminProfile from './Components/AdminProfile';
+import AdminEditProfile from './Components/AdminEditProfile';
 import Attendance from './Components/Attendance';
 import Notification from './Components/Notification';
 import CalculateSalary from './Components/CalculateSalary';
@@ -77,6 +79,7 @@ import EmpTask from './Components/EmpTask';
 import AddTask from './Components/AddTask';
 import AssignTask from './Components/AssignTask';
 import ForgotPassword from './Components/ForgotPassword';
+import EmployeeEditProfile from './Components/EmployeeEditProfile';
 
 
 
@@ -157,6 +160,8 @@ const getIcon = (name) => {
       return 'dashboard';
     case 'Profile':
       return 'account-circle';
+      case 'AdminProfile':
+        return 'account-circle';
     case 'Attendance':
       return 'event';
     case 'Notification':
@@ -235,7 +240,7 @@ const MainDrawer = () => {
     >
       {/* Add your Drawer.Screen components here */}
       <Drawer.Screen name="Start" component={Start} />
-      <Drawer.Screen name="Welcome" component={Welcome} />
+      
       <Drawer.Screen name="AdminRegistration" component={AdminRegistration} />
       <Drawer.Screen name="AdminLogin" component={Login} />
       <Drawer.Screen name="Home" component={Home} />
@@ -246,14 +251,14 @@ const MainDrawer = () => {
       <Drawer.Screen name="Support" component={Support} />
       <Drawer.Screen name="Dashboard" component={Dashboard} />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="AdminProfile" component={AdminProfile} />
       <Drawer.Screen name="Attendance" component={Attendance} />
       <Drawer.Screen name="Notification" component={Notification} />
       <Drawer.Screen name="CalculateSalary" component={CalculateSalary} />
       <Drawer.Screen name="AddPayment" component={AddPayment} />
       <Drawer.Screen name="PayEmployees" component={PayEmployees} />
       <Drawer.Screen name="kycVerification" component={KycVerification} />
-      <Drawer.Screen name="kycUpdate" component={KycUpdate} />
-      <Drawer.Screen name="paySalary" component={PaySalary} />
+     
       
       <Drawer.Screen name="LiveLocation" component={LiveLocation} />
       <Drawer.Screen name="Document" component={Document} />
@@ -369,7 +374,28 @@ function App() {
           component={ForgotPassword}
           options={{ title: 'ForgotPassword' }}
         />
-        
+        <Stack.Screen
+          name="KycUpdate"
+          component={KycUpdate}
+          options={{ title: 'kycUpdate' }}
+        />
+
+         <Stack.Screen
+          name="paySalary"
+          component={PaySalary}
+          options={{ title: 'paySalary' }}
+        />
+
+        <Stack.Screen
+          name="EmployeeEditProfile"
+          component={EmployeeEditProfile}
+          options={{ title: 'EmployeeEditProfile' }}
+        /> 
+        <Stack.Screen
+          name="AdminEditProfile"
+          component={AdminEditProfile}
+          options={{ title: 'AdminEditProfile' }}
+        /> 
       </Stack.Navigator>
     </NavigationContainer>
   );

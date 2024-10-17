@@ -6,7 +6,7 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native'; // For navigation
 
-const Profile = () => {
+const AdminProfile = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation(); // Use for navigation
@@ -14,7 +14,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get('https://mohitbyproject-production.up.railway.app/api/profile/');
+        const response = await axios.get('https://mohitbyproject-production.up.railway.app/api/adminprofile/');
         setProfileData(response.data);
         setLoading(false);
       } catch (error) {
@@ -37,7 +37,7 @@ const Profile = () => {
   return (
     <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.gradientContainer}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.headerTitle}>Employee Profile</Text>
+        <Text style={styles.headerTitle}>Admin Profile</Text>
         <Card containerStyle={styles.card}>
           <View style={styles.headerContainer}>
             <Image
@@ -51,7 +51,7 @@ const Profile = () => {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <FontAwesome5 name="id-badge" size={22} color="#fff" />
-              <Text style={styles.infoText}>Employee ID: {profileData?.employeeId || 'N/A'}</Text>
+              <Text style={styles.infoText}>Admin ID: {profileData?.adminId || 'N/A'}</Text>
             </View>
 
             <View style={styles.infoRow}>
@@ -78,7 +78,7 @@ const Profile = () => {
           {/* Edit Button */}
           <Button
             title="Edit Profile"
-            onPress={() => navigation.navigate('EmployeeEditProfile', { profileData })}
+            onPress={() => navigation.navigate('AdminEditProfile', { profileData })}
           />
         </Card>
       </ScrollView>
@@ -159,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default AdminProfile;
