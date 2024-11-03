@@ -42,7 +42,7 @@ const PaySalary = ({ route, navigation }) => {
     });
 
     axios
-      .get('https://mohitbyproject-production.up.railway.app/api/employee/' + employeeId)
+      .get('https://emspro-production.up.railway.app/api/employee/' + employeeId)
       .then((result) => {
         setEmployee({
           name: result.data.name,
@@ -67,7 +67,7 @@ const PaySalary = ({ route, navigation }) => {
 
   const handleSubmit = () => {
     axios
-      .put('https://mohitbyproject-production.up.railway.app/api/employee/' + employeeId, employee)
+      .put('https://emspro-production.up.railway.app/api/employee/' + employeeId, employee)
       .then((result) => {
         if (result.data) {
           Alert.alert('Success', 'Salary details updated successfully!', [

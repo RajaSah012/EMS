@@ -22,7 +22,7 @@ const Report = () => {
   }, []);
 
   const fetchAdminRecords = () => {
-    axios.get('https://emsproject-production.up.railway.app/api/category/')
+    axios.get('https://emspro-production.up.railway.app/api/category/')
       .then(result => {
         if (result.data.Status) {
           setAdmins(result.data.Result)
@@ -36,7 +36,7 @@ const Report = () => {
   }
 
   const fetchCategory = () => {
-    axios.get('https://emsproject-production.up.railway.app/api/category/')
+    axios.get('https://emspro-production.up.railway.app/api/category/')
       .then((result) => {
         if (result.data.Status) {
           setCategory(result.data.Result);
@@ -48,7 +48,7 @@ const Report = () => {
   }
 
   const fetchEmployee = () => {
-    axios.get('https://emsproject-production.up.railway.app/api/employee/')
+    axios.get('https://emspro-production.up.railway.app/api/employee/')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

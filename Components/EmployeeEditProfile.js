@@ -52,7 +52,7 @@ const EmployeeEditProfile = ({ route, navigation }) => {
         });
       }
 
-      await axios.put('https://mohitbyproject-production.up.railway.app/api/profile/', formData, {
+      await axios.put('https://emspro-production.up.railway.app/api/profile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

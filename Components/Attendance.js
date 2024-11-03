@@ -38,7 +38,7 @@ const Attendance = () => {
 
   const AdminRecords = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://emsproject-production.up.railway.app/auth/getUsers/', {
+    axios.get('https://emspro-production.up.railway.app/auth/getUsers/', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setAdmins(result.data))
@@ -47,7 +47,7 @@ const Attendance = () => {
 
   const fetchCategories = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/category/', {
+    axios.get('https://emspro-production.up.railway.app/api/category/', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setCategory(result.data))
@@ -56,7 +56,7 @@ const Attendance = () => {
 
   const fetchEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/employee/', {
+    axios.get('https://emspro-production.up.railway.app/api/employee/', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => {
@@ -75,7 +75,7 @@ const Attendance = () => {
     const token = await AsyncStorage.getItem('token');
 
     if (isPunchingIn) {
-      axios.post('https://mohitbyproject-production.up.railway.app/api/Hello/punchIn', {
+      axios.post('https://emspro-production.up.railway.app/api/Hello/punchIn', {
         employeeName: name,
         employeeId: employeeId,
         status: statusMap[employeeId] || 'Select',
@@ -88,7 +88,7 @@ const Attendance = () => {
         .catch(err => console.log(err));
     } else {
       const attendanceId = punchRecords[employeeId];
-      axios.put(`https://mohitbyproject-production.up.railway.app/api/Hello/punchOut/${attendanceId}`, {}, {
+      axios.put(`https://emspro-production.up.railway.app/api/Hello/punchOut/${attendanceId}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(() => {
@@ -108,7 +108,7 @@ const Attendance = () => {
 
   const PresentCount = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countP', {
+    axios.get('https://emspro-production.up.railway.app/api/Hello/countP', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setPresentCount(result.data))
@@ -117,7 +117,7 @@ const Attendance = () => {
 
   const AbsentCount = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countA', {
+    axios.get('https://emspro-production.up.railway.app/api/Hello/countA', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setAbsentCount(result.data))
@@ -126,7 +126,7 @@ const Attendance = () => {
 
   const LateCount = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countL', {
+    axios.get('https://emspro-production.up.railway.app/api/Hello/countL', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setLateCount(result.data))
@@ -135,7 +135,7 @@ const Attendance = () => {
 
   const HalfDayCount = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countH', {
+    axios.get('https://emspro-production.up.railway.app/api/Hello/countH', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setHalfDayCount(result.data))
@@ -144,7 +144,7 @@ const Attendance = () => {
 
   const PaidLeaveCount = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios.get('https://mohitbyproject-production.up.railway.app/api/Hello/countPl', {
+    axios.get('https://emspro-production.up.railway.app/api/Hello/countPl', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(result => setPaidLeaveCount(result.data))
@@ -276,7 +276,7 @@ const Attendance = () => {
               <Text style={styles.tableCell}>{item.employeeId}</Text>
               <View style={styles.imageCell}>
                 <Image
-                  source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}` }}
+                  source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}` }}
                   style={styles.employeeImage}
                 />
               </View>

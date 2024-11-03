@@ -13,7 +13,7 @@ function ReportFilter({ onClose, setOpenReportFilterSearchText, setFilterbyDepar
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/auth/employee')
+      .get('https://emspro-production.up.railway.app/auth/employee')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

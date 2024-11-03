@@ -29,7 +29,7 @@ const GeneratePayslip = () => {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get("https://emsproject-production.up.railway.app/api/employee/", {
+        const response = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -56,7 +56,7 @@ const GeneratePayslip = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/auth/delete_employee/${id}`)
+    axios.delete(`https://emspro-production.up.railway.app/auth/delete_employee/${id}`)
       .then(result => {
         if (result.data.Status) {
           Alert.alert("Employee deleted successfully");

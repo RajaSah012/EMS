@@ -14,7 +14,7 @@ const Employee = () => {
   const fetchEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("http://184.168.127.127:8080/api/employee/", {
+      .get("https://emspro-production.up.railway.app/api/employee/", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -57,7 +57,7 @@ const Employee = () => {
   const confirmDelete = async (id) => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .delete(`http://184.168.127.127:8080/api/employee/${id}`, {
+      .delete(`https://emspro-production.up.railway.app/api/employee/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -90,7 +90,7 @@ const Employee = () => {
       <Card.Content>
         <View style={styles.content}>
           <Image
-            source={{ uri: `http://184.168.127.127:8080/api/employee/image/${item.zname}` }}
+            source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}` }}
             style={styles.image}
           />
           <View style={styles.details}>

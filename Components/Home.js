@@ -40,7 +40,7 @@ const Home = ({ navigation }) => {
   const AdminRecords = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/auth/getUsers/",
+      .get("https://emspro-production.up.railway.app/auth/getUsers/",
         {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -57,7 +57,7 @@ const Home = ({ navigation }) => {
   const OpeningEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countc", {
+      .get("https://emspro-production.up.railway.app/api/employee/countc", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -73,7 +73,7 @@ const Home = ({ navigation }) => {
   const TransferredInEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countti", {
+      .get("https://emspro-production.up.railway.app/api/employee/countti", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -89,7 +89,7 @@ const Home = ({ navigation }) => {
   const TransferredOutEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countto", {
+      .get("https://emspro-production.up.railway.app/api/employee/countto", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -105,7 +105,7 @@ const Home = ({ navigation }) => {
   const NewJoinedEmployee = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countn", {
+      .get("https://emspro-production.up.railway.app/api/employee/countn", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -121,7 +121,7 @@ const Home = ({ navigation }) => {
   const ExitedEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countexit", {
+      .get("https://emspro-production.up.railway.app/api/employee/countexit", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -137,7 +137,7 @@ const Home = ({ navigation }) => {
   const ClosedEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countex", {
+      .get("https://emspro-production.up.railway.app/api/employee/countex", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -154,7 +154,7 @@ const Home = ({ navigation }) => {
   const GenderM = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countm", {
+      .get("https://emspro-production.up.railway.app/api/employee/countm", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -170,7 +170,7 @@ const Home = ({ navigation }) => {
   const GenderF = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countf", {
+      .get("https://emspro-production.up.railway.app/api/employee/countf", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -186,7 +186,7 @@ const Home = ({ navigation }) => {
   const GenderT = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/countt", {
+      .get("https://emspro-production.up.railway.app/api/employee/countt", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -203,7 +203,7 @@ const Home = ({ navigation }) => {
   const adminCount = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/auth/count",
+      .get("https://emspro-production.up.railway.app/auth/count",
         {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -219,7 +219,7 @@ const Home = ({ navigation }) => {
   const employeeCount = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/count",
+      .get("https://emspro-production.up.railway.app/api/employee/count",
         {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -235,7 +235,7 @@ const Home = ({ navigation }) => {
   const salaryCount = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/total",
+      .get("https://emspro-production.up.railway.app/api/employee/total",
         {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -254,7 +254,7 @@ const Home = ({ navigation }) => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem('token');
       axios
-        .get("https://mohitbyproject-production.up.railway.app/api/employee/",
+        .get("https://emspro-production.up.railway.app/api/employee/",
           {
             headers: {
               "Authorization": `Bearer ${token}`
@@ -277,7 +277,7 @@ const Home = ({ navigation }) => {
       const token = await AsyncStorage.getItem('token');
       console.log("Fetched Token:", token); // Logging the token
 
-      axios.get('https://mohitbyproject-production.up.railway.app/api/category/', {
+      axios.get('https://emspro-production.up.railway.app/api/category/', {
         headers: {
           "Authorization": `Bearer ${token}`
         }

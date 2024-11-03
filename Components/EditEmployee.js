@@ -36,7 +36,7 @@ const EditEmployee = () => {
   useEffect(() => {
     // Fetch categories
     axios
-      .get('https://mohitbyproject-production.up.railway.app/api/category/')
+      .get('https://emspro-production.up.railway.app/api/category/')
       .then((result) => {
         if (result.data) {
           setCategory(result.data);
@@ -48,7 +48,7 @@ const EditEmployee = () => {
 
     // Fetch employee details
     axios
-      .get(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`)
+      .get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
       .then((result) => {
         setEmployee({
           ...employee,
@@ -60,7 +60,7 @@ const EditEmployee = () => {
 
   const handleSubmit = () => {
     axios
-      .put(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`, employee)
+      .put(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, employee)
       .then((result) => {
         if (result.data) {
           navigation.navigate('Employee'); // Adjust screen name according to your navigation setup

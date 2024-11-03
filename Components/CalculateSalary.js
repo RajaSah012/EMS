@@ -14,7 +14,7 @@ const CalculateSalary = () => {
   const fetchEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/", {
+      .get("https://emspro-production.up.railway.app/api/employee/", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -78,7 +78,7 @@ const CalculateSalary = () => {
       <Card.Content>
         <View style={styles.content}>
           <Image
-            source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}` }}
+            source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}` }}
             style={styles.image}
           />
           <View style={styles.details}>

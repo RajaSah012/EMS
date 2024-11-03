@@ -30,7 +30,7 @@ const CompanyForm = () => {
   const fetchBusinessTypes = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.get('https://emsproject-production.up.railway.app/api/category/', {
+      const response = await axios.get('https://emspro-production.up.railway.app/api/category/', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -126,7 +126,7 @@ const CompanyForm = () => {
         logoUri,
       };
 
-      const response = await axios.post('https://emsproject-production.up.railway.app/api/company/', data, {
+      const response = await axios.post('https://emspro-production.up.railway.app/api/company/', data, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

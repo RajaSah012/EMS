@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await axios.post('https://emsproject-production.up.railway.app/auth/forgot-password', { email });
+      const response = await axios.post('https://emspro-production.up.railway.app/auth/forgot-password', { email });
       if (response.data.success) {
         setSuccessMessage('A reset link has been sent to your email.');
         setError('');

@@ -47,7 +47,7 @@ const AddEmployee = () => {
     const fetchCategories = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        const response = await axios.get("http://184.168.127.127:8080/api/category/", {
+        const response = await axios.get("https://emspro-production.up.railway.app/api/category/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,7 +84,7 @@ const AddEmployee = () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await axios.post("http://184.168.127.127:8080/api/employee/", formData, {
+      const response = await axios.post("https://emspro-production.up.railway.app/api/employee/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

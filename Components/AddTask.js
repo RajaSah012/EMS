@@ -9,7 +9,7 @@ const AddTask = ({ navigation }) => {
 
   useEffect(() => {
     axios
-      .get('https://mohitbyproject-production.up.railway.app/api/employee/')
+      .get('https://emspro-production.up.railway.app/api/employee/')
       .then(result => {
         if (result.data) {
           setEmployee(result.data);
@@ -52,7 +52,7 @@ const AddTask = ({ navigation }) => {
               {/* Wrap the Image in a View */}
               <View style={styles.imageCell}>
                 <Image
-                  source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${e.zname}` }}
+                  source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
                   style={styles.image}
                 />
               </View>

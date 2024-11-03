@@ -17,7 +17,7 @@ export default function HomeScreen() {
     }
 
     try {
-      const result = await axios.post('https://emsproject-production.up.railway.app/auth/logout', {}, {
+      const result = await axios.post('https://emspro-production.up.railway.app/auth/logout', {}, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

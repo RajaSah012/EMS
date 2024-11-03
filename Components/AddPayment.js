@@ -37,7 +37,7 @@ const AddPayment = () => {
   };
 
   const fetchEmployeeRecords = () => {
-    axios.get('https://mohitbyproject-production.up.railway.app/api/employee/')
+    axios.get('https://emspro-production.up.railway.app/api/employee/')
       .then(result => {
         if (result.data) {
           setEmployee(result.data);

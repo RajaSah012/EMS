@@ -25,7 +25,7 @@ const AttendanceRegularization = () => {
 
   useEffect(() => {
     axios
-      .get('https://mohitbyproject-production.up.railway.app/api/employee/')
+      .get('https://emspro-production.up.railway.app/api/employee/')
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);
@@ -114,7 +114,7 @@ const AttendanceRegularization = () => {
                 <View style={styles.employeeCell}>
                   <Image
                     source={{
-                      uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${item.zname}`,
+                      uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}`,
                     }}
                     style={styles.employeeImage}
                   />

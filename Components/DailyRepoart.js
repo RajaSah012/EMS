@@ -19,7 +19,7 @@ const DailyRepoart = () => {
     const fetchEmployeeData = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get("https://mohitbyproject-production.up.railway.app/api/employee/", {
+        const response = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -113,7 +113,7 @@ const DailyRepoart = () => {
                 <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
                 <View style={styles.tableCell}>
                   <Image
-                    source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${e.zname}` }}
+                    source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
                     style={styles.employeeImage}
                   />
                   <View style={styles.employeeInfo}>

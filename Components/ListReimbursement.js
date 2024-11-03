@@ -19,7 +19,7 @@ const ListReimbursement = () => {
         const token = await AsyncStorage.getItem('token');
         if (token) {
           axios
-            .get("https://emsproject-production.up.railway.app/api/employee/", {
+            .get("https://emspro-production.up.railway.app/api/employee/", {
               headers: {
                 "Authorization": `Bearer ${token}`
               }
@@ -65,7 +65,7 @@ const ListReimbursement = () => {
           {
             text: 'Delete',
             onPress: () => {
-              axios.delete(`https://emsproject-production.up.railway.app/api/employee/${id}`, {
+              axios.delete(`https://emspro-production.up.railway.app/api/employee/${id}`, {
                 headers: {
                   "Authorization": `Bearer ${token}`
                 }

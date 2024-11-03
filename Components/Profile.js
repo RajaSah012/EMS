@@ -14,7 +14,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get('https://mohitbyproject-production.up.railway.app/api/profile/');
+        const response = await axios.get('https://emspro-production.up.railway.app/api/profile/');
         setProfileData(response.data);
         setLoading(false);
       } catch (error) {

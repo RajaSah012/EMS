@@ -15,7 +15,7 @@ const LeaveList = () => {
 
   useEffect(() => {
     axios
-      .get("https://mohitbyproject-production.up.railway.app/api/employee/")
+      .get("https://emspro-production.up.railway.app/api/employee/")
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);

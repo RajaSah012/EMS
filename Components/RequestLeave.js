@@ -43,7 +43,7 @@ const RequestLeave = () => {
 
     axios
       .post(
-        `https://mohitbyproject-production.up.railway.app/api/leave/${employeeId}`,
+        `https://emspro-production.up.railway.app/api/leave/${employeeId}`,
         leave,
         {
           headers: {

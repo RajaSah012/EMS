@@ -14,7 +14,7 @@ const EmpTask = () => {
     const fetchEmployeeData = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        const response = await axios.get('https://emsproject-production.up.railway.app/api/employee/', {
+        const response = await axios.get('https://emspro-production.up.railway.app/api/employee/', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

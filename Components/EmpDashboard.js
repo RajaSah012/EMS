@@ -31,7 +31,7 @@ const EmpDashboard = () => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem('your-token');
       axios
-        .get("https://emsproject-production.up.railway.app/api/employee/", {
+        .get("https://emspro-production.up.railway.app/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ const EmpDashboard = () => {
   const employeeCount = async () => {
     const token = await AsyncStorage.getItem('your-token');
     axios
-      .get("https://emsproject-production.up.railway.app/api/employee/count", {
+      .get("https://emspro-production.up.railway.app/api/employee/count", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },

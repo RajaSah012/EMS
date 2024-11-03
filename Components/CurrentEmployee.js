@@ -24,7 +24,7 @@ const CurrentEmployee = () => {
     const fetchEmployees = async () => {
       const token = await AsyncStorage.getItem('token');
       axios
-        .get('https://mohitbyproject-production.up.railway.app/api/employee/', {
+        .get('https://emspro-production.up.railway.app/api/employee/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ const CurrentEmployee = () => {
   };
 
   const handleDelete = (employeeId) => {
-    axios.delete(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`)
+    axios.delete(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
         .then(result => {
             if (result.data) {
                 setRecords(records.filter(e => e.employeeId !== employeeId));
@@ -152,7 +152,7 @@ const CurrentEmployee = () => {
                 <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
                 <View style={styles.tableCell}>
                   <Image
-                    source={{ uri: `https://mohitbyproject-production.up.railway.app/api/employee/image/${e.zname}` }}
+                    source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
                     style={styles.employeeImage}
                   />
                   <View style={styles.employeeInfo}>

@@ -12,7 +12,7 @@ const EmployeeDetail = () => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 const employeeId = await AsyncStorage.getItem('employeeId');
-                const result = await axios.get(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`, {
+                const result = await axios.get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

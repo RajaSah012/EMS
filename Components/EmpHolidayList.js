@@ -13,7 +13,7 @@ const EmpholidayList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/holidays'); // Replace with your API endpoint
+        const response = await axios.get('https://emspro-production.up.railway.app/api/holidays'); // Replace with your API endpoint
         const fetchedEvents = response.data.reduce((acc, record) => {
           const formattedDate = format(new Date(record.date), 'yyyy-MM-dd');
           acc[formattedDate] = {

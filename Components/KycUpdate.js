@@ -50,7 +50,7 @@ const KycUpdate = () => {
       ifsc: ""
     });
 
-    axios.get(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`)
+    axios.get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
       .then(result => {
         setEmployee(result.data);
       }).catch(err => console.log(err));
@@ -82,7 +82,7 @@ const KycUpdate = () => {
   };
 
   const handleSubmit = () => {
-    axios.put(`https://mohitbyproject-production.up.railway.app/api/employee/${employeeId}`, employee)
+    axios.put(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, employee)
       .then(result => {
         Alert.alert("Success", "KYC updated successfully!");
         navigation.navigate('kycVerification');

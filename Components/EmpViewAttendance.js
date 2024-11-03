@@ -11,7 +11,7 @@ const EmpViewAttendance = ({ employeeId }) => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/attendance/employee/${employeeId}`);
+        const response = await axios.get(`https://emspro-production.up.railway.app/attendance/employee/${employeeId}`);
         const data = response.data;
 
         const newMarkedDates = {};

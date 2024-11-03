@@ -20,7 +20,7 @@ const TaskList = () => {
         const fetchData = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const employeeResult = await axios.get("https://mohitbyproject-production.up.railway.app/api/employee/", {
+                const employeeResult = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -31,7 +31,7 @@ const TaskList = () => {
                     setEmployeeCopy(employeeResult.data);
                 }
 
-                const taskResult = await axios.get("https://mohitbyproject-production.up.railway.app/api/tasks", {
+                const taskResult = await axios.get("https://emspro-production.up.railway.app/api/tasks", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

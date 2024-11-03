@@ -18,7 +18,7 @@ const OdList = () => {
       try {
         const token = await AsyncStorage.getItem('token');
         if (token) {
-          const result = await axios.get("https://emsproject-production.up.railway.app/api/employee/", {
+          const result = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
             headers: {
               "Authorization": `Bearer ${token}`
             }
