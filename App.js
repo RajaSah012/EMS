@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Alert, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Camera from 'expo-camera';
 import { Text } from 'react-native-paper';
@@ -94,16 +95,86 @@ const CustomHeader = ({ navigation }) => {
         <MaterialIcons name="add" size={24} color="white" style={styles.icon} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('LiveLocation')}>
-        <MaterialIcons name="location-on" size={24} color="white" style={styles.icon} />
+        <MaterialIcons
+          name="location-on"
+          size={24}
+          color="white"
+          style={styles.icon}
+        />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-        <MaterialIcons name="notifications" size={24} color="white" style={styles.icon} />
+        <MaterialIcons
+          name="notifications"
+          size={24}
+          color="white"
+          style={styles.icon}
+        />
       </TouchableOpacity>
     </View>
   );
 };
 
 const CustomDrawerContent = (props) => {
+  const [expandedSections, setExpandedSections] = useState({
+    AdminTask: false,
+    AdminRest: false,
+    AllTask: false,
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const sections = [
+    {
+      heading: 'Admin Task',
+      key: 'AdminTask',
+      options: [
+        { name: 'AdminRegistration', label: 'Admin Registration', icon: 'person-add' },
+        { name: 'AdminLogin', label: 'Admin Login', icon: 'log-in' },
+        { name: 'AddCategory', label: 'Add Category', icon: 'add' },
+        { name: 'Category', label: 'Category', icon: 'albums' },
+        { name: 'EmployeeLogin', label: 'Employee Login', icon: 'person' },
+      ],
+      color: '#FFB6C1', // Pinkish color for admin section
+    },
+    {
+      heading: 'Admin Rest',
+      key: 'AdminRest',
+      options: [
+        { name: 'Support', label: 'Support', icon: 'chatbubbles-outline' },
+        { name: 'Dashboard', label: 'Dashboard', icon: 'grid' },
+        { name: 'Profile', label: 'Profile', icon: 'person-circle' },
+        { name: 'AdminProfile', label: 'Admin Profile', icon: 'person' },
+        { name: 'Attendance', label: 'Attendance', icon: 'accessibility' },
+        { name: 'Notification', label: 'Notification', icon: 'notifications' },
+        { name: 'CalculateSalary', label: 'Calculate Salary', icon: 'cash' },
+        { name: 'AddPayment', label: 'Add Payment', icon: 'cash-outline' },
+        { name: 'PayEmployees', label: 'Pay Employees', icon: 'cash-sharp' },
+        { name: 'KycVerification', label: 'KYC Verification', icon: 'checkmark-circle' },
+      ],
+      color: '#B5FFFC', // Light blue for admin rest section
+    },
+    {
+      heading: 'All Task',
+      key: 'AllTask',
+      options: [
+        { name: 'EmpDashboard', label: 'Employee Dashboard', icon: 'grid' },
+        { name: 'RequestLeave', label: 'Request Leave', icon: 'log-out-outline' },
+        { name: 'EmpViewAttendance', label: 'View Attendance', icon: 'calendar-outline' },
+        { name: 'EmpDocument', label: 'My Document', icon: 'document-outline' },
+        { name: 'EmpHolidayList', label: 'Holiday List', icon: 'today-outline' },
+        { name: 'EmpTask', label: 'Task', icon: 'clipboard-outline' },
+        { name: 'AddTask', label: 'Add Task', icon: 'add-outline' },
+        
+      ],
+      color: '#FFD700', // Golden color for all tasks section
+    },
+  ];
+
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerHeader}>
@@ -113,119 +184,45 @@ const CustomDrawerContent = (props) => {
         />
         <Text style={styles.username}>STAFF WORLD</Text>
       </View>
-      <View style={styles.drawerContent}>
-        {props.state.routes.map((route, index) => {
-          const { name } = route;
-          const isFocused = props.state.index === index;
-
-          return (
-            <DrawerItem
-              key={name}
-              label={name}
-              onPress={() => props.navigation.navigate(name)}
-              icon={() => <MaterialIcons name={getIcon(name)} size={24} color={isFocused ? '#880808' : '#808080'} />}
-              labelStyle={{ color: isFocused ? '#880808' : '#808080', marginLeft: -16 }}
-              style={{ marginBottom: 8 }}
+      {sections.map((section) => (
+        <View key={section.key}>
+          <TouchableOpacity
+            style={[styles.sectionHeader, { backgroundColor: section.color }]}
+            onPress={() => toggleSection(section.key)}
+          >
+            <Text style={styles.sectionHeading}>{section.heading}</Text>
+            <MaterialIcons
+              name={expandedSections[section.key] ? 'expand-less' : 'expand-more'}
+              size={28}
+              color="#000"
             />
-          );
-        })}
-      </View>
+          </TouchableOpacity>
+          {expandedSections[section.key] &&
+            section.options.map((option) => (
+              <DrawerItem
+                key={option.name}
+                label={option.label}
+                onPress={() => props.navigation.navigate(option.name)}
+                icon={() => (
+                  <Ionicons
+                    name={option.icon}
+                    size={24}
+                    color={section.color}
+                  />
+                )}
+                labelStyle={styles.drawerLabel}
+                style={styles.drawerItem}
+              />
+            ))}
+        </View>
+      ))}
     </DrawerContentScrollView>
   );
 };
 
-const getIcon = (name) => {
-  switch (name) {
-    case 'Start':
-      return 'home';
-    case 'Welcome':
-      return 'info';
-    case 'AdminRegistration':
-      return 'person-add';
-    case 'AdminLogin':
-      return 'login';
-    case 'Home':
-      return 'home';
-    case 'AddCategory':
-      return 'category';
-    case 'Category':
-      return 'list';
-    case 'EmployeeLogin':
-      return 'login';
-    case 'EmployeeDetail':
-      return 'person';
-    case 'Support':
-      return 'support';
-    case 'Dashboard':
-      return 'dashboard';
-    case 'Profile':
-      return 'account-circle';
-      case 'AdminProfile':
-        return 'account-circle';
-    case 'Attendance':
-      return 'event';
-    case 'Notification':
-      return 'notifications';
-    case 'CalculateSalary':
-      return 'attach-money';
-    case 'AddPayment':
-      return 'payment';
-    case 'PayEmployees':
-      return 'payments';
-    case 'LiveLocation':
-      return 'location-on';
-    case 'Document':
-      return 'description';
-    case 'Settings':
-      return 'settings';
-    case 'Employee':
-      return 'people';
-    case 'EmployeeMenu':
-      return 'menu';
-    case 'AddEmployee':
-      return 'person-add';
-    case 'MarkAttendance':
-      return 'check-circle';
-    case 'MyAttendance':
-      return 'schedule';
-    case 'OutDoorDuty':
-      return 'hiking';
-    case 'Reimburse':
-      return 'receipt';
-    case 'Apply':
-      return 'assignment';
-    case 'Holiday':
-      return 'beach-access';
-    case 'WeekOff':
-      return 'weekend';
-    case 'Payslip':
-      return 'receipt';
-    case 'TaskManagement':
-      return 'task';
-    case 'RequestForMe':
-      return 'request-page';
-    case 'MyTeam':
-      return 'group';
-    case 'Loan':
-      return 'account-balance';
-    case 'Advance':
-      return 'money';
-    case 'Recruitment':
-      return 'work';
-    case 'MyTaxation':
-      return 'taxi-alert';
-    case 'DailyReport':
-      return 'bar-chart';
-    case 'Report':
-      return 'report';
-    case 'ReportFilter':
-      return 'filter-list';
-    case 'GeneratePayslip':
-      return 'receipt';
-    default:
-      return 'info';
-  }
-};
+
+
+
 
 const MainDrawer = () => {
   return (
@@ -414,6 +411,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 40,
     paddingBottom: 20,
+  },
+  logo: {
+    width: 70,
+    height: 70,
+    borderRadius: 60,
+    marginBottom: 10,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    elevation: 4, // Shadow for Android
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  sectionHeading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  drawerLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  drawerItem: {
+    marginLeft: 0,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ddd',
+  },
+  icon: {
+    marginRight: 10,
   },
   username: {
     fontSize: 18,

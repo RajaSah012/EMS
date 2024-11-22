@@ -1,60 +1,58 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, Dimensions, Modal, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, Dimensions, StyleSheet, Alert, Image} from 'react-native';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
+
 
 const { width, height } = Dimensions.get('window');
 
 const Login = () => {
   const [values, setValues] = useState({
-    userName: '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState(null);
+  const [agree, setAgree] = useState(false);
   const [isChecked, setIsChecked] = useState(false); // Terms and conditions
   const [rememberMe, setRememberMe] = useState(false); // Remember me
-  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
-  axios.defaults.withCredentials = true;
-
   const handleSubmit = async () => {
+    // Check if terms and conditions are accepted
     if (!isChecked) {
-      Alert.alert('Terms and Conditions', 'You must agree to the terms and conditions to continue.');
+      Alert.alert("Terms and Conditions", "You must agree to the terms and conditions.");
       return;
     }
   
     try {
-      const response = await axios.post('https://emspro-production.up.railway.app/api/employee/login', values);
+      // Send a POST request for login
+      const result = await axios.post('https://emspro-production.up.railway.app/auth/login', values);
       
-      // Check if the response contains the expected data
-      if (response.data && response.data.token) {
-        await AsyncStorage.setItem("token", response.data.token);
-        if (rememberMe) {
-          await AsyncStorage.setItem('savedUserName', values.userName);
-          await AsyncStorage.setItem('savedPassword', values.password);
-        } else {
-          await AsyncStorage.removeItem('savedUserName');
-          await AsyncStorage.removeItem('savedPassword');
-        }
+      // Check if response contains token
+      if (result.data && result.data.token) {
+        // Store only the token in AsyncStorage
+        await AsyncStorage.setItem("token", result.data.token);
+        
+        // Navigate to the Home screen after successful login
         navigation.navigate('Home');
       } else {
-        // Display invalid username or password message
-        setError('Invalid username or password. Please try again.');
+        // Set an error message if login is invalid
+        setError('Invalid login credentials');
       }
     } catch (err) {
-      console.log(err);
+      // Log the error to the console for debugging
+      console.error(err);
+      // Set a generic error message
       setError('An error occurred during login. Please try again.');
     }
   };
   
-  const handleChange = (field, text) => {
-    // Clear error message when the user types in the input field
-    if (error) setError(null);
-    setValues({ ...values, [field]: text });
-  };
+
+  // const toggleCheckbox = () => {
+  //   setIsChecked(!isChecked); // Toggle terms checkbox
+  // };
 
   const toggleCheckbox = () => {
     setIsChecked(!isChecked); // Toggle terms checkbox
@@ -64,107 +62,109 @@ const Login = () => {
     setRememberMe(!rememberMe); // Toggle remember me checkbox
   };
 
-  const openTerms = () => {
-    setModalVisible(true);
-  };
-
-  const closeTerms = () => {
-    setModalVisible(false);
-  };
-
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword'); // Navigate to forgot password screen
   };
 
+  const openTerms = () => {
+    setModalVisible(true);
+  };   
+
   return (
     <View style={styles.container}>
-      {/* Custom Shape Background */}
       <View style={styles.shapeBackgroundYellow} />
       <View style={styles.shapeBackgroundGreen} />
       <View style={styles.shapeBackgroundBlue} />
+      <View style={styles.header}>
+        {/* Add Local Image (Logo) in the header */}
+        <Image
+          source={require('../assets/Images/logo.jpg')}
+          style={{ width: 100, height: 100, borderRadius: 60, marginBottom: 10 }}
+        />
+        <Text style={styles.headerText}>Employee Management</Text>
+        {/* <TouchableOpacity style={styles.registerButton}>
+          <Text style={styles.registerButtonText}>Registration</Text>
+        </TouchableOpacity> */}
+      </View>
 
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Admin Portal</Text>
-        </View>
+      <View style={styles.loginFormContainer}>
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        <Text style={styles.title}>Employee Login</Text>
 
-        <View style={styles.formContainer}>
-          {error && <Text style={styles.errorText}>{error}</Text>}
-          <Text style={styles.formTitle}>Admin Login</Text>
+        <View style={styles.inputContainer}>
+          {/* <Text style={styles.label}>Email:</Text> */}
           <TextInput
             style={styles.input}
             placeholder="Enter Username"
             placeholderTextColor="#ccc"
-            value={values.userName}
-            onChangeText={(text) => handleChange('userName', text)} // Updated to handleChange
+            autoCapitalize="none"
+            onChangeText={(text) => setValues({ ...values, email: text })}
           />
+        </View>
+
+        <View style={styles.inputContainer}>
+          {/* <Text style={styles.label}>Password:</Text> */}
           <TextInput
             style={styles.input}
             placeholder="Enter Password"
             placeholderTextColor="#ccc"
-            secureTextEntry={true}
-            value={values.password}
-            onChangeText={(text) => handleChange('password', text)} // Updated to handleChange
+            secureTextEntry
+            onChangeText={(text) => setValues({ ...values, password: text })}
           />
+        </View>
 
-          {/* Terms and Conditions Checkbox */}
-          <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
-            <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
-              {isChecked && <MaterialIcons name="check" size={18} color="white" />}
-            </View>
-            <TouchableOpacity onPress={openTerms}>
-              <Text style={[styles.checkboxLabel, { textDecorationLine: 'underline' }]}>
-                I agree with the terms and conditions
-              </Text>
-            </TouchableOpacity>
+        {/* Terms and Conditions Checkbox */}
+        {/* <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
+          <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
+            {isChecked && <MaterialIcons name="check" size={18} color="white" />}
+          </View>
+          <TouchableOpacity onPress={openTerms}>
+            <Text style={[styles.checkboxLabel, { textDecorationLine: 'underline' }]}>
+              I agree with the terms and conditions
+            </Text>
           </TouchableOpacity>
+        </TouchableOpacity> */}
 
-          {/* Remember Me Checkbox */}
-          <TouchableOpacity style={styles.checkboxContainer} onPress={toggleRememberMe}>
+<TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
+  <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
+    {isChecked && <MaterialIcons name="check" size={18} color="white" />}
+  </View>
+  <Text style={[styles.checkboxLabel, { textDecorationLine: 'underline' }]}>
+    I agree with the terms and conditions
+  </Text>
+</TouchableOpacity>
+
+
+        {/* Remember Me Checkbox */}
+        <TouchableOpacity style={styles.checkboxContainer} onPress={toggleRememberMe}>
             <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
               {rememberMe && <MaterialIcons name="check" size={18} color="white" />}
             </View>
             <Text style={styles.checkboxLabel}>Remember Me</Text>
           </TouchableOpacity>
 
+        {/* <TouchableOpacity onPress={() => setAgree(!agree)}>
+          <Text style={[styles.agreementText, agree && styles.agreedText]}>
+            {agree ? "✓ " : ""}You agree with terms & conditions
+          </Text>
+        </TouchableOpacity> */}
+
           <TouchableOpacity onPress={handleForgotPassword}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+        {/* <Button title="Login" onPress={handleSubmit} color="#28a745" /> */}
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
-        </View>
-      </View>
 
-      {/* Modal for Terms and Conditions */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={closeTerms}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <ScrollView>
-              <Text style={styles.modalTitle}>Terms and Conditions</Text>
-              <Text style={styles.modalText}>
-                By using this system, you agree to the following terms:
-                {"\n"}• All activities performed using this system are monitored and logged.
-                {"\n"}• Confidentiality of the company and personal data must be maintained.
-                {"\n"}• Unauthorized use of this system or tampering with data is prohibited.
-                {"\n"}• Users are responsible for maintaining the security of their login credentials.
-                {"\n"}• Any violation of these terms may result in disciplinary actions or termination.
-                {"\n"}• The company reserves the right to amend these terms at any time.
-                {"\n"}• By continuing to use this system, you agree to abide by all company policies and regulations.
-              </Text>
-              <TouchableOpacity onPress={closeTerms} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+        {/* <TouchableOpacity onPress={() => setAgree(!agree)}>
+          <Text style={[styles.agreementText, agree && styles.agreedText]}>
+            {agree ? "✓ " : ""}You agree with terms & conditions
+          </Text>
+        </TouchableOpacity> */}
+      </View>
     </View>
   );
 };
@@ -173,13 +173,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f8ff',
-  },
-  content: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Reduce the size of the yellow shape
   shapeBackgroundYellow: {
     position: 'absolute',
     width: width * 1.2, // Reduced width
@@ -211,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
-  title: {
+  headerText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
@@ -219,7 +215,15 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
-  formContainer: {
+  registerButton: {
+    backgroundColor: '#6c757d',
+    padding: 10,
+    borderRadius: 5,
+  },
+  registerButtonText: {
+    color: '#fff',
+  },
+  loginFormContainer: {
     width: '80%',
     paddingVertical: 30,
     justifyContent: 'center',
@@ -230,22 +234,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-  },
-  formTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
   },
   errorText: {
     color: 'red',
@@ -275,6 +263,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  label: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+  },
   forgotPasswordText: {
     color: '#5DADE2',
     textAlign: 'center',
@@ -291,36 +303,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  agreementText: {
+    marginTop: 15,
+    textAlign: 'center',
+    color: '#888',
   },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  closeButton: {
-    backgroundColor: '#5DADE2',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontSize: 16,
+  agreedText: {
+    color: '#28a745',
   },
 });
 
