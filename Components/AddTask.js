@@ -31,7 +31,7 @@ const AddTask = ({ navigation }) => {
       <Text style={styles.header}>Task</Text>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search Name of employee"
+        placeholder="Search Name of Employee"
         onChangeText={handleFilter}
         value={search}
       />

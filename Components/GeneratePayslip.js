@@ -38,7 +38,7 @@ const GeneratePayslip = () => {
           setEmployee(response.data);
           setRecords(response.data);
         } else {
-          Alert.alert('Error', 'Failed to fetch employee data.');
+          Alert.alert('Error', 'Failed to fetch Employee Data.');
         }
       } catch (error) {
         console.error('Error fetching employee data:', error);
@@ -93,7 +93,7 @@ const GeneratePayslip = () => {
           <Text style={styles.buttonText}>Send Report</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Confirmed Reviewed</Text>
+          <Text style={styles.buttonText}>Check Confirmed Reviewed</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Pre-Generate Salary</Text>
@@ -176,7 +176,7 @@ const GeneratePayslip = () => {
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Employee</Text>
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Department</Text>
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Father's Name</Text>
-              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Phone no</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Phone No</Text>
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Email</Text>
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Joining Date</Text>
               <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Status</Text>

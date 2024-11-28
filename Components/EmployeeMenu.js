@@ -41,7 +41,7 @@ const EmployeeMenu = () => {
             <Text style={styles.buttonText}>Add Employee</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Add Multiple Employee</Text>
+            <Text style={styles.buttonText}>Add Multiple Employees</Text>
           </TouchableOpacity>
         </View>
       </View>

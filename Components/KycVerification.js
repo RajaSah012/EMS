@@ -36,7 +36,7 @@ const KycVerification = () => {
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Search Name of employee"
+                    placeholder="Search Name of Employee"
                     placeholderTextColor="#aaa"
                     onChangeText={handleFilter}
                 />

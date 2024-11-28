@@ -30,7 +30,7 @@ const EditEmployee = () => {
   const [category, setCategory] = useState([]);
   const marritalStatuses = ['Married', 'Unmarried', 'Divorced'];
   const statuses = ['Current', 'Ex-Employee', 'New Joining', 'Transferred In', 'Transferred Out', 'Exited Employee'];
-  const sites = ['New Delhi', 'Mumbai', 'Bangalore', 'Patna', 'Kolkata', 'Pune'];
+  const sites = ['New Delhi', 'Mumbai', 'Bengaluru', 'Patna', 'Kolkata', 'Pune'];
   const works = ['Permanent', 'Full Time', 'Part Time', 'Contract Basis'];
 
   useEffect(() => {

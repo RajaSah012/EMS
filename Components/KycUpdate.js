@@ -92,7 +92,7 @@ const KycUpdate = () => {
   const bankNames = [
     "State Bank Of India", "Bank Of India", "Bank Of Baroda", "Central Bank Of India", 
     "HDFC Bank Limited", "IDFC FIRST Bank Limited", "Yes Bank Limited", "AXIS Bank Limited", 
-    "ICICI Bank Limited", "Indusland Bank Limited", "Bandhan Bank Limited", 
+    "ICICI Bank Limited", "IndusInd Bank Limited", "Bandhan Bank Limited", 
     "CSB Bank Limited", "DCB Bank Limited", "RBL Bank Limited", "City Union Bank Limited"
   ];
 
@@ -113,7 +113,7 @@ const KycUpdate = () => {
         <Text style={styles.label}>Aadhar Card No.</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter Aadhar card No."
+          placeholder="Enter Aadhar Card No."
           value={employee.name}
           onChangeText={(value) => setEmployee({ ...employee, name: value })}
         />
@@ -157,7 +157,7 @@ const KycUpdate = () => {
         <Text style={styles.label}>Bank Account No.</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter Account No."
+          placeholder="Enter Bank Account No."
           value={employee.mobile}
           onChangeText={(value) => setEmployee({ ...employee, mobile: value })}
         />

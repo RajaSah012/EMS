@@ -113,7 +113,7 @@ const RequestLeave = () => {
           ))}
         </Picker>
 
-        <Text style={styles.label}>Remark</Text>
+        <Text style={styles.label}>Remarks</Text>
         <TextInput
           style={styles.textArea}
           multiline

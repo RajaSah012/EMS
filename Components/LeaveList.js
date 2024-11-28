@@ -116,7 +116,7 @@ const LeaveList = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Search by name"
+            placeholder="Search by Name"
             onChangeText={handleFilter}
           />
         </View>

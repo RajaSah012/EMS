@@ -254,7 +254,7 @@ const Attendance = () => {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search Name of employee"
+          placeholder="Search Name of Employee"
           onChangeText={handleFilter}
         />
         <TouchableOpacity style={styles.searchButton}>

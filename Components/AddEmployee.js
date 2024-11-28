@@ -134,7 +134,7 @@ const AddEmployee = () => {
     "Transferred Out",
     "Exited Employee",
   ];
-  const sites = ["New Delhi", "Mumbai", "Bangalore", "Patna", "Kolkata", "Pune"];
+  const sites = ["New Delhi", "Mumbai", "Bengaluru", "Patna", "Kolkata", "Pune"];
   const works = ["Permanent", "Full Time", "Part Time", "Contract Basis"];
 
   return (

@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
+import * as Animatable from 'react-native-animatable';
 
 const { width } = Dimensions.get('window');
 const TABLE_COLUMN_WIDTH = width * 0.2;
@@ -49,12 +58,17 @@ const Notification = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <Animatable.View
+      animation="fadeIn"
+      duration={1000}
+      style={styles.container}
+    >
       <View style={styles.header}>
         <Text style={styles.headerText}>Notifications</Text>
       </View>
-      <View style={styles.content}>
-        <View style={styles.filterContainer}>
+
+      <ScrollView contentContainerStyle={styles.content}>
+        <Animatable.View animation="slideInDown" style={styles.filterContainer}>
           <View style={styles.filterItem}>
             <Picker style={styles.picker}>
               <Picker.Item label="All Notifications" value="" />
@@ -84,90 +98,103 @@ const Notification = () => {
 
           <TextInput
             style={[styles.filterItem, styles.input]}
-            placeholder="All Employees"
+            placeholder="Search Employee"
             onChangeText={handleFilter}
           />
-        </View>
+        </Animatable.View>
 
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>EMPLOYEE NAME</Text>
-            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>BRANCH</Text>
-            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>DEPARTMENT</Text>
-            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>APP USING STATUS</Text>
-            <Text style={[styles.tableHeader, { width: TABLE_COLUMN_WIDTH }]}>LAST STATUS</Text>
-          </View>
+        <Animatable.View animation="fadeInUp" style={styles.table}>
           {records.map((e) => (
-            <View key={e.id} style={styles.tableRow}>
-              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.name}</Text>
-              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.branch}</Text>
-              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.department}</Text>
-              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>Not Logged In</Text>
-              <Text numberOfLines={1} style={[styles.tableData, { width: TABLE_COLUMN_WIDTH }]}>{e.lastStatus}</Text>
-            </View>
+            <Animatable.View
+              key={e.id}
+              animation="zoomIn"
+              delay={100 * e.id}
+              style={styles.notificationCard}
+            >
+              <Text style={styles.cardTitle}>{e.name}</Text>
+              <Text style={styles.cardDetails}>
+                Branch: {e.branch} | Department: {e.department}
+              </Text>
+              <Text style={styles.cardStatus}>Status: {e.lastStatus || 'Not Logged In'}</Text>
+            </Animatable.View>
           ))}
-        </View>
-      </View>
-    </ScrollView>
+        </Animatable.View>
+      </ScrollView>
+    </Animatable.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: '#F3F4F9',
   },
   header: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#6200EE',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerText: {
-    fontSize: 20,
+    color: '#fff',
+    fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   content: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 20,
   },
   filterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginBottom: 10,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginVertical: 10,
   },
   filterItem: {
     flex: 1,
-    marginHorizontal: 5,
+    minWidth: '48%',
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
-    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   picker: {
     flex: 1,
   },
   input: {
-    flex: 1,
-    paddingHorizontal: 5,
+    padding: 10,
   },
   table: {
-    flex: 1,
+    marginTop: 10,
   },
-  tableRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingVertical: 10,
+  notificationCard: {
+    backgroundColor: '#fff',
+    marginVertical: 5,
+    padding: 15,
+    borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
-  tableHeader: {
+  cardTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
+    color: '#333',
   },
-  tableData: {
-    textAlign: 'center',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+  cardDetails: {
+    fontSize: 14,
+    color: '#666',
+    marginVertical: 5,
+  },
+  cardStatus: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#6200EE',
   },
 });
 

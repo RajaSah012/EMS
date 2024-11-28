@@ -56,7 +56,7 @@ const Document = () => {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search Name of employee"
+          placeholder="Search Name of Employee"
           placeholderTextColor="#666"
           onChangeText={handleFilter}
         />

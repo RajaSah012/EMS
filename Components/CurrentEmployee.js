@@ -137,7 +137,7 @@ const CurrentEmployee = () => {
               <Text style={[styles.tableHeaderText, { width: 180 }]}>Employee</Text>
               <Text style={[styles.tableHeaderText, { width: 120 }]}>Department</Text>
               <Text style={[styles.tableHeaderText, { width: 150 }]}>Father's Name</Text>
-              <Text style={[styles.tableHeaderText, { width: 120 }]}>Phone no</Text>
+              <Text style={[styles.tableHeaderText, { width: 120 }]}>Phone No</Text>
               <Text style={[styles.tableHeaderText, { width: 150 }]}>Email</Text>
               <Text style={[styles.tableHeaderText, { width: 120 }]}>Joining Date</Text>
               <Text style={[styles.tableHeaderText, { width: 120 }]}>Status</Text>

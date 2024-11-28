@@ -167,12 +167,12 @@ const AddBranch = ({ navigation }) => {
                 <Text style={styles.addressLabel}>Company Location</Text>
                 <TextInput
                   style={styles.addressInput}
-                  placeholder="Enter company address"
+                  placeholder="Enter Company Address"
                   value={address}
                   onFocus={() => setShowAutocomplete(true)}
                 />
                 <View style={styles.currentLocationContainer}>
-                  <Text style={styles.currentLocationLabel}>Current location:</Text>
+                  <Text style={styles.currentLocationLabel}>Current Location:</Text>
                   <Text style={styles.currentLocationText}>
                     {currentLocation ? `${currentLocation.latitude}, ${currentLocation.longitude}` : 'Fetching current location...'}
                   </Text>

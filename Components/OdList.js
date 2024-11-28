@@ -83,7 +83,7 @@ const OdList = () => {
       </Picker>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search by name"
+        placeholder="Search by Name"
         onChangeText={handleFilter}
       />
       <ScrollView horizontal>
