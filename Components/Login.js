@@ -1,5 +1,6 @@
 import { View, Text, TextInput, Button, TouchableOpacity, Dimensions, StyleSheet, Alert, Image} from 'react-native';
-import axios from 'axios';
+
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
@@ -28,7 +29,7 @@ const Login = () => {
   
     try {
       // Send a POST request for login
-      const result = await axios.post('https://emspro-production.up.railway.app/auth/login', values);
+      const result = await myAxios.post('/user_auth/login', values);
       
       // Check if response contains token
       if (result.data && result.data.token) {

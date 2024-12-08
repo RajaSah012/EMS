@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -12,8 +12,8 @@ const AddCategory = () => {
         try {
             const token = await AsyncStorage.getItem('token'); // Await the AsyncStorage call
 
-            const response = await axios.post(
-                "https://emspro-production.up.railway.app/api/category/",
+            const response = await  myAxios.post(
+                "/api/category/",
                 {
                     categoryName: category // Adjust as per your API's expected data structure
                 },

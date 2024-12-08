@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Button, TouchableOpacity, Dimensions, StyleSheet, Alert, Image} from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ const EmployeeLogin = () => {
     }
 
     try {
-      const result = await axios.post('https://emspro-production.up.railway.app/api/employee/login', values);
+      const result = await  myAxios.post('user_auth/login', values);
       if (result.data) {
         await AsyncStorage.setItem("token", JSON.stringify(result.data));
         await AsyncStorage.setItem("employeeId", JSON.stringify(result.data));

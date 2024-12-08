@@ -163,7 +163,7 @@ const CustomDrawerContent = (props) => {
     },
     {
       heading: 'All Task',
-      key: 'AllTask',
+      key: 'Employee',
       options: [
         { name: 'EmpDashboard', label: 'Employee Dashboard', icon: 'grid' },
         { name: 'Employee', label: 'Employees', icon: 'grid' },
