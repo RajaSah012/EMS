@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Alert, FlatList, StyleSheet, Image, ActivityIndicator, TextInput } from "react-native";
 import { Card, Text, Appbar } from "react-native-paper";
-import axios from "axios";
+import { myAxios, BASE_URL } from '../services/helper';
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,8 +13,8 @@ const CalculateSalary = () => {
 
   const fetchEmployees = async () => {
     const token = await AsyncStorage.getItem('token');
-    axios
-      .get("https://emspro-production.up.railway.app/api/employee/", {
+    myAxios
+      .get("/api/employee/", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -78,7 +78,7 @@ const CalculateSalary = () => {
       <Card.Content>
         <View style={styles.content}>
           <Image
-            source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}` }}
+             source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }} 
             style={styles.image}
           />
           <View style={styles.details}>

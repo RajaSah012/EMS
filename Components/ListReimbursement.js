@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
@@ -18,8 +18,8 @@ const ListReimbursement = () => {
       try {
         const token = await AsyncStorage.getItem('token');
         if (token) {
-          axios
-            .get("https://emspro-production.up.railway.app/api/employee/", {
+          myAxios
+            .get("/api/employee/", {
               headers: {
                 "Authorization": `Bearer ${token}`
               }
@@ -65,7 +65,7 @@ const ListReimbursement = () => {
           {
             text: 'Delete',
             onPress: () => {
-              axios.delete(`https://emspro-production.up.railway.app/api/employee/${id}`, {
+              myAxios.delete(`/api/employee/${id}`, {
                 headers: {
                   "Authorization": `Bearer ${token}`
                 }

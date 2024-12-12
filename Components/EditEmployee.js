@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const EditEmployee = () => {
@@ -35,8 +35,8 @@ const EditEmployee = () => {
 
   useEffect(() => {
     // Fetch categories
-    axios
-      .get('https://emspro-production.up.railway.app/api/category/')
+    myAxios
+      .get('/api/category/')
       .then((result) => {
         if (result.data) {
           setCategory(result.data);
@@ -47,8 +47,8 @@ const EditEmployee = () => {
       .catch((err) => console.log(err));
 
     // Fetch employee details
-    axios
-      .get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
+    myAxios
+      .get(`/api/employee/${employeeId}`)
       .then((result) => {
         setEmployee({
           ...employee,
@@ -59,8 +59,8 @@ const EditEmployee = () => {
   }, []);
 
   const handleSubmit = () => {
-    axios
-      .put(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, employee)
+    myAxios
+      .put(`/api/employee/${employeeId}`, employee)
       .then((result) => {
         if (result.data) {
           navigation.navigate('Employee'); // Adjust screen name according to your navigation setup

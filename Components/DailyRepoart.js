@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { myAxios ,BASE_URL} from '../services/helper';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ const DailyRepoart = () => {
     const fetchEmployeeData = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
+        const response = await myAxios.get("/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -113,7 +113,7 @@ const DailyRepoart = () => {
                 <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
                 <View style={styles.tableCell}>
                   <Image
-                    source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
+                  source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
                     style={styles.employeeImage}
                   />
                   <View style={styles.employeeInfo}>

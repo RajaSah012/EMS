@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Alert, StyleSheet, ScrollView, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { Button, Card } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -45,8 +45,8 @@ const EmpDocument = () => {
     const token = 'your-auth-token';
 
     try {
-      const response = await axios.post(
-        'https://emsproject-production.up.railway.app/api/document/',
+      const response = await myAxios.post(
+        '/api/document/',
         formData,
         {
           headers: {

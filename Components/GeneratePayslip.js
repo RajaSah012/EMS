@@ -9,7 +9,7 @@ import {
   TouchableOpacity, 
   Dimensions 
 } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
@@ -29,7 +29,7 @@ const GeneratePayslip = () => {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
+        const response = await myAxios.get("/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -56,7 +56,7 @@ const GeneratePayslip = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`https://emspro-production.up.railway.app/auth/delete_employee/${id}`)
+    myAxios.delete(`/auth/delete_employee/${id}`)
       .then(result => {
         if (result.data.Status) {
           Alert.alert("Employee deleted successfully");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
-import axios from "axios";
+import { myAxios } from "../services/helper";
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';  // Importing LinearGradient for gradient background
 
@@ -10,8 +10,8 @@ const KycVerification = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        axios
-            .get("https://emspro-production.up.railway.app/api/employee/")
+        myAxios
+            .get("/api/employee/")
             .then((result) => {
                 if (result.data) {
                     setEmployee(result.data);

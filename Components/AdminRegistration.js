@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -29,7 +29,7 @@ const AdminRegistration = () => {
         password: registration.password,
       };
 
-      const response = await axios.post('https://emspro-production.up.railway.app/api/user/', formData, {
+      const response = await myAxios.post('/api/user/', formData, {
         headers: {
             'Content-Type': 'application/json',
         },

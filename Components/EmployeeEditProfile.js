@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import * as ImagePicker from 'expo-image-picker';
 
 const EmployeeEditProfile = ({ route, navigation }) => {
@@ -52,7 +52,7 @@ const EmployeeEditProfile = ({ route, navigation }) => {
         });
       }
 
-      await axios.put('https://emspro-production.up.railway.app/api/profile/', formData, {
+      await myAxios.put('/api/profile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

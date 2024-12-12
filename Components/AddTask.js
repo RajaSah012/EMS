@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import { myAxios, BASE_URL } from '../services/helper';
 
 const AddTask = ({ navigation }) => {
   const [employee, setEmployee] = useState([]);
@@ -8,8 +8,8 @@ const AddTask = ({ navigation }) => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    axios
-      .get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios
+      .get('/api/employee/')
       .then(result => {
         if (result.data) {
           setEmployee(result.data);
@@ -51,10 +51,10 @@ const AddTask = ({ navigation }) => {
 
               {/* Wrap the Image in a View */}
               <View style={styles.imageCell}>
-                <Image
-                  source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
-                  style={styles.image}
-                />
+              <Image
+            source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
+              style={styles.image}
+      />
               </View>
 
               <Text style={styles.tableCell}>{e.name}</Text>

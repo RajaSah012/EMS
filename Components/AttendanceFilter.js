@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { Icon } from 'react-native-elements';
@@ -12,8 +12,8 @@ const AttendanceFilter = ({ onClose, setOpenReportFilterSearchText, setFilterbyD
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios
+      .get('/api/employee/')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

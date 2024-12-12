@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -12,7 +12,7 @@ const EmployeeDetail = () => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 const employeeId = await AsyncStorage.getItem('employeeId');
-                const result = await axios.get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, {
+                const result = await myAxios.get(`/api/employee/${employeeId}`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import RNPickerSelect from 'react-native-picker-select';
+import { myAxios } from '../services/helper';
 
 const AddBranch = ({ navigation }) => {
   const [step, setStep] = useState(1);
@@ -43,19 +44,23 @@ const AddBranch = ({ navigation }) => {
   const handleAddBranch = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      await fetch('https://your-backend-api.com/branches', {
-        method: 'POST',
+      const payload = {
+        name,
+        location,
+        radius,
+        branchType,
+      };
+
+      const config = {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name,
-          location,
-          radius,
-          branchType, // Send branch type to the backend
-        }),
-      });
+      };
+
+      // Axios POST request
+      await myAxios.post('/api/addbranch', payload, config);
+
       setShowConfirmation(false);
       navigation.goBack();
     } catch (error) {
@@ -143,9 +148,7 @@ const AddBranch = ({ navigation }) => {
                   longitudeDelta: 0.0421,
                 }}
               >
-                {location && (
-                  <Marker coordinate={location} />
-                )}
+                {location && <Marker coordinate={location} />}
                 {currentLocation && (
                   <Marker
                     coordinate={currentLocation}
@@ -174,7 +177,9 @@ const AddBranch = ({ navigation }) => {
                 <View style={styles.currentLocationContainer}>
                   <Text style={styles.currentLocationLabel}>Current Location:</Text>
                   <Text style={styles.currentLocationText}>
-                    {currentLocation ? `${currentLocation.latitude}, ${currentLocation.longitude}` : 'Fetching current location...'}
+                    {currentLocation
+                      ? `${currentLocation.latitude}, ${currentLocation.longitude}`
+                      : 'Fetching current location...'}
                   </Text>
                 </View>
                 <Text style={styles.radiusLabel}>Maximum Attendance Radius</Text>
@@ -186,7 +191,10 @@ const AddBranch = ({ navigation }) => {
                   onValueChange={setRadius}
                 />
                 <Text style={styles.radiusValue}>{radius} m</Text>
-                <TouchableOpacity style={styles.addButton} onPress={() => setShowConfirmation(true)}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => setShowConfirmation(true)}
+                >
                   <Text style={styles.buttonText}>Add New Branch</Text>
                 </TouchableOpacity>
               </View>
@@ -199,10 +207,16 @@ const AddBranch = ({ navigation }) => {
                   <View style={styles.modalContent}>
                     <Text>Are you sure you want to add this branch?</Text>
                     <View style={styles.modalButtons}>
-                      <TouchableOpacity style={styles.modalButton} onPress={() => setShowConfirmation(false)}>
+                      <TouchableOpacity
+                        style={styles.modalButton}
+                        onPress={() => setShowConfirmation(false)}
+                      >
                         <Text style={styles.buttonText}>No</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.modalButton} onPress={handleAddBranch}>
+                      <TouchableOpacity
+                        style={styles.modalButton}
+                        onPress={handleAddBranch}
+                      >
                         <Text style={styles.buttonText}>Yes</Text>
                       </TouchableOpacity>
                     </View>
@@ -216,6 +230,8 @@ const AddBranch = ({ navigation }) => {
     </View>
   );
 };
+
+
 
 // Styles for the dropdown
 const pickerSelectStyles = StyleSheet.create({

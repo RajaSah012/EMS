@@ -13,7 +13,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from "axios";
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,7 +47,7 @@ const AddEmployee = () => {
     const fetchCategories = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        const response = await axios.get("https://emspro-production.up.railway.app/api/category/", {
+        const response = await myAxios.get("/api/category/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,7 +84,7 @@ const AddEmployee = () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await axios.post("https://emspro-production.up.railway.app/api/employee/", formData, {
+      const response = await myAxios.post("/api/employee/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

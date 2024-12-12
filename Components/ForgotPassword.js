@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await axios.post('https://emspro-production.up.railway.app/auth/forgot-password', { email });
+      const response = await myAxios.post('/auth/forgot-password', { email });
       if (response.data.success) {
         setSuccessMessage('A reset link has been sent to your email.');
         setError('');

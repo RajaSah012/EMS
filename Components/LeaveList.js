@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 
 const LeaveList = () => {
   const [date, setDate] = useState(new Date());
@@ -14,8 +14,8 @@ const LeaveList = () => {
   const [leaveType, setLeaveType] = useState('');
 
   useEffect(() => {
-    axios
-      .get("https://emspro-production.up.railway.app/api/employee/")
+    myAxios
+      .get("/api/employee/")
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);

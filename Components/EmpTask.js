@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import moment from 'moment';
 import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient'; // For gradient background
@@ -14,7 +14,7 @@ const EmpTask = () => {
     const fetchEmployeeData = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        const response = await axios.get('https://emspro-production.up.railway.app/api/employee/', {
+        const response = await myAxios.get('/api/employee/', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

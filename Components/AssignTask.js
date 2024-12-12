@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 
 const AssignTask = () => {
   const route = useRoute();
@@ -21,7 +21,7 @@ const AssignTask = () => {
       return;
     }
 
-    axios.get('https://emspro-production.up.railway.app/api/employee/' + employeeId)
+    myAxios.get('/api/employee/' + employeeId)
       .then(result => {
         setEmployee({
           ...employee,
@@ -38,31 +38,27 @@ const AssignTask = () => {
       employeeId,
       name: employee.name,
     };
-
+  
     try {
-      const response = await fetch('https://emspro-production.up.railway.app/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTask),
-      });
-
-      if (response.ok) {
+      const response = await myAxios.post('/api/tasks', newTask);
+      console.log('Response:', response); // Log the response for debugging
+  
+      if (response.status === 201) {  // Check for status 201 for successful creation
         Alert.alert('Success', 'Task added successfully!');
         navigation.navigate('TaskList');
         setTaskName('');
         setTaskTitle('');
         setTaskAbout('');
       } else {
+        console.error('Unexpected response status:', response.status);
         Alert.alert('Error', 'Failed to add task');
       }
     } catch (error) {
-      console.error('Error adding task:', error);
+      console.error('Error adding task:', error); // Log the full error for debugging
       Alert.alert('Error', 'Error adding task');
     }
   };
-
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>

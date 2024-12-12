@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Home = ({ navigation }) => {
   const [time, setTime] = useState('');
@@ -25,15 +24,10 @@ const Home = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header */}
-      <LinearGradient
-        colors={['#232526', '#414345']}
-        style={styles.header}
-        start={[0, 0]}
-        end={[1, 1]}
-      >
+      <View style={styles.header}>
         <Text style={styles.headerText}>Dashboard</Text>
         <Text style={styles.timeText}>Current Time: {time}</Text>
-      </LinearGradient>
+      </View>
 
       {/* Dashboard Items */}
       <View style={styles.row}>
@@ -41,66 +35,104 @@ const Home = ({ navigation }) => {
           style={styles.card}
           onPress={() => navigation.navigate('CurrentEmployee')}
         >
-          <FontAwesome name="users" size={50} color="#FFA07A" />
-          <Text style={styles.cardText}>Current Employees</Text>
+          <LinearGradient
+            colors={['#6A11CB', '#2575FC']}
+            style={styles.cardBackground}
+          >
+            <FontAwesome name="users" size={50} color="#fff" />
+            <Text style={styles.cardText}>Current Employees</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('DailyReport')}
         >
-          <Ionicons name="checkmark-circle-outline" size={50} color="#7FFFD4" />
-          <Text style={styles.cardText}>Daily Report</Text>
+          <LinearGradient
+            colors={['#11998e', '#38ef7d']}
+            style={styles.cardBackground}
+          >
+            <Ionicons name="checkmark-circle-outline" size={50} color="#fff" />
+            <Text style={styles.cardText}>Daily Report</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('LeaveList')}
         >
-          <Ionicons name="calendar" size={50} color="#FF6347" />
-          <Text style={styles.cardText}>Leaves</Text>
+          <LinearGradient
+            colors={['#FF512F', '#DD2476']}
+            style={styles.cardBackground}
+          >
+            <Ionicons name="calendar" size={50} color="#fff" />
+            <Text style={styles.cardText}>Leaves</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('GeneratePayslip')}
         >
-          <FontAwesome name="money" size={50} color="#FFD700" />
-          <Text style={styles.cardText}>Payments</Text>
+          <LinearGradient
+            colors={['#F7971E', '#FFD200']}
+            style={styles.cardBackground}
+          >
+            <FontAwesome name="money" size={50} color="#fff" />
+            <Text style={styles.cardText}>Payments</Text>
+          </LinearGradient>
         </TouchableOpacity>
-      </View>
 
-      <View style={styles.row}>
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('List Reimbursement')}
         >
-          <FontAwesome name="file-text" size={50} color="#4682B4" />
-          <Text style={styles.cardText}>Reimbursements</Text>
+          <LinearGradient
+            colors={['#4568DC', '#B06AB3']}
+            style={styles.cardBackground}
+          >
+            <FontAwesome name="file-text" size={50} color="#fff" />
+            <Text style={styles.cardText}>Reimbursement</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('AttendanceRegularization')}
         >
-          <Ionicons name="time-outline" size={50} color="#8A2BE2" />
-          <Text style={styles.cardText}>Attendance Regularization</Text>
+          <LinearGradient
+            colors={['#1D4350', '#A43931']}
+            style={styles.cardBackground}
+          >
+            <Ionicons name="time-outline" size={50} color="#fff" />
+            <Text style={styles.cardText}>Attendance Regularization</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('OdList')}
         >
-          <FontAwesome name="briefcase" size={50} color="#FF6347" />
-          <Text style={styles.cardText}>On-Duty</Text>
+          <LinearGradient
+            colors={['#24C6DC', '#514A9D']}
+            style={styles.cardBackground}
+          >
+            <FontAwesome name="briefcase" size={50} color="#fff" />
+            <Text style={styles.cardText}>On-Duty</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate('TaskList')}
         >
-          <Ionicons name="list-outline" size={50} color="#32CD32" />
-          <Text style={styles.cardText}>Tasks</Text>
+          <LinearGradient
+            colors={['#00C9FF', '#92FE9D']}
+            style={styles.cardBackground}
+          >
+            <Ionicons name="list-outline" size={50} color="#fff" />
+            <Text style={styles.cardText}>Tasks</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -110,50 +142,55 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#1c1c1c',
-    paddingBottom: 20,
+    backgroundColor: '#333333', // Light black background color
+    paddingBottom: 10,
   },
   header: {
-    padding: 20,
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     alignItems: 'center',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    elevation: 4,
   },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFD700', // Golden Yellow for header text
+    color: '#ffffff',
   },
   timeText: {
     marginTop: 5,
     fontSize: 16,
-    color: '#87CEEB', // Sky Blue for the time
+    color: '#ffffff',
   },
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginTop: 20,
+    justifyContent: 'space-evenly',
+    paddingHorizontal: 5,
+    marginTop: 10,
   },
   card: {
-    width: '48%',
-    backgroundColor: '#333333',
+    width: '46%',
+    aspectRatio: 1,
+    marginBottom: 10,
+  },
+  cardBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 15,
     padding: 20,
-    alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    marginBottom: 20,
   },
   cardText: {
     marginTop: 10,
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFDAB9', // Peach Puff for card text
+    color: '#ffffff',
     textAlign: 'center',
   },
 });

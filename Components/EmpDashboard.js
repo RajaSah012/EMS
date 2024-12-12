@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   LineChart,
@@ -30,8 +30,8 @@ const EmpDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem('your-token');
-      axios
-        .get("https://emspro-production.up.railway.app/api/employee/", {
+      myAxios
+        .get("/api/employee/", {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -57,8 +57,8 @@ const EmpDashboard = () => {
 
   const employeeCount = async () => {
     const token = await AsyncStorage.getItem('your-token');
-    axios
-      .get("https://emspro-production.up.railway.app/api/employee/count", {
+    myAxios
+      .get("/api/employee/count", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -72,8 +72,8 @@ const EmpDashboard = () => {
 
   const GenderM = async () => {
     const token = await AsyncStorage.getItem('your-token');
-    axios
-      .get("https://emsproject-production.up.railway.app/api/employee/countm", {
+    myAxios
+      .get("/api/employee/countm", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -89,8 +89,8 @@ const EmpDashboard = () => {
 
   const GenderF = async () => {
     const token = await AsyncStorage.getItem('your-token');
-    axios
-      .get("https://emsproject-production.up.railway.app/api/employee/countf", {
+    myAxios
+      .get("/api/employee/countf", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -106,8 +106,8 @@ const EmpDashboard = () => {
 
   const GenderT = async () => {
     const token = await AsyncStorage.getItem('your-token');
-    axios
-      .get("https://emsproject-production.up.railway.app/api/employee/countt", {
+    myAxios
+      .get("/api/employee/countt", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },

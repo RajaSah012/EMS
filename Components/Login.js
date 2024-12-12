@@ -29,7 +29,7 @@ const Login = () => {
   
     try {
       // Send a POST request for login
-      const result = await myAxios.post('/user_auth/login', values);
+      const result = await myAxios.post('/user_auth/signup', values);
       
       // Check if response contains token
       if (result.data && result.data.token) {
@@ -90,7 +90,7 @@ const Login = () => {
 
       <View style={styles.loginFormContainer}>
         {error && <Text style={styles.errorText}>{error}</Text>}
-        <Text style={styles.title}>Employee Login</Text>
+        <Text style={styles.title}>Admin Login</Text>
 
         <View style={styles.inputContainer}>
           {/* <Text style={styles.label}>Email:</Text> */}

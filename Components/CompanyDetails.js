@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Button } from 'react-native-paper';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
@@ -30,7 +30,7 @@ const CompanyForm = () => {
   const fetchBusinessTypes = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.get('https://emspro-production.up.railway.app/api/category/', {
+      const response = await myAxios.get('/api/category/', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -126,7 +126,7 @@ const CompanyForm = () => {
         logoUri,
       };
 
-      const response = await axios.post('https://emspro-production.up.railway.app/api/company/', data, {
+      const response = await myAxios.post('/api/company/', data, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

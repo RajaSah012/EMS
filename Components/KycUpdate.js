@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -50,7 +50,7 @@ const KycUpdate = () => {
       ifsc: ""
     });
 
-    axios.get(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
+    myAxios.get(`/api/employee/${employeeId}`)
       .then(result => {
         setEmployee(result.data);
       }).catch(err => console.log(err));
@@ -82,7 +82,7 @@ const KycUpdate = () => {
   };
 
   const handleSubmit = () => {
-    axios.put(`https://emspro-production.up.railway.app/api/employee/${employeeId}`, employee)
+    myAxios.put(`/api/employee/${employeeId}`, employee)
       .then(result => {
         Alert.alert("Success", "KYC updated successfully!");
         navigation.navigate('kycVerification');

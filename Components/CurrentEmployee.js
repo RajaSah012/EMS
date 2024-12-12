@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { myAxios ,BASE_URL} from '../services/helper';
 import {
   View,
   Text,
@@ -23,8 +23,8 @@ const CurrentEmployee = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       const token = await AsyncStorage.getItem('token');
-      axios
-        .get('https://emspro-production.up.railway.app/api/employee/', {
+      myAxios
+        .get('/api/employee/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ const CurrentEmployee = () => {
   };
 
   const handleDelete = (employeeId) => {
-    axios.delete(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
+    myAxios.delete(`/api/employee/${employeeId}`)
         .then(result => {
             if (result.data) {
                 setRecords(records.filter(e => e.employeeId !== employeeId));
@@ -152,7 +152,7 @@ const CurrentEmployee = () => {
                 <Text style={[styles.tableCell, styles.fixedCell]}>{e.employeeId}</Text>
                 <View style={styles.tableCell}>
                   <Image
-                    source={{ uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}` }}
+                  source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
                     style={styles.employeeImage}
                   />
                   <View style={styles.employeeInfo}>

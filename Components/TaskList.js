@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,7 +20,7 @@ const TaskList = () => {
         const fetchData = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const employeeResult = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
+                const employeeResult = await myAxios.get("/api/employee/", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -31,7 +31,7 @@ const TaskList = () => {
                     setEmployeeCopy(employeeResult.data);
                 }
 
-                const taskResult = await axios.get("https://emspro-production.up.railway.app/api/tasks", {
+                const taskResult = await myAxios.get("/api/tasks", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

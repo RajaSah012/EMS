@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { format } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -13,7 +13,7 @@ const EmpholidayList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://emspro-production.up.railway.app/api/holidays'); // Replace with your API endpoint
+        const response = await myAxios.get('/api/holidays'); // Replace with your API endpoint
         const fetchedEvents = response.data.reduce((acc, record) => {
           const formattedDate = format(new Date(record.date), 'yyyy-MM-dd');
           acc[formattedDate] = {

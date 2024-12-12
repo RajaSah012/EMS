@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import axios from 'axios';
+import { myAxios, BASE_URL } from '../services/helper';
 import AttendanceFilter from './AttendanceFilter';
 
 const AttendanceRegularization = () => {
@@ -24,8 +24,8 @@ const AttendanceRegularization = () => {
   const [filterbyShift, setFilterbyShift] = useState('');
 
   useEffect(() => {
-    axios
-      .get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios
+      .get('/api/employee/')
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);
@@ -113,8 +113,7 @@ const AttendanceRegularization = () => {
                 <Text style={styles.tableCell}>{item.employeeId}</Text>
                 <View style={styles.employeeCell}>
                   <Image
-                    source={{
-                      uri: `https://emspro-production.up.railway.app/api/employee/image/${item.zname}`,
+                    source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}`,
                     }}
                     style={styles.employeeImage}
                   />

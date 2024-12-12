@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { IconButton, Card, Appbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -25,7 +25,7 @@ const Category = ({ navigation }) => {
       const token = await AsyncStorage.getItem('token');
       console.log("Fetched Token:", token); // Logging the token
 
-      axios.get('https://emspro-production.up.railway.app/api/category/', {
+      myAxios.get('/api/category/', {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -53,7 +53,7 @@ const Category = ({ navigation }) => {
       const token = await AsyncStorage.getItem('token');
       console.log("Fetched Token:", token); // Logging the token
 
-      axios.put(`https://emspro-production.up.railway.app/api/category/${id}`, { categoryName: newCategoryName }, {
+      myAxios.put(`/api/category/${id}`, { categoryName: newCategoryName }, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -89,7 +89,7 @@ const Category = ({ navigation }) => {
           {
             text: 'Delete',
             onPress: () => {
-              axios.delete(`https://emspro-production.up.railway.app/api/category/${id}`, {
+              myAxios.delete(`/api/category/${id}`, {
                 headers: {
                   "Authorization": `Bearer ${token}`
                 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -26,7 +26,7 @@ const AddPayment = () => {
   }, [searchQuery, employee]);
 
   const fetchAdminRecords = () => {
-    axios.get('http://localhost:3000/auth/admin_records')
+    myAxios.get('http://localhost:3000/auth/admin_records')
       .then(result => {
         if (result.data.Status) {
           setAdmins(result.data.Result);
@@ -37,7 +37,7 @@ const AddPayment = () => {
   };
 
   const fetchEmployeeRecords = () => {
-    axios.get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios.get('/api/employee/')
       .then(result => {
         if (result.data) {
           setEmployee(result.data);

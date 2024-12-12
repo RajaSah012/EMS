@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { format } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -11,7 +11,7 @@ const EmpViewAttendance = ({ employeeId }) => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const response = await axios.get(`https://emspro-production.up.railway.app/attendance/employee/${employeeId}`);
+        const response = await myAxios.get(`/attendance/employee/${employeeId}`);
         const data = response.data;
 
         const newMarkedDates = {};

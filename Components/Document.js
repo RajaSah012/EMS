@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Image, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import axios from 'axios';
+import { LinearGradient } from 'expo-linear-gradient'
+import { myAxios ,BASE_URL } from '../services/helper';
 import { useNavigation } from '@react-navigation/native';
 
 const Document = () => {
@@ -10,8 +10,8 @@ const Document = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    axios
-      .get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios
+      .get('/api/employee/')
       .then((result) => {
         if (result.data) {
           setEmployee(result.data);
@@ -24,8 +24,8 @@ const Document = () => {
   }, []);
 
   const handleDelete = (employeeId) => {
-    axios
-      .delete(`https://emspro-production.up.railway.app/api/employee/${employeeId}`)
+    myAxios
+      .delete(`/api/employee/${employeeId}`)
       .then((result) => {
         if (result.data) {
           setRecords(records.filter((item) => item.employeeId !== employeeId));
@@ -80,9 +80,7 @@ const Document = () => {
                 <Text style={[styles.tableCell, styles.fixedCell]}>{e.name}</Text>
                 <View style={styles.tableCell}>
                   <Image
-                    source={{
-                      uri: `https://emspro-production.up.railway.app/api/employee/image/${e.zname}`,
-                    }}
+                   source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
                     style={styles.employeeImage}
                   />
                 </View>
