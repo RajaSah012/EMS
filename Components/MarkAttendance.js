@@ -4,7 +4,7 @@ import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import dayjs from 'dayjs';
 
 const LOCATION_TASK_NAME = 'BACKGROUND_LOCATION_TASK';
@@ -121,7 +121,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
 
           const storedEmployeeId = await AsyncStorage.getItem('employeeId');
           if (storedEmployeeId) {
-            const response = await axios.post('http://localhost:8080/attendance/location', {
+            const response = await myAxios.post('/attendance/location', {
               latitude: locationResult.coords.latitude,
               longitude: locationResult.coords.longitude,
               timestamp: new Date().toISOString(),
@@ -193,7 +193,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
             pictureUri: data.uri,
             employeeId: storedEmployeeId,
           });
-          const response = await axios.post('https://emspro-production.up.railway.app/api/rAttendance/punchIn', {
+          const response = await myAxios.post('/api/rAttendance/punchIn', {
             time: punchInTime,
             location: currentLocation,
             pictureUri: data.uri,
@@ -237,7 +237,7 @@ const MarkAttendance = ({ navigation, employeeId }) => {
       employeeId: storedEmployeeId,
     });
     try {
-      const response = await axios.post(`https://emspro-production.up.railway.app/api/rAttendance/punchOut/${attendanceId}`, {
+      const response = await myAxios.post(`/api/rAttendance/punchOut/${attendanceId}`, {
         time: punchOutTime,
         location: currentLocation,
         employeeId: storedEmployeeId,
@@ -315,7 +315,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       const { latitude, longitude } = location.coords;
       const storedEmployeeId = await AsyncStorage.getItem('employeeId');
       if (storedEmployeeId) {
-        const response = await axios.post('http://localhost:8080/attendance/location', {
+        const response = await myAxios.post('/attendance/location', {
           latitude,
           longitude,
           timestamp: new Date().toISOString(),

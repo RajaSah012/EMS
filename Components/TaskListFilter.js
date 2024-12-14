@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
@@ -13,8 +13,8 @@ function TaskListFilter({ onClose, setOpenReportFilterSearchText, setFilterbyDep
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("https://emspro-production.up.railway.app/auth/employee")
+    myAxios
+      .get("/auth/employee")
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

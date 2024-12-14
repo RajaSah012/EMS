@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Linking, Alert } from "react-native";
 import * as Location from 'expo-location';
-import axios from 'axios';
+import { myAxios } from "../services/helper";
 
 const LiveLocation = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -69,7 +69,7 @@ const LiveLocation = () => {
 
   const sendLocationToBackend = async (location, hasMoved) => {
     try {
-      await axios.post('http://your-spring-boot-server/api/location', {
+      await myAxios.post('/api/location', {
         latitude: location.latitude,
         longitude: location.longitude,
         hasMoved

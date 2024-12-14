@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import axios from 'axios';
-import { CSV } from 'react-native-csv';
+import { myAxios } from '../services/helper';
+import {CSV } from 'react-native-csv';
 import { MaterialIcons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -22,7 +22,7 @@ const Report = () => {
   }, []);
 
   const fetchAdminRecords = () => {
-    axios.get('https://emspro-production.up.railway.app/api/category/')
+    myAxios.get('/api/category/')
       .then(result => {
         if (result.data.Status) {
           setAdmins(result.data.Result)
@@ -36,7 +36,7 @@ const Report = () => {
   }
 
   const fetchCategory = () => {
-    axios.get('https://emspro-production.up.railway.app/api/category/')
+    myAxios.get('/api/category/')
       .then((result) => {
         if (result.data.Status) {
           setCategory(result.data.Result);
@@ -48,7 +48,7 @@ const Report = () => {
   }
 
   const fetchEmployee = () => {
-    axios.get('https://emspro-production.up.railway.app/api/employee/')
+    myAxios.get('/api/employee/')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

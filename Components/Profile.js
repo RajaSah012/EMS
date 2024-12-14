@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, Button } 
 import { Card } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { useNavigation } from '@react-navigation/native'; // For navigation
 
 const Profile = () => {
@@ -14,7 +14,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get('https://emspro-production.up.railway.app/api/profile/');
+        const response = await myAxios.get('/api/profile/');
         setProfileData(response.data);
         setLoading(false);
       } catch (error) {

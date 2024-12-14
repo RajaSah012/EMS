@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -41,9 +41,9 @@ const RequestLeave = () => {
     const token = await AsyncStorage.getItem('token');
     const employeeId = 2;
 
-    axios
+    myAxios
       .post(
-        `https://emspro-production.up.railway.app/api/leave/${employeeId}`,
+        `/api/leave/${employeeId}`,
         leave,
         {
           headers: {

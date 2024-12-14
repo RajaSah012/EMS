@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'; 
+import * as Linking from 'expo-linking';
 
-const Setting = () => {
+const Settings = () => {
   const navigation = useNavigation();
 
-  // State to store data from the backend
-  const [branchInfo, setBranchInfo] = useState({ name: '', branches: 0 });
+  const [branchInfo, setBranchInfo] = useState({ name: '', branches: 0, companyCode: '' });
+  const [loading, setLoading] = useState(true);
 
-  // Function to fetch data from the backend
   const fetchBranchData = async () => {
     try {
-      const response = await fetch('https://example.com/api/branch-info'); // Replace with your API URL
+      const response = await fetch('https://example.com/api/branch-info'); 
       const data = await response.json();
       setBranchInfo({
-        name: data.branchName, // Update these keys as per your API response
-        branches: data.branchCount,
+        name: data.branchName || 'N/A',
+        branches: data.branchCount || 0,
+        companyCode: data.companyCode || 'N/A',
       });
     } catch (error) {
       console.error('Error fetching branch data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchBranchData();
   }, []);
@@ -31,90 +42,260 @@ const Setting = () => {
     navigation.navigate(route);
   };
 
+  const handleShareAppLink = async () => {
+    const appLink = 'https://example.com/app-download'; 
+    try {
+      await Linking.openURL(`sms:?body=${appLink}`);
+    } catch (error) {
+      console.error('Error sharing app link:', error);
+    }
+  };
+
+  const suggestedFeatures = [
+    { name: 'Staff App', icon: 'user', route: 'StaffApp', iconColor: '#1abc9c' },
+    { name: 'Attendance Kiosk', icon: 'clock', route: 'AttendanceKiosk', iconColor: '#3498db' },
+    { name: 'Refer & Earn', icon: 'gift', route: 'ReferEarn', iconColor: '#e74c3c' },
+    { name: 'Certificate Generator', icon: 'school', route: 'CertificateGenerator', iconColor: '#f39c12' },
+    { name: 'Hire Staff', icon: 'briefcase', route: 'HireStaff', iconColor: '#9b59b6' },
+    { name: 'Greetings', icon: 'smile', route: 'Greetings', iconColor: '#2ecc71' },
+  ];
+
+  const menuOptions = [
+    { name: 'VIP Membership', route: 'VipMembership', icon: 'star', iconColor: '#f39c12' },
+    { name: 'Wallet', route: 'Wallet', icon: 'wallet', iconColor: '#16a085' },
+    { name: 'Background Verification', route: 'BackgroundVerification', icon: 'id-badge', isNew: true, iconColor: '#e74c3c' },
+    { name: 'Users & Permissions', route: 'UsersPermissions', icon: 'users', iconColor: '#3498db' },
+    { name: 'Custom Fields', route: 'CustomFields', icon: 'edit', iconColor: '#9b59b6' },
+    { name: 'Attendance Settings', route: 'AttendanceSettings', icon: 'calendar-check', iconColor: '#2ecc71' },
+    { name: 'Salary Settings', route: 'SalarySettings', icon: 'money-bill', iconColor: '#f39c12' },
+    { name: 'Reports', route: 'DailyReport', icon: 'file-alt', iconColor: '#1abc9c' },
+    { name: 'Business Contracts', route: 'BusinessContracts', icon: 'business', iconColor: '#2c3e50' },
+    { name: 'More', route: 'More', icon: 'more-horiz', iconColor: '#34495e' },
+  ];
+
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.logo} />
-        <View>
+      <View style={styles.headerContainer}>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/80' }}
+          style={styles.companyLogo}
+        />
+        <View style={styles.branchDetailsContainer}>
           <Text style={styles.branchName}>{branchInfo.name || 'Loading...'}</Text>
-          <Text style={styles.branchDetail}>
+          <Text style={styles.branchCount}>
             {branchInfo.branches > 0
-              ? `${branchInfo.branches} branches added`
-              : 'No branches added'}
+              ? `${branchInfo.branches} Branches Added`
+              : 'No Branches Added'}
           </Text>
         </View>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => handleNavigation('CompanyDetails')}
+        >
+          <MaterialIcons name="edit" size={20} color="#3182CE" />
           <Text style={styles.editText}>Edit</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Suggested Features */}
-      <Text style={styles.sectionTitle}>Suggested Features</Text>
-      <View style={styles.features}>
-        {[
-          { name: 'Staff App', icon: 'https://via.placeholder.com/50', route: 'StaffApp' },
-          { name: 'Attendance Kiosk', icon: 'https://via.placeholder.com/50', route: 'AttendanceKiosk' },
-          { name: 'Refer & Earn', icon: 'https://via.placeholder.com/50', route: 'ReferEarn' },
-        ].map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.featureCard}
-            onPress={() => handleNavigation(item.route)}
-          >
-            <Image source={{ uri: item.icon }} style={styles.featureIcon} />
-            <Text style={styles.featureText}>{item.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#00ADEF" style={styles.loader} />
+      ) : (
+        <>
+          <Text style={styles.sectionTitle}>Suggested Features</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.featureList}>
+            {suggestedFeatures.map((feature, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.featureCard}
+                onPress={() => handleNavigation(feature.route)}
+              >
+                <FontAwesome5
+                  name={feature.icon}
+                  size={40}
+                  color={feature.iconColor}
+                />
+                <Text style={styles.featureText}>{feature.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
-      {/* Company Info */}
-      <View style={styles.info}>
-        <Text style={styles.infoLabel}>Company Code:</Text>
-        <Text style={styles.infoValue}>YFHIUK</Text>
-        <TouchableOpacity>
-          <Text style={styles.shareText}>Share</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.companyInfoContainer}>
+            <View style={styles.companyCodeRow}>
+              <Text style={styles.infoLabel}>Company Code:</Text>
+              <Text style={styles.infoValue}>{branchInfo.companyCode}</Text>
+            </View>
+            <TouchableOpacity style={styles.shareContainer} onPress={handleShareAppLink}>
+              <MaterialIcons name="share" size={20} color="#3182CE" />
+              <Text style={styles.shareText}>Share App</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Menu Items */}
-      {[
-        { name: 'VIP Membership', route: 'VipMembership' },
-        { name: 'Wallet', route: 'Wallet' },
-        { name: 'Background Verification', route: 'BackgroundVerification' },
-        { name: 'Users & Permissions', route: 'UsersPermissions' },
-      ].map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.menuItem}
-          onPress={() => handleNavigation(item.route)}
-        >
-          <Text style={styles.menuText}>{item.name}</Text>
-        </TouchableOpacity>
-      ))}
+          {menuOptions.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.menuItem}
+              onPress={() => handleNavigation(item.route)}
+            >
+              {item.icon === 'business' || item.icon === 'more-horiz' ? (
+                <MaterialIcons name={item.icon} size={20} color={item.iconColor} />
+              ) : (
+                <FontAwesome5 name={item.icon} size={20} color={item.iconColor} />
+              )}
+              <Text style={styles.menuText}>{item.name}</Text>
+              <MaterialIcons
+                name="chevron-right"
+                size={24}
+                color="#000"
+                style={styles.arrowIcon}
+              />
+            </TouchableOpacity>
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', padding: 16, alignItems: 'center' },
-  logo: { width: 50, height: 50, borderRadius: 25, marginRight: 10 },
-  branchName: { fontSize: 18, fontWeight: 'bold' },
-  branchDetail: { fontSize: 14, color: 'gray' },
-  editButton: { marginLeft: 'auto' },
-  editText: { color: '#00f', fontWeight: 'bold' },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', padding: 16 },
-  features: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 16 },
-  featureCard: { alignItems: 'center' },
-  featureIcon: { width: 50, height: 50 },
-  featureText: { fontSize: 12, marginTop: 5 },
-  info: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  infoLabel: { fontWeight: 'bold' },
-  infoValue: { marginLeft: 8 },
-  shareText: { color: '#00f', marginLeft: 'auto' },
-  menuItem: { padding: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  menuText: { fontSize: 16 },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#EEF2F7' 
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    elevation: 5,
+  },
+  companyLogo: { 
+    width: 60, 
+    height: 60, 
+    borderRadius: 30, 
+    marginRight: 15,
+    borderWidth: 2,
+    borderColor: '#3498db'
+  },
+  branchDetailsContainer: { 
+    flex: 1 
+  },
+  branchName: { 
+    fontSize: 22, 
+    fontWeight: 'bold', 
+    color: '#2C3E50' 
+  },
+  branchCount: { 
+    fontSize: 14, 
+    color: '#7F8C8D', 
+    marginTop: 5 
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 5,
+    backgroundColor: '#EAF6FF',
+    elevation: 2,
+  },
+  editText: { 
+    fontSize: 14, 
+    color: '#3498DB', 
+    marginLeft: 5 
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    margin: 20,
+    color: '#2C3E50',
+  },
+  featureList: { 
+    flexDirection: 'row', 
+    paddingHorizontal: 20 
+  },
+  featureCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    marginRight: 15,
+    width: 100,
+    height: 120,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  featureText: { 
+    fontSize: 14, 
+    textAlign: 'center', 
+    color: '#2980B9', 
+    fontWeight: 'bold' 
+  },
+  companyInfoContainer: {
+    padding: 20,
+    backgroundColor: '#ffffff',
+    marginHorizontal: 20,
+    marginTop: 10, 
+    borderRadius: 10,
+    elevation: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  companyCodeRow: {
+    flexDirection: 'column',
+    flex: 1,
+  },
+  infoLabel: { 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: '#2C3E50', 
+    marginBottom: 5 
+  },
+  infoValue: { 
+    fontSize: 14, 
+    color: '#34495E' 
+  },
+  shareContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  shareText: { 
+    fontSize: 14, 
+    color: '#3498DB', 
+    fontWeight: 'bold', 
+    marginLeft: 5 
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#FFF',
+    marginHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  menuText: {
+    fontSize: 16,
+    marginLeft: 15,
+    flex: 1,
+    color: '#2C3E50',
+  },
+  arrowIcon: {
+    marginLeft: 5,
+  },
+  loader: {
+    marginTop: 20,
+  },
 });
 
-export default Setting;
+export default Settings;

@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,7 +15,7 @@ const useLogout = () => {
         return;
       }
 
-      const response = await axios.post('https://emspro-production.up.railway.app/auth/logout',
+      const response = await myAxios.post('/auth/logout',
         {
             headers: {
               "Authorization": `Bearer ${token}`

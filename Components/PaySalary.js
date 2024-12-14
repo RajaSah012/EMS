@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 
 const PaySalary = ({ route, navigation }) => {
   const { employeeId } = route.params;
@@ -41,8 +41,8 @@ const PaySalary = ({ route, navigation }) => {
       work: '',
     });
 
-    axios
-      .get('https://emspro-production.up.railway.app/api/employee/' + employeeId)
+    myAxios
+      .get('/api/employee/' + employeeId)
       .then((result) => {
         setEmployee({
           name: result.data.name,
@@ -66,8 +66,8 @@ const PaySalary = ({ route, navigation }) => {
   }, [employeeId]);
 
   const handleSubmit = () => {
-    axios
-      .put('https://emspro-production.up.railway.app/api/employee/' + employeeId, employee)
+    myAxios
+      .put('/api/employee/' + employeeId, employee)
       .then((result) => {
         if (result.data) {
           Alert.alert('Success', 'Salary details updated successfully!', [

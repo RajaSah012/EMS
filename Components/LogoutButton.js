@@ -1,7 +1,7 @@
 // HomeScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,7 +17,7 @@ export default function HomeScreen() {
     }
 
     try {
-      const result = await axios.post('https://emspro-production.up.railway.app/auth/logout', {}, {
+      const result = await myAxios.post('/auth/logout', {}, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

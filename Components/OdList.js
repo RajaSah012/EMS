@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
@@ -18,7 +18,7 @@ const OdList = () => {
       try {
         const token = await AsyncStorage.getItem('token');
         if (token) {
-          const result = await axios.get("https://emspro-production.up.railway.app/api/employee/", {
+          const result = await myAxios.get("/api/employee/", {
             headers: {
               "Authorization": `Bearer ${token}`
             }

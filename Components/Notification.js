@@ -8,7 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { Picker } from '@react-native-picker/picker';
 import * as Animatable from 'react-native-animatable';
 
@@ -24,21 +24,21 @@ const Notification = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const adminResponse = await axios.get('http://localhost:3000/auth/admin_records');
+        const adminResponse = await myAxios.get('/auth/admin_records');
         if (adminResponse.data.Status) {
           setAdmins(adminResponse.data.Result);
         } else {
           alert(adminResponse.data.Error);
         }
 
-        const categoryResponse = await axios.get('http://localhost:3000/auth/category');
+        const categoryResponse = await myAxios.get('/auth/category');
         if (categoryResponse.data.Status) {
           setCategory(categoryResponse.data.Result);
         } else {
           alert(categoryResponse.data.Error);
         }
 
-        const employeeResponse = await axios.get('http://localhost:3000/auth/employee');
+        const employeeResponse = await myAxios.get('/auth/employee');
         if (employeeResponse.data.Status) {
           setEmployee(employeeResponse.data.Result);
           setRecords(employeeResponse.data.Result);

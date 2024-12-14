@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity,  StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -12,8 +12,8 @@ function ReportFilter({ onClose, setOpenReportFilterSearchText, setFilterbyDepar
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    axios
-      .get('https://emspro-production.up.railway.app/auth/employee')
+    myAxios
+      .get('/auth/employee')
       .then((result) => {
         if (result.data.Status) {
           setEmployee(result.data.Result);

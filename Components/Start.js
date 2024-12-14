@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { myAxios } from '../services/helper';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const Start = () => {
   const navigation = useNavigation();
-  axios.defaults.withCredentials = true;
+  myAxios.defaults.withCredentials = true;
 
   useEffect(() => {
-    axios.get('http://localhost:3000/verify')
+    myAxios.get('/verify')
       .then(result => {
         if (result.data.Status) {
           if (result.data.role === "admin") {
