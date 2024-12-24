@@ -9,9 +9,13 @@ import * as Location from 'expo-location';
 import * as Camera from 'expo-camera';
 import { Text } from 'react-native-paper';
 
-// Import your components here
+// Import your components heres
 import Start from './Components/Start';
+import AttendanceSettings from './Components/AttendanceSettings';
+import BusinessContracts from './Components/BusinessContracts';
 
+import SalarySettings from './Components/SalarySettings';
+import CustomFields from './Components/CustomFields';
 import AdminRegistration from './Components/AdminRegistration';
 import Login from './Components/Login';
 import Home from './Components/Home';
@@ -245,6 +249,9 @@ const CustomDrawerContent = (props) => {
         { name: 'AddPayment', label: 'Add Payment', icon: 'cash-outline' },
         { name: 'PayEmployees', label: 'Pay Employees', icon: 'cash-sharp' },
         { name: 'kycVerification', label: 'KYC Verification', icon: 'checkmark-circle' },
+        
+        { name: 'Category', label: 'Category', icon: 'cash-sharp' },
+        { name: 'AddCategory', label: 'AddCategory', icon: 'cash-sharp' },
       ],
       color: '#B5FFFC', // Light blue for admin rest section
     },
@@ -502,6 +509,30 @@ function App() {
           component={AdminEditProfile}
           options={{ title: 'AdminEditProfile' }}
         /> 
+
+          <Stack.Screen
+          name="CustomFields"
+          component={CustomFields}
+          options={{ title: 'CustomFields' }}
+        /> 
+        
+        <Stack.Screen
+          name="AttendanceSettings"
+          component={AttendanceSettings}
+          options={{ title: 'AttendanceSettings' }}
+        /> 
+        <Stack.Screen
+          name="SalarySettings"
+          component={SalarySettings}
+          options={{ title: 'SalarySettings' }}
+        /> 
+        <Stack.Screen
+          name="BusinessContracts"
+          component={BusinessContracts}
+          options={{ title: 'BusinessContracts' }}
+        /> 
+
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

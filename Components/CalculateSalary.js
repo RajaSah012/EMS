@@ -78,7 +78,7 @@ const CalculateSalary = () => {
       <Card.Content>
         <View style={styles.content}>
           <Image
-             source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }} 
+             source={{ uri: `${BASE_URL}/api/employee/image/${item.zname}` }} 
             style={styles.image}
           />
           <View style={styles.details}>
