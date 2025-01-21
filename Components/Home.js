@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import Header from './header/Header';
 
 const Home = ({ navigation }) => {
   const [time, setTime] = useState('');
@@ -23,6 +24,7 @@ const Home = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Header title={'Home'}/>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Dashboard</Text>

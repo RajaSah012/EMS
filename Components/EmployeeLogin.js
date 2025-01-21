@@ -26,7 +26,7 @@ const EmployeeLogin = () => {
     }
 
     try {
-      const result = await  myAxios.post('user_auth/login', values);
+      const result = await  myAxios.post('user/auth/login', values);
       if (result.data) {
         await AsyncStorage.setItem("token", JSON.stringify(result.data));
         await AsyncStorage.setItem("employeeId", JSON.stringify(result.data));

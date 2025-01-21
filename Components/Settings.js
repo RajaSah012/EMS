@@ -61,16 +61,13 @@ const Settings = () => {
   ];
 
   const menuOptions = [
-    { name: 'VIP Membership', route: 'VipMembership', icon: 'star', iconColor: '#f39c12' },
-    { name: 'Wallet', route: 'Wallet', icon: 'wallet', iconColor: '#16a085' },
-    { name: 'Background Verification', route: 'BackgroundVerification', icon: 'id-badge', isNew: true, iconColor: '#e74c3c' },
-    { name: 'Users & Permissions', route: 'UsersPermissions', icon: 'users', iconColor: '#3498db' },
+    
+    
     { name: 'Custom Fields', route: 'CustomFields', icon: 'edit', iconColor: '#9b59b6' },
-    { name: 'Attendance Settings', route: 'AttendanceSettings', icon: 'calendar-check', iconColor: '#2ecc71' },
     { name: 'Salary Settings', route: 'SalarySettings', icon: 'money-bill', iconColor: '#f39c12' },
     { name: 'Reports', route: 'DailyReport', icon: 'file-alt', iconColor: '#1abc9c' },
     { name: 'Business Contracts', route: 'BusinessContracts', icon: 'business', iconColor: '#2c3e50' },
-    { name: 'More', route: 'More', icon: 'more-horiz', iconColor: '#34495e' },
+   
   ];
 
   return (

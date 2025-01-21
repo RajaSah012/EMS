@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { myAxios } from '../services/helper';
 import { useNavigation } from '@react-navigation/native'; // For navigation
+import Header from './header/Header';
 
 const AdminProfile = () => {
   const [profileData, setProfileData] = useState(null);
@@ -36,6 +37,7 @@ const AdminProfile = () => {
 
   return (
     <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.gradientContainer}>
+        <Header title={'Admin Profile'}/>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.headerTitle}>Admin Profile</Text>
         <Card containerStyle={styles.card}>

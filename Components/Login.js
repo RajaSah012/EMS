@@ -29,12 +29,12 @@ const Login = () => {
   
     try {
       // Send a POST request for login
-      const result = await myAxios.post('/user_auth/signup', values);
-      
+      const result = await myAxios.post('employee/auth/login', values);
+      console.log(result)
       // Check if response contains token
       if (result.data && result.data.token) {
         // Store only the token in AsyncStorage
-        await AsyncStorage.setItem("token", result.data.token);
+        await AsyncStorage.setItem("userToken", result.data.token);
         
         // Navigate to the Home screen after successful login
         navigation.navigate('Home');
