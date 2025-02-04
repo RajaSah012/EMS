@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Header from './header/Header';
 const AddCategory = () => {
     const [category, setCategory] = useState('');
     const navigation = useNavigation();
@@ -42,6 +42,7 @@ const AddCategory = () => {
 
     return (
         <View style={styles.container}>
+            <Header title={'AddCategory'}/>
             <View style={styles.formContainer}>
                 <Text style={styles.heading}>Add Category</Text>
                 <View style={styles.inputContainer}>

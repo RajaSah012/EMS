@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import RNPickerSelect from 'react-native-picker-select';
 import { myAxios } from '../services/helper';
+import Header from './header/Header';
 
 const AddBranch = ({ navigation }) => {
   const [step, setStep] = useState(1);
@@ -79,6 +80,7 @@ const AddBranch = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Header title={'AddBranch'}/>
       {step === 1 ? (
         <View style={styles.stepContainer}>
           <Text style={styles.title}>Add New Branch</Text>

@@ -17,6 +17,7 @@ import { myAxios } from '../services/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import Header from './header/Header';
 
 const AddEmployee = () => {
   const initialEmployeeState = {
@@ -139,6 +140,7 @@ const AddEmployee = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Header title={'AddEmployee'}/>
       <Text style={styles.title}>Add Employee</Text>
 
       {/* Personal Information Section */}

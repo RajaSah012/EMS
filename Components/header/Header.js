@@ -1,100 +1,95 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import {useNavigation} from '@react-navigation/native';
-import { StyleSheet, View, TouchableOpacity, Alert, Image, StatusBar,Text } from "react-native"
+import { useNavigation } from "@react-navigation/native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  StatusBar,
+} from "react-native";
 
-const Header = ({title}) => {
-    const navigation =useNavigation()
-    return (
+const Header = ({ title }) => {
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.container}>
       <View style={styles.header}>
+        {/* Drawer Icon */}
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <MaterialIcons name="add" size={24} color="white" style={styles.icon} />
+          <MaterialIcons name="menu" size={28} color="white" style={styles.icon} />
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={() => navigation.navigate("LiveLocation")}>
-          <MaterialIcons
-            name="location-on"
-            size={24}
-            color="white"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-          <MaterialIcons
-            name="notifications"
-            size={24}
-            color="white"
-            style={styles.icon}
-          />
-        </TouchableOpacity> */}
-        <Text style={{fontSize:20}}>{title}</Text>
+
+        {/* Title */}
+        <Text style={styles.title}>{title}</Text>
+
+        {/* Right Icons */}
+        <View style={styles.rightIcons}>
+          <TouchableOpacity onPress={() => navigation.navigate("LiveLocation")}>
+            <MaterialIcons
+              name="location-on"
+              size={24}
+              color="white"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
+            <MaterialIcons
+              name="notifications"
+              size={24}
+              color="white"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          {/* + Icon */}
+          <TouchableOpacity onPress={() => navigation.navigate("CompanyDetails")}>
+            <MaterialIcons
+              name="add"
+              size={28}
+              color="white"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-    );
-  };
+    </View>
+  );
+};
 
-  const styles = StyleSheet.create({
-    header: {
-      flexDirection: "row",
-      backgroundColor: "#880808",
-      height:55,
-      marginTop:StatusBar.currentHeight
-    },
-    icon: {
-      marginLeft: 20,
-    },
-    drawerHeader: {
-      backgroundColor: "#880808",
-      alignItems: "center",
-      paddingTop: 40,
-      paddingBottom: 20,
-    },
-    logo: {
-      width: 70,
-      height: 70,
-      borderRadius: 60,
-      marginBottom: 10,
-    },
-    sectionHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-      marginHorizontal: 10,
-      marginVertical: 5,
-      elevation: 4, // Shadow for Android
-      shadowColor: "#000", // iOS shadow
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 5,
-    },
-    sectionHeading: {
-      fontSize: 18,
-      fontWeight: "bold",
-      color: "#000",
-    },
-    drawerLabel: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: "#333",
-    },
-    drawerItem: {
-      marginLeft: 0,
-      borderBottomWidth: 0.5,
-      borderBottomColor: "#ddd",
-    },
-    icon: {
-      marginRight: 10,
-    },
-    username: {
-      fontSize: 18,
-      color: "white",
-      marginTop: 10,
-    },
-    drawerContent: {
-      flex: 1,
-      marginTop: 30,
-      marginLeft: 10,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    zIndex: 1, // Ensure the header stays on top
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#6200EE", // Primary header color
+    height: 60,
+    paddingHorizontal: 10,
+    marginTop: StatusBar.currentHeight || 0, // Adjust for status bar
+    elevation: 4, // Shadow effect for Android
+    shadowColor: "#000", // Shadow effect for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    position: "absolute", // Ensures it's at the top
+    top: 0, // Aligns it to the top of the screen
+    left: 0,
+    right: 0,
+  },
+  icon: {
+    marginHorizontal: 10,
+  },
+  title: {
+    flex: 1, // Center the title
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
+  rightIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});
 
-  export default Header;
+export default Header;

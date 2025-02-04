@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import { myAxios } from '../services/helper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import Header from './header/Header';
 
 const AddPayment = () => {
   const [admins, setAdmins] = useState([]);
@@ -65,10 +66,12 @@ const AddPayment = () => {
   };
 
   return (
+    
     <LinearGradient
       colors={['#6a11cb', '#2575fc']}
       style={styles.gradientBackground}
     >
+      <Header title={'AddPayment'}/>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Payroll Month</Text>

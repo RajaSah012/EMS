@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { myAxios, BASE_URL } from '../services/helper';
+import Header from './header/Header';
 
 const AddTask = ({ navigation }) => {
   const [employee, setEmployee] = useState([]);
@@ -28,48 +37,53 @@ const AddTask = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Task</Text>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search Name of Employee"
-        onChangeText={handleFilter}
-        value={search}
-      />
-      <ScrollView horizontal={true}>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Image</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Name</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Designation</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Site</Text>
-            <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Action</Text>
-          </View>
-          {records.map((e) => (
-            <View key={e.employeeId} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{e.employeeId}</Text>
+      {/* Fixed Header */}
+      <Header title={'AddTask'} />
 
-              {/* Wrap the Image in a View */}
-              <View style={styles.imageCell}>
-              <Image
-            source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
-              style={styles.image}
-      />
-              </View>
-
-              <Text style={styles.tableCell}>{e.name}</Text>
-              <Text style={styles.tableCell}>{e.category}</Text>
-              <Text style={styles.tableCell}>{e.site}</Text>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('AssignTask', { employeeId: e.employeeId })}
-              >
-                <Text style={styles.buttonText}>Assign Task</Text>
-              </TouchableOpacity>
+      {/* Main Content */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.header}>Task</Text>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search Name of Employee"
+          onChangeText={handleFilter}
+          value={search}
+        />
+        <ScrollView horizontal>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Emp Id</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Image</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Name</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Designation</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Site</Text>
+              <Text style={[styles.tableHeaderText, styles.fixedHeaderText]}>Action</Text>
             </View>
-          ))}
-        </View>
-      </ScrollView>
+            {records.map((e) => (
+              <View key={e.employeeId} style={styles.tableRow}>
+                <Text style={styles.tableCell}>{e.employeeId}</Text>
+                <View style={styles.imageCell}>
+                  <Image
+                    source={{ uri: `${BASE_URL}/api/employee/image/${e.zname}` }}
+                    style={styles.image}
+                  />
+                </View>
+                <Text style={styles.tableCell}>{e.name}</Text>
+                <Text style={styles.tableCell}>{e.category}</Text>
+                <Text style={styles.tableCell}>{e.site}</Text>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() =>
+                    navigation.navigate('AssignTask', { employeeId: e.employeeId })
+                  }
+                >
+                  <Text style={styles.buttonText}>Assign Task</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -78,7 +92,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F7F7',
-    padding: 16,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingTop: 60, // Leave space for the header
+    paddingHorizontal: 16,
   },
   header: {
     fontSize: 24,
@@ -138,10 +156,10 @@ const styles = StyleSheet.create({
     borderRightColor: '#ccc',
   },
   image: {
-    width: 50,  // Adjust width to fit the cell
-    height: 50, // Adjust height to fit the cell
-    borderRadius: 25, // Ensure the image is rounded
-    resizeMode: 'cover', // Ensure the image covers the area without distortion
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    resizeMode: 'cover',
   },
   button: {
     backgroundColor: '#007BFF',
